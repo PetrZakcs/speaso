@@ -1,165 +1,129 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions,
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, {
-  useSharedValue, useAnimatedStyle, withRepeat, withSequence,
-  withTiming, Easing, runOnJS,
+  cancelAnimation, useSharedValue, useAnimatedStyle, withRepeat, withSequence,
+  withTiming, Easing,
 } from 'react-native-reanimated';
 import { router } from 'expo-router';
 import { useTranslation } from '../../i18n/useTranslation';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useStore } from '../../state/store';
+import IconButton from '../../components/IconButton';
 import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
 
-const { width } = Dimensions.get('window');
 const BALL_SIZE = 148;
 
 type Phase = 'inhale' | 'hold' | 'exhale';
 
-const PHASE_DURATIONS: Record<Phase, number> = {
-  inhale: 4000,
-  hold: 4000,
-  exhale: 6000,
-};
-
-const PHASES: Phase[] = ['inhale', 'hold', 'exhale'];
-
-const AFFIRMATIONS = [
-  'panic.affirmation_1',
-  'panic.affirmation_2',
-  'panic.affirmation_3',
+const PHASES: { phase: Phase; seconds: number; scale: number }[] = [
+  { phase: 'inhale', seconds: 4, scale: 1.12 },
+  { phase: 'hold', seconds: 4, scale: 1.12 },
+  { phase: 'exhale', seconds: 6, scale: 0.8 },
 ];
+const CYCLE_SECONDS = PHASES.reduce((sum, p) => sum + p.seconds, 0);
+
+/** Where in the 4-4-6 cycle we are, derived purely from elapsed time. */
+function breathState(elapsedSec: number) {
+  const round = Math.floor(elapsedSec / CYCLE_SECONDS);
+  let pos = elapsedSec % CYCLE_SECONDS;
+  for (let i = 0; i < PHASES.length; i++) {
+    if (pos < PHASES[i].seconds) {
+      return { round, phaseIdx: i, remaining: Math.ceil(PHASES[i].seconds - pos) };
+    }
+    pos -= PHASES[i].seconds;
+  }
+  return { round, phaseIdx: 0, remaining: PHASES[0].seconds };
+}
 
 export default function PanicScreen() {
-  const { t } = useTranslation();
+  const { t, tList } = useTranslation();
   const incrementPanicUses = useStore((s) => s.incrementPanicUses);
-  const [phase, setPhase] = useState<Phase>('inhale');
-  const [round, setRound] = useState(0);
+  const affirmations = tList('panic.affirmations');
   const [affirmIdx, setAffirmIdx] = useState(0);
-  const phaseRef = useRef<Phase>('inhale');
-  const roundRef = useRef(0);
+  const [startedAt] = useState(() => Date.now());
+  const [now, setNow] = useState(startedAt);
+  const counted = useRef(false);
 
   const breathScale = useSharedValue(0.8);
   const glowOpacity = useSharedValue(0.5);
 
+  const { round, phaseIdx, remaining } = breathState((now - startedAt) / 1000);
+  const current = PHASES[phaseIdx];
+
   useEffect(() => {
-    incrementPanicUses();
-    runBreathCycle();
-  }, []);
-
-  function runBreathCycle() {
-    const runPhase = (p: Phase) => {
-      phaseRef.current = p;
-      setPhase(p);
-      const dur = PHASE_DURATIONS[p];
-      const targetScale = p === 'inhale' ? 1.12 : p === 'hold' ? 1.12 : 0.8;
-      breathScale.value = withTiming(targetScale, { duration: dur, easing: Easing.inOut(Easing.ease) }, (finished) => {
-        if (!finished) return;
-        const nextIdx = (PHASES.indexOf(p) + 1) % PHASES.length;
-        const nextPhase = PHASES[nextIdx];
-        if (nextPhase === 'inhale') {
-          roundRef.current += 1;
-          runOnJS(setRound)(roundRef.current);
-        }
-        runOnJS(runPhase)(nextPhase);
-      });
-    };
-
-    glowOpacity.value = withRepeat(
+    if (!counted.current) {
+      counted.current = true;
+      incrementPanicUses();
+    }
+    const id = setInterval(() => setNow(Date.now()), 250);
+    glowOpacity.set(withRepeat(
       withSequence(withTiming(0.95, { duration: 4000 }), withTiming(0.5, { duration: 3000 })),
       -1,
-    );
+    ));
+    return () => {
+      clearInterval(id);
+      cancelAnimation(glowOpacity);
+      cancelAnimation(breathScale);
+    };
+  }, [incrementPanicUses, glowOpacity, breathScale]);
 
-    runPhase('inhale');
-  }
+  // Each phase (of each round) animates the ball to its target over the phase length.
+  useEffect(() => {
+    const p = PHASES[phaseIdx];
+    breathScale.set(withTiming(p.scale, {
+      duration: p.seconds * 1000,
+      easing: Easing.inOut(Easing.ease),
+    }));
+  }, [phaseIdx, round, breathScale]);
 
-  const ballStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: breathScale.value }],
-  }));
-
-  const glowStyle = useAnimatedStyle(() => ({
-    opacity: glowOpacity.value,
-  }));
-
-  const phaseLabels: Record<Phase, string> = {
-    inhale: t('panic.phase_inhale'),
-    hold: t('panic.phase_hold'),
-    exhale: t('panic.phase_exhale'),
-  };
-
-  const phaseCounts: Record<Phase, number> = {
-    inhale: 4,
-    hold: 4,
-    exhale: 6,
-  };
-
-  const affirmKey = AFFIRMATIONS[affirmIdx % AFFIRMATIONS.length];
-  const affirmText = t(affirmKey, { defaultValue: 'Nespěchám. Mám právo si vzít čas, který potřebuju.' });
-
-  const QUICK_ACTIONS = [
-    { icon: '⚡', label: t('panic.action_quick') },
-    { icon: '🎵', label: t('panic.action_sound') },
-    { icon: '🎭', label: t('panic.action_prepare') },
-    { icon: '📋', label: t('panic.action_journal') },
-  ];
+  const ballStyle = useAnimatedStyle(() => ({ transform: [{ scale: breathScale.value }] }));
+  const glowStyle = useAnimatedStyle(() => ({ opacity: glowOpacity.value * 0.25 }));
 
   return (
     <SafeAreaView style={styles.safe}>
-      {/* Ambient glow */}
       <Animated.View style={[styles.glowTop, glowStyle]} />
 
-      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.closeBtn}>
-          <Text style={styles.closeText}>✕</Text>
-        </TouchableOpacity>
+        <IconButton icon="close" onPress={() => router.back()} accessibilityLabel={t('panic.close_a11y')} />
       </View>
 
-      {/* Title */}
       <View style={styles.titleWrap}>
-        <Text style={styles.title}>{t('panic.title')}</Text>
+        <Text style={styles.title} accessibilityRole="header">{t('panic.title')}</Text>
         <Text style={styles.sub}>{t('panic.sub')}</Text>
       </View>
 
-      {/* Breathing circle */}
       <View style={styles.ballWrap}>
-        <Animated.View style={[styles.ball, ballStyle]}>
-          <Text style={styles.phaseCount}>{phaseCounts[phase]}</Text>
-          <Text style={styles.phaseLabel}>{phaseLabels[phase]}</Text>
+        <Animated.View
+          style={[styles.ball, ballStyle]}
+          accessible
+          accessibilityLiveRegion="polite"
+          accessibilityLabel={t(`panic.phase_${current.phase}`)}
+        >
+          <Text style={styles.phaseCount}>{remaining}</Text>
+          <Text style={styles.phaseLabel}>{t(`panic.phase_${current.phase}`)}</Text>
         </Animated.View>
       </View>
 
-      {/* Round dots */}
       <View style={styles.roundDots}>
         {[0, 1, 2].map((i) => (
-          <View
-            key={i}
-            style={[styles.roundDot, i <= (round % 3) && styles.roundDotActive]}
-          />
+          <View key={i} style={[styles.roundDot, i <= round % 3 && styles.roundDotActive]} />
         ))}
       </View>
 
-      {/* Affirmation */}
-      <View style={styles.affirmCard}>
-        <Text style={styles.affirmText}>💙 „{affirmText}"</Text>
-        <TouchableOpacity
-          onPress={() => setAffirmIdx((a) => a + 1)}
-          style={styles.affirmNext}
-        >
-          <Text style={styles.affirmNextText}>{t('panic.affirmation_next')} →</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Quick actions */}
-      <View style={styles.actionsGrid}>
-        {QUICK_ACTIONS.map((a) => (
-          <TouchableOpacity key={a.label} style={styles.actionCard} activeOpacity={0.8}>
-            <Text style={styles.actionIcon}>{a.icon}</Text>
-            <Text style={styles.actionLabel}>{a.label}</Text>
+      {affirmations.length > 0 && (
+        <View style={styles.affirmCard}>
+          <Text style={styles.affirmText}>
+            💙 „{affirmations[affirmIdx % affirmations.length]}“
+          </Text>
+          <TouchableOpacity
+            onPress={() => setAffirmIdx((a) => a + 1)}
+            style={styles.affirmNext}
+            accessibilityRole="button"
+          >
+            <Text style={styles.affirmNextText}>{t('panic.affirmation_next')} →</Text>
           </TouchableOpacity>
-        ))}
-      </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -175,7 +139,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.danger.panic,
     borderRadius: 999,
     opacity: 0.18,
-    filter: undefined,
     zIndex: 0,
   },
   header: {
@@ -185,17 +148,6 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     zIndex: 1,
   },
-  closeBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: Colors.surface.card,
-    borderWidth: 1,
-    borderColor: Colors.hairline,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  closeText: { color: Colors.text.primary, fontSize: 16 },
   titleWrap: {
     alignItems: 'center',
     paddingHorizontal: Spacing.screenH,
@@ -281,30 +233,5 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.dmSansSemiBold,
     fontSize: FontSize.bodySmall,
     color: Colors.primary.blue,
-  },
-  actionsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-    paddingHorizontal: Spacing.screenH,
-    marginTop: 16,
-  },
-  actionCard: {
-    width: (width - 50) / 2,
-    backgroundColor: Colors.surface.card,
-    borderRadius: Radius.cardSmall,
-    borderWidth: 1,
-    borderColor: Colors.hairline,
-    padding: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  actionIcon: { fontSize: 20 },
-  actionLabel: {
-    fontFamily: FontFamily.dmSansMedium,
-    fontSize: FontSize.bodySmall,
-    color: Colors.text.primary,
-    flex: 1,
   },
 });

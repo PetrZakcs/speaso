@@ -30,9 +30,10 @@ export default function PillButton({ label, onPress, variant = 'primary', disabl
       onPress={onPress}
       disabled={disabled || loading}
       activeOpacity={0.85}
-      style={[styles.outer, style]}
+      style={[styles.outer, disabled && styles.disabled, style]}
       accessibilityRole="button"
       accessibilityLabel={label}
+      accessibilityState={{ disabled: !!(disabled || loading), busy: !!loading }}
     >
       <LinearGradient
         colors={colors as any}
@@ -65,6 +66,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 24,
+  },
+  disabled: {
+    opacity: 0.45,
   },
   ghostBorder: {
     borderWidth: 1,

@@ -27,7 +27,7 @@ export default function OB03() {
   };
 
   return (
-    <OnboardingShell step={2} onBack={() => router.back()}>
+    <OnboardingShell step={2}>
       <View style={styles.wrap}>
         <Text style={styles.title}>{t('onboarding.age_title')}</Text>
         <Text style={styles.sub}>{t('onboarding.age_sub')}</Text>

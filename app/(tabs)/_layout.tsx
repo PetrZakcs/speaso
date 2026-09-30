@@ -1,37 +1,31 @@
 import React from 'react';
 import { Tabs, router } from 'expo-router';
-import { TouchableOpacity, View, StyleSheet, Text } from 'react-native';
+import { TouchableOpacity, View, StyleSheet, type ColorValue } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Colors, FontFamily, FontSize } from '../../theme/tokens';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { Colors, FontFamily } from '../../theme/tokens';
 import { useTranslation } from '../../i18n/useTranslation';
 
-function TabIcon({ name, focused }: { name: string; focused: boolean }) {
-  const icons: Record<string, string> = {
-    home: focused
-      ? 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22V12h6v10'
-      : 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22V12h6v10',
-    exercises:
-      'M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 0v10l4 2',
-    progress: 'M3 3v18h18 M18 9l-5 5-4-4-3 3',
-    profile: 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2 M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',
-  };
+type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
-  const color = focused ? Colors.primary.blue : Colors.text.tertiary;
-
-  return (
-    <View style={{ width: 28, height: 28, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ color, fontSize: focused ? 22 : 20 }}>
-        {name === 'home' ? '⌂' : name === 'exercises' ? '◉' : name === 'progress' ? '↗' : '◎'}
-      </Text>
-    </View>
-  );
+function tabIcon(active: IconName, inactive: IconName) {
+  function TabIcon({ focused, color }: { focused: boolean; color: ColorValue }) {
+    return <Ionicons name={focused ? active : inactive} size={22} color={color} />;
+  }
+  return TabIcon;
 }
 
-function PanicTabButton({ onPress }: { onPress: () => void }) {
+function PanicTabButton({ label }: { label: string }) {
   return (
-    <TouchableOpacity onPress={onPress} style={styles.panicWrap} activeOpacity={0.85}>
+    <TouchableOpacity
+      onPress={() => router.push('/panic')}
+      style={styles.panicWrap}
+      activeOpacity={0.85}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+    >
       <View style={styles.panicCircle}>
-        <Text style={styles.panicLabel}>🆘</Text>
+        <Ionicons name="pulse" size={24} color={Colors.text.primary} />
       </View>
     </TouchableOpacity>
   );
@@ -54,49 +48,31 @@ export default function TabLayout() {
         },
         tabBarActiveTintColor: Colors.primary.blue,
         tabBarInactiveTintColor: Colors.text.tertiary,
-        tabBarLabelStyle: {
-          fontFamily: FontFamily.dmSansMedium,
-          fontSize: 10,
-          marginTop: -4,
-        },
+        tabBarLabelStyle: { fontFamily: FontFamily.dmSansMedium, fontSize: 10 },
       }}
     >
       <Tabs.Screen
         name="home"
-        options={{
-          title: t('tabbar.home'),
-          tabBarIcon: ({ focused }) => <TabIcon name="home" focused={focused} />,
-        }}
+        options={{ title: t('tabbar.home'), tabBarIcon: tabIcon('home', 'home-outline') }}
       />
       <Tabs.Screen
         name="exercises"
-        options={{
-          title: t('tabbar.exercises'),
-          tabBarIcon: ({ focused }) => <TabIcon name="exercises" focused={focused} />,
-        }}
+        options={{ title: t('tabbar.exercises'), tabBarIcon: tabIcon('mic', 'mic-outline') }}
       />
       <Tabs.Screen
         name="panic-tab"
         options={{
-          title: '',
-          tabBarButton: () => (
-            <PanicTabButton onPress={() => router.push('/panic')} />
-          ),
+          title: t('tabbar.panic'),
+          tabBarButton: () => <PanicTabButton label={t('tabbar.panic')} />,
         }}
       />
       <Tabs.Screen
         name="progress"
-        options={{
-          title: t('tabbar.progress'),
-          tabBarIcon: ({ focused }) => <TabIcon name="progress" focused={focused} />,
-        }}
+        options={{ title: t('tabbar.progress'), tabBarIcon: tabIcon('stats-chart', 'stats-chart-outline') }}
       />
       <Tabs.Screen
         name="profile"
-        options={{
-          title: t('tabbar.profile'),
-          tabBarIcon: ({ focused }) => <TabIcon name="profile" focused={focused} />,
-        }}
+        options={{ title: t('tabbar.profile'), tabBarIcon: tabIcon('person', 'person-outline') }}
       />
     </Tabs>
   );
@@ -104,15 +80,15 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   panicWrap: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: -22,
-    width: 64,
   },
   panicCircle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 54,
+    height: 54,
+    borderRadius: 27,
     backgroundColor: Colors.danger.panic,
     alignItems: 'center',
     justifyContent: 'center',
@@ -122,5 +98,4 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 10,
   },
-  panicLabel: { fontSize: 22 },
 });

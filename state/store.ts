@@ -1,214 +1,139 @@
+import { useSyncExternalStore } from 'react';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { toVocative } from '../lib/vocative';
+import { toDateKey } from '../lib/dates';
+import { detectDeviceLanguage, type SupportedLang } from '../lib/locale';
+import { EMPTY_STREAK, registerActivity, type Session, type StreakData } from '../lib/streak';
 
 export type AgeGroup = 'child' | 'teen' | 'adult' | 'senior';
 export type TherapyStatus = 'never' | 'past' | 'current' | 'self';
-export type SubscriptionTier = 'free' | 'premium';
-export type SupportedLang = 'cs' | 'en';
+export type { SupportedLang };
+
+const MAX_SESSIONS = 2000;
 
 interface UserState {
   name: string;
-  vocative: string;
   ageGroup: AgeGroup | null;
   situations: string[];
   goal: string | null;
   therapyStatus: TherapyStatus | null;
   dailyMinutes: 5 | 15 | 30;
+  /** Free-text description from onboarding. Stays on the device. */
+  note: string;
 }
 
-interface SubscriptionState {
-  tier: SubscriptionTier;
-  trialActive: boolean;
-  trialEndsAt: string | null;
-}
-
-interface UsageState {
-  weeklyExercises: number;
-  weekStartDate: string; // ISO Monday date
-}
-
-interface StreakState {
-  days: number;
-  record: number;
-  weekMap: boolean[]; // [Mon..Sun]
-}
-
-interface ProgressState {
-  fluency: number[];
-  blocks: number[];
-  exercisesTotal: number;
-  panicUses: number;
-}
-
-interface TherapistState {
-  name: string;
-  connected: boolean;
-  liveSharing: boolean;
+/**
+ * Local cache of the RevenueCat entitlement. Written only by lib/purchases.ts
+ * from CustomerInfo — never set it from UI code.
+ */
+export interface SubscriptionState {
+  isPremium: boolean;
+  isTrial: boolean;
+  expiresAt: string | null;
 }
 
 interface AppState {
   onboardingDone: boolean;
   language: SupportedLang;
   remindersEnabled: boolean;
-  soundsEnabled: boolean;
-  panicLockscreen: boolean;
 
   user: UserState;
   subscription: SubscriptionState;
-  usage: UsageState;
-  streak: StreakState;
-  progress: ProgressState;
-  therapist: TherapistState | null;
+  streak: StreakData;
+  sessions: Session[];
+  panicUses: number;
 
-  // Actions
   setOnboardingDone: (v: boolean) => void;
   setLanguage: (lang: SupportedLang) => void;
   setUser: (partial: Partial<UserState>) => void;
-  setName: (name: string) => void;
-  setSubscription: (partial: Partial<SubscriptionState>) => void;
-  incrementWeeklyExercises: () => void;
-  resetWeeklyIfNeeded: () => void;
-  incrementStreak: () => void;
-  resetStreak: () => void;
+  setSubscription: (s: SubscriptionState) => void;
+  recordSession: (exerciseId: string, durationSec: number) => void;
   incrementPanicUses: () => void;
-  incrementExercisesTotal: () => void;
-  setTherapist: (t: TherapistState | null) => void;
-  toggleReminders: () => void;
-  toggleSounds: () => void;
-  togglePanicLockscreen: () => void;
 }
 
-function getMondayISO(): string {
-  const d = new Date();
-  const day = d.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
-  d.setDate(d.getDate() + diff);
-  d.setHours(0, 0, 0, 0);
-  return d.toISOString().slice(0, 10);
-}
+const initialUser: UserState = {
+  name: '',
+  ageGroup: null,
+  situations: [],
+  goal: null,
+  therapyStatus: null,
+  dailyMinutes: 15,
+  note: '',
+};
 
 export const useStore = create<AppState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       onboardingDone: false,
-      language: 'cs',
-      remindersEnabled: true,
-      soundsEnabled: true,
-      panicLockscreen: false,
+      language: detectDeviceLanguage(),
+      remindersEnabled: false,
 
-      user: {
-        name: '',
-        vocative: '',
-        ageGroup: null,
-        situations: [],
-        goal: null,
-        therapyStatus: null,
-        dailyMinutes: 15,
-      },
-
-      subscription: {
-        tier: 'free',
-        trialActive: false,
-        trialEndsAt: null,
-      },
-
-      usage: {
-        weeklyExercises: 0,
-        weekStartDate: getMondayISO(),
-      },
-
-      streak: {
-        days: 0,
-        record: 0,
-        weekMap: [false, false, false, false, false, false, false],
-      },
-
-      progress: {
-        fluency: [58, 62, 60, 65, 68, 66, 70],
-        blocks: [30, 28, 27, 25, 22, 21, 19],
-        exercisesTotal: 0,
-        panicUses: 0,
-      },
-
-      therapist: null,
+      user: initialUser,
+      subscription: { isPremium: false, isTrial: false, expiresAt: null },
+      streak: EMPTY_STREAK,
+      sessions: [],
+      panicUses: 0,
 
       setOnboardingDone: (v) => set({ onboardingDone: v }),
-      setLanguage: (lang) => set({ language: lang }),
+      setLanguage: (language) => set({ language }),
+      setUser: (partial) => set((s) => ({ user: { ...s.user, ...partial } })),
+      setSubscription: (subscription) => set({ subscription }),
 
-      setUser: (partial) =>
-        set((s) => ({ user: { ...s.user, ...partial } })),
-
-      setName: (name) =>
-        set((s) => ({
-          user: {
-            ...s.user,
-            name,
-            vocative: s.language === 'cs' ? toVocative(name) : name,
-          },
-        })),
-
-      setSubscription: (partial) =>
-        set((s) => ({ subscription: { ...s.subscription, ...partial } })),
-
-      incrementWeeklyExercises: () => {
-        get().resetWeeklyIfNeeded();
-        set((s) => ({
-          usage: { ...s.usage, weeklyExercises: s.usage.weeklyExercises + 1 },
-        }));
-      },
-
-      resetWeeklyIfNeeded: () => {
-        const monday = getMondayISO();
-        if (get().usage.weekStartDate !== monday) {
-          set({ usage: { weeklyExercises: 0, weekStartDate: monday } });
-        }
-      },
-
-      incrementStreak: () =>
+      recordSession: (exerciseId, durationSec) =>
         set((s) => {
-          const newDays = s.streak.days + 1;
-          const todayIdx = (new Date().getDay() + 6) % 7; // 0=Mon
-          const weekMap = [...s.streak.weekMap] as boolean[];
-          weekMap[todayIdx] = true;
+          const now = new Date();
+          const today = toDateKey(now);
+          const session: Session = {
+            exerciseId,
+            date: today,
+            durationSec: Math.round(durationSec),
+            completedAt: now.toISOString(),
+          };
           return {
-            streak: {
-              days: newDays,
-              record: Math.max(newDays, s.streak.record),
-              weekMap,
-            },
+            sessions: [...s.sessions, session].slice(-MAX_SESSIONS),
+            streak: registerActivity(s.streak, today),
           };
         }),
 
-      resetStreak: () =>
-        set((s) => ({
-          streak: { ...s.streak, days: 0 },
-        })),
-
-      incrementPanicUses: () =>
-        set((s) => ({
-          progress: { ...s.progress, panicUses: s.progress.panicUses + 1 },
-        })),
-
-      incrementExercisesTotal: () =>
-        set((s) => ({
-          progress: {
-            ...s.progress,
-            exercisesTotal: s.progress.exercisesTotal + 1,
-          },
-        })),
-
-      setTherapist: (t) => set({ therapist: t }),
-      toggleReminders: () => set((s) => ({ remindersEnabled: !s.remindersEnabled })),
-      toggleSounds: () => set((s) => ({ soundsEnabled: !s.soundsEnabled })),
-      togglePanicLockscreen: () => set((s) => ({ panicLockscreen: !s.panicLockscreen })),
+      incrementPanicUses: () => set((s) => ({ panicUses: s.panicUses + 1 })),
     }),
     {
       name: 'speasy-storage',
+      version: 1,
       storage: createJSONStorage(() => AsyncStorage),
-    }
-  )
+      migrate: (persisted, version) => {
+        const old = (persisted ?? {}) as any;
+        if (version === 0) {
+          // v0 was the prototype: fake progress numbers, per-exercise streak,
+          // a premium flag that could be granted without paying. Keep only
+          // what the user actually entered.
+          return {
+            onboardingDone: !!old.onboardingDone,
+            language: old.language === 'en' ? 'en' : 'cs',
+            remindersEnabled: false,
+            user: { ...initialUser, ...(old.user ?? {}), note: '' },
+            subscription: { isPremium: false, isTrial: false, expiresAt: null },
+            streak: { ...EMPTY_STREAK, record: old.streak?.record ?? 0 },
+            sessions: [],
+            panicUses: old.progress?.panicUses ?? 0,
+          };
+        }
+        return old;
+      },
+    },
+  ),
 );
+
+function subscribeHydration(cb: () => void) {
+  return useStore.persist.onFinishHydration(cb);
+}
+
+/** True once persisted state has been loaded from AsyncStorage. */
+export function useStoreHydrated() {
+  return useSyncExternalStore(subscribeHydration, () => useStore.persist.hasHydrated());
+}
+
+export const useIsPremium = () => useStore((s) => s.subscription.isPremium);
 
 export { useShallow } from 'zustand/react/shallow';

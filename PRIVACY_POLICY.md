@@ -1,53 +1,53 @@
 # Privacy Policy — Speasy
 
-*Poslední aktualizace: 19. června 2026*
+*Poslední aktualizace: 30. září 2026*
+
+> TODO před vydáním: doplnit provozovatele a kontaktní e-mail, zveřejnit na veřejné URL
+> a tu samou URL vložit do `lib/links.ts` (`PRIVACY_URL`) a do App Store Connect.
 
 ## 1. Kdo jsme
 
-Speasy je mobilní aplikace podporující lidi, kteří koktají. Provozovatel: [Tvoje jméno / firma], [adresa].
+Speasy je mobilní aplikace podporující lidi, kteří koktají. Provozovatel: [jméno / firma], [adresa], IČO: [IČO].
 
-## 2. Jaká data shromažďujeme
+## 2. Jaká data zpracováváme
 
-**Lokálně (pouze v zařízení):**
-- Jméno a věková skupina zadané při onboardingu
-- Výsledky cvičení, série a statistiky plynulosti
-- Nastavení aplikace (jazyk, připomínky)
+**Uloženo pouze ve tvém zařízení (nikam je neodesíláme):**
+- Jméno, věková skupina, cíl, vybrané situace a denní čas zadané při úvodním nastavení
+- Volitelná poznámka „Popiš to vlastními slovy“
+- Historie cvičení (které cvičení, kdy a jak dlouho), série a počet použití Panic tlačítka
+- Nastavení aplikace (jazyk)
 
-**Neodesíláme nikam bez tvého souhlasu:**
-- Text z onboardingové AI analýzy (OB-04) — zpracováváme lokálně; odesílání na server je volitelné a vždy označené
+Speasy nemá uživatelské účty a nepoužívá analytické ani reklamní nástroje.
 
-**Při nákupu Premium (RevenueCat):**
-- RevenueCat zpracovává platební transakce dle vlastních [zásad ochrany soukromí](https://www.revenuecat.com/privacy)
-- My nevidíme čísla platebních karet
-
-**Při propojení s logopedem:**
-- Sdílíme anonymizované statistiky cvičení s tvým logopedem — pouze pokud to ty sám aktivuješ
+**Při nákupu Premium:**
+- Platbu zpracovává Apple (App Store) nebo Google (Google Play). Čísla platebních karet nevidíme.
+- Stav předplatného ověřujeme přes službu RevenueCat, která k tomu používá anonymní identifikátor aplikace a údaje o nákupu. Viz [zásady ochrany soukromí RevenueCat](https://www.revenuecat.com/privacy).
 
 ## 3. K čemu data používáme
 
-- Personalizace cvičebního plánu
-- Zobrazení pokroku a statistik
-- Zasílání denních připomínek (pouze pokud je povolíš)
+- Zobrazení tvého pokroku, série a statistik v aplikaci
+- Ověření, zda máš aktivní předplatné Premium
 
 ## 4. Sdílení dat
 
-Data **nesdílíme s třetími stranami** za účelem reklamy. Sdílení probíhá pouze:
-- S logopedem — na tvou explicitní žádost
-- S RevenueCat — zpracování plateb
-- Se službami Apple/Google — standardní crash reporting (anonymní)
+Data neprodáváme ani je nesdílíme za účelem reklamy. Jediným příjemcem je RevenueCat (ověření předplatného) a obchod s aplikacemi (platba).
 
-## 5. Uchovávání dat
+## 5. Uchovávání a smazání dat
 
-Data jsou uložena lokálně v zařízení. Odinstalací aplikace jsou smazána. Na žádost můžeš kdykoli požádat o smazání účtu přes e-mail uvedený níže.
+Data uložená v zařízení smažeš odinstalováním aplikace. Historii nákupů spravuje Apple / Google; o smazání údajů u RevenueCat nás můžeš požádat e-mailem níže.
 
 ## 6. Děti
 
-Aplikace je určena uživatelům od 4 let v kategorii dítě, ale rodiče musí schválit stažení pro uživatele mladší 13 let (iOS Family Sharing).
+Aplikace není určena přímo dětem mladším 13 let. U mladších uživatelů by ji měl nastavit a používat rodič nebo zákonný zástupce.
 
-## 7. Kontakt
+## 7. Zdravotní upozornění
 
-Otázky k soukromí: **[tvůj email]**
+Speasy není zdravotnický prostředek a nenahrazuje péči logopeda.
 
-## 8. Změny
+## 8. Kontakt
 
-O změnách zásad tě informujeme v aplikaci. Pokračováním v používání aplikace po oznámení souhlasíš se změnami.
+Otázky k soukromí: **[e-mail]**
+
+## 9. Změny
+
+O podstatných změnách těchto zásad tě budeme informovat v aplikaci.

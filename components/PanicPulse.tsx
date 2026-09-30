@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import Animated, {
   useSharedValue, useAnimatedStyle, withRepeat, withSequence,
-  withTiming, withDelay,
+  withTiming, withDelay, cancelAnimation,
 } from 'react-native-reanimated';
 import { Colors } from '../theme/tokens';
 
@@ -39,7 +39,8 @@ export default function PanicPulse({ size = 152 }: Props) {
         -1,
       ),
     );
-  }, []);
+    return () => [ring1, ring2, opacity1, opacity2].forEach((v) => cancelAnimation(v));
+  }, [ring1, ring2, opacity1, opacity2]);
 
   const ring1Style = useAnimatedStyle(() => ({
     transform: [{ scale: ring1.value }],

@@ -24,7 +24,7 @@ export default function OB08() {
   };
 
   return (
-    <OnboardingShell step={7} onBack={() => router.back()}>
+    <OnboardingShell step={7}>
       <View style={styles.wrap}>
         <Text style={styles.title}>{t('onboarding.freq_title')}</Text>
         <Text style={styles.sub}>{t('onboarding.freq_sub')}</Text>
@@ -56,11 +56,6 @@ export default function OB08() {
               </TouchableOpacity>
             );
           })}
-        </View>
-
-        <View style={styles.reminderRow}>
-          <Text style={styles.reminderIcon}>🔔</Text>
-          <Text style={styles.reminderText}>{t('onboarding.freq_reminder')}</Text>
         </View>
       </View>
 

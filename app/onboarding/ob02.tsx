@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from '../../i18n/useTranslation';
-import Animated, { useSharedValue, withRepeat, withSequence, withTiming, useAnimatedStyle } from 'react-native-reanimated';
+import Animated, { cancelAnimation, useSharedValue, withRepeat, withSequence, withTiming, useAnimatedStyle } from 'react-native-reanimated';
 import OnboardingShell from '../../components/OnboardingShell';
 import PillButton from '../../components/PillButton';
 import { useStore, useShallow } from '../../state/store';
-import { toVocative } from '../../lib/vocative';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
+import { addressName } from '../../lib/names';
+import { Colors, FontFamily, FontSize, Radius } from '../../theme/tokens';
 
 export default function OB02() {
   const { t } = useTranslation();
-  const { setName, language } = useStore(useShallow((s) => ({ setName: s.setName, language: s.language })));
+  const { setUser, language } = useStore(useShallow((s) => ({ setUser: s.setUser, language: s.language })));
   const [name, setLocalName] = useState('');
   const caretOpacity = useSharedValue(1);
 
@@ -20,20 +20,21 @@ export default function OB02() {
       withSequence(withTiming(0, { duration: 550 }), withTiming(1, { duration: 0 })),
       -1,
     );
-  }, []);
+    return () => cancelAnimation(caretOpacity);
+  }, [caretOpacity]);
 
   const caretStyle = useAnimatedStyle(() => ({ opacity: caretOpacity.value }));
 
-  const vocative = language === 'cs' && name ? toVocative(name) : name;
+  const vocative = addressName(name, language);
 
   const handleContinue = () => {
     if (!name.trim()) return;
-    setName(name.trim());
+    setUser({ name: name.trim() });
     router.push('/onboarding/ob03');
   };
 
   return (
-    <OnboardingShell step={1} onBack={() => router.back()}>
+    <OnboardingShell step={1}>
       <View style={styles.wrap}>
         <Text style={styles.title}>{t('onboarding.name_title')}</Text>
         <Text style={styles.sub}>{t('onboarding.name_sub')}</Text>

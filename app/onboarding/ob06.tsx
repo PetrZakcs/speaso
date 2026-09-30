@@ -26,7 +26,7 @@ export default function OB06() {
   };
 
   return (
-    <OnboardingShell step={5} onBack={() => router.back()}>
+    <OnboardingShell step={5}>
       <View style={styles.wrap}>
         <Text style={styles.title}>{t('onboarding.goal_title')}</Text>
         <Text style={styles.sub}>{t('onboarding.goal_sub')}</Text>

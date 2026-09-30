@@ -1,125 +1,111 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View, Text, TouchableOpacity, StyleSheet, SafeAreaView,
-} from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
-import { useTranslation } from '../../../i18n/useTranslation';
-import Animated, {
-  useSharedValue, useAnimatedStyle, withTiming, withRepeat,
-  withSequence, Easing,
-} from 'react-native-reanimated';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Redirect, router, useLocalSearchParams } from 'expo-router';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSequence } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useStore, useShallow } from '../../../state/store';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../../theme/tokens';
+import { useTranslation } from '../../i18n/useTranslation';
+import { useStore } from '../../state/store';
+import { getExercise } from '../../content/exercises';
+import { canStartExercise, currentStreak } from '../../lib/streak';
+import { toDateKey } from '../../lib/dates';
+import IconButton from '../../components/IconButton';
+import { Colors, FontFamily, FontSize, Gradients, Radius, Spacing } from '../../theme/tokens';
 
-const EXERCISES: Record<string, { icon: string; titleKey: string; subKey: string; mins: number; steps: string[] }> = {
-  breathing: {
-    icon: '🫁', titleKey: 'exercises.ex_breathing', subKey: 'exercises.ex_breathing_sub', mins: 8,
-    steps: ['Uvolni ramena a zavři oči.', 'Polož ruku na břicho.', 'Nádech nosem 4 vteřiny — břicho jde ven.', 'Zadrž 2 vteřiny.', 'Výdech ústy 6 vteřin — pomalý, rovnoměrný.', 'Opakuj 5×. Pak zkus říct větu — klidně, bez spěchu.'],
-  },
-  reading: {
-    icon: '📖', titleKey: 'exercises.ex_reading', subKey: 'exercises.ex_reading_sub', mins: 5,
-    steps: ['Najdi klidné místo. Vezmi jakýkoli text.', 'Čti nahlas — pomalu, jako kdybys četl malému dítěti.', 'Každé slovo vyslov celé. Nespěchej.', 'Na tečce si vždy udělej pauzu — nádech.', 'Pokud se zasekneš: zastav, nádech, zkus znovu.', 'Cíl: 2 minuty plynulého čtení bez zastavení.'],
-  },
-  softstart: {
-    icon: '🎙️', titleKey: 'exercises.ex_softstart', subKey: 'exercises.ex_softstart_sub', mins: 6,
-    steps: ['Vyber 5 slov začínajících na různá písmena.', 'Každé slovo začni velmi jemně — jako šepot, který zesiluje.', 'Př: „...auto" → „auto" → „AUTO"', 'Zaměř se na první hlásku — nenásilně ji naseď.', 'Opakuj každé slovo 3×. Tempo si sám urči.', 'Pak zkus celou větu stejnou technikou.'],
-  },
-  aicall: {
-    icon: '🎭', titleKey: 'exercises.ex_aicall', subKey: 'exercises.ex_aicall_sub', mins: 10,
-    steps: ['AI ti zavolá jako recepční v ordinaci.', 'Tvůj úkol: objednat se na prohlídku.', 'Není co pokazit — AI je trpělivá a čeká.', 'Kdykoliv se zaseknete: AI zopakuje otázku.', 'Po hovoru dostaneš zpětnou vazbu.', 'Připravený? Stiskni Start.'],
-  },
-};
+function formatTime(totalSec: number) {
+  const m = Math.floor(totalSec / 60);
+  const s = Math.floor(totalSec % 60);
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+/** Re-renders every second while `active`; the time itself comes from Date.now(). */
+function useTicker(active: boolean) {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!active) return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [active]);
+  return now;
+}
+
+function secondsSince(startedAt: number | null) {
+  return startedAt ? (Date.now() - startedAt) / 1000 : 0;
+}
+
+type Result = { minutes: number; streak: number };
 
 export default function ExercisePlayer() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { t } = useTranslation();
-  const { incrementWeeklyExercises, incrementExercisesTotal, incrementStreak } = useStore(useShallow((s) => ({
-    incrementWeeklyExercises: s.incrementWeeklyExercises,
-    incrementExercisesTotal: s.incrementExercisesTotal,
-    incrementStreak: s.incrementStreak,
-  })));
+  const { t, tn, tList } = useTranslation();
+  const recordSession = useStore((s) => s.recordSession);
+  const exercise = getExercise(id);
 
-  const ex = EXERCISES[id ?? 'breathing'] ?? EXERCISES.breathing;
+  // Evaluated once on open: finishing the 5th free exercise must not kick
+  // the user out mid-session, but deep links can't bypass the limit either.
+  const [allowed] = useState(() => {
+    const { sessions, subscription } = useStore.getState();
+    return canStartExercise(sessions, toDateKey(), subscription.isPremium);
+  });
+  const [startedAt, setStartedAt] = useState<number | null>(null);
   const [stepIdx, setStepIdx] = useState(0);
-  const [started, setStarted] = useState(false);
-  const [done, setDone] = useState(false);
-  const [elapsed, setElapsed] = useState(0);
-
-  const progress = useSharedValue(0);
+  const [result, setResult] = useState<Result | null>(null);
+  const now = useTicker(startedAt !== null && !result);
   const stepOpacity = useSharedValue(1);
-
-  useEffect(() => {
-    if (!started || done) return;
-    const interval = setInterval(() => {
-      setElapsed((e) => {
-        const next = e + 1;
-        progress.value = withTiming(next / (ex.mins * 60), { duration: 1000 });
-        if (next >= ex.mins * 60) {
-          setDone(true);
-          clearInterval(interval);
-          incrementWeeklyExercises();
-          incrementExercisesTotal();
-          incrementStreak();
-        }
-        return next;
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [started, done]);
-
-  const progressStyle = useAnimatedStyle(() => ({
-    width: `${progress.value * 100}%` as any,
-  }));
-
-  const goNext = () => {
-    stepOpacity.value = withSequence(
-      withTiming(0, { duration: 150 }),
-      withTiming(1, { duration: 300 }),
-    );
-    setStepIdx((i) => Math.min(i + 1, ex.steps.length - 1));
-  };
-
-  const goPrev = () => {
-    stepOpacity.value = withSequence(
-      withTiming(0, { duration: 150 }),
-      withTiming(1, { duration: 300 }),
-    );
-    setStepIdx((i) => Math.max(i - 1, 0));
-  };
-
   const stepStyle = useAnimatedStyle(() => ({ opacity: stepOpacity.value }));
 
-  const mins = Math.floor(elapsed / 60);
-  const secs = elapsed % 60;
-  const timeLeft = ex.mins * 60 - elapsed;
-  const minsLeft = Math.floor(timeLeft / 60);
-  const secsLeft = timeLeft % 60;
+  if (!allowed) return <Redirect href={{ pathname: '/paywall', params: { context: 'limit' } }} />;
 
-  if (done) {
+  if (!exercise) {
+    return (
+      <SafeAreaView style={[styles.safe, styles.doneCenter]}>
+        <Text style={styles.doneSub}>{t('exercises.not_found')}</Text>
+        <IconButton icon="close" onPress={() => router.back()} accessibilityLabel={t('common.close')} />
+      </SafeAreaView>
+    );
+  }
+
+  const steps = tList(`exercises.steps.${exercise.id}`);
+  const title = t(`exercises.${exercise.id}`);
+  const elapsedSec = startedAt ? Math.max(0, (now - startedAt) / 1000) : 0;
+  const isLastStep = stepIdx === steps.length - 1;
+
+  const goTo = (idx: number) => {
+    stepOpacity.set(withSequence(withTiming(0, { duration: 150 }), withTiming(1, { duration: 300 })));
+    setStepIdx(Math.max(0, Math.min(idx, steps.length - 1)));
+  };
+
+  const finish = () => {
+    const durationSec = secondsSince(startedAt);
+    recordSession(exercise.id, durationSec);
+    const { streak } = useStore.getState();
+    setResult({
+      minutes: Math.max(1, Math.round(durationSec / 60)),
+      streak: currentStreak(streak, toDateKey()),
+    });
+  };
+
+  if (result) {
     return (
       <SafeAreaView style={styles.safe}>
         <View style={styles.doneCenter}>
           <Text style={styles.doneEmoji}>🎉</Text>
-          <Text style={styles.doneTitle}>Výborně!</Text>
-          <Text style={styles.doneSub}>Cvičení dokončeno · {ex.mins} {t('common.min_short')}</Text>
+          <Text style={styles.doneTitle}>{t('exercises.done_title')}</Text>
+          <Text style={styles.doneSub}>{t('exercises.done_sub')} · {title}</Text>
           <View style={styles.doneStats}>
             <View style={styles.doneStat}>
-              <Text style={styles.doneStatVal}>+1</Text>
-              <Text style={styles.doneStatLabel}>Série 🔥</Text>
+              <Text style={styles.doneStatVal}>{result.streak}</Text>
+              <Text style={styles.doneStatLabel}>{t('exercises.done_streak')}</Text>
             </View>
             <View style={styles.doneStatDiv} />
             <View style={styles.doneStat}>
-              <Text style={styles.doneStatVal}>{ex.mins}</Text>
-              <Text style={styles.doneStatLabel}>Minut</Text>
+              <Text style={styles.doneStatVal}>{result.minutes}</Text>
+              <Text style={styles.doneStatLabel}>{t('exercises.done_minutes')}</Text>
             </View>
           </View>
-          <TouchableOpacity
-            style={styles.doneCta}
-            onPress={() => router.replace('/(tabs)/home')}
-          >
-            <LinearGradient colors={['#1741C4', '#2563EB']} style={styles.doneCtaGrad}>
-              <Text style={styles.doneCtaText}>Zpět domů →</Text>
+          <TouchableOpacity style={styles.doneCta} onPress={() => router.back()} accessibilityRole="button">
+            <LinearGradient colors={Gradients.primary} style={styles.doneCtaGrad}>
+              <Text style={styles.doneCtaText}>{t('exercises.done_cta')}</Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
@@ -131,50 +117,51 @@ export default function ExercisePlayer() {
     <SafeAreaView style={styles.safe}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.closeBtn}>
-          <Text style={styles.closeText}>✕</Text>
-        </TouchableOpacity>
+        <IconButton icon="close" size={36} onPress={() => router.back()} accessibilityLabel={t('common.close')} />
         <View style={styles.headerCenter}>
-          <Text style={styles.headerTitle}>{t(ex.titleKey)}</Text>
-          {started && (
+          <Text style={styles.headerTitle}>{title}</Text>
+          {startedAt !== null && (
             <Text style={styles.timer}>
-              {minsLeft}:{secsLeft.toString().padStart(2, '0')} zbývá
+              {t('exercises.elapsed', { time: formatTime(elapsedSec), n: exercise.minutes })}
             </Text>
           )}
         </View>
         <View style={{ width: 36 }} />
       </View>
 
-      {/* Progress bar */}
+      {/* Progress */}
       <View style={styles.progressTrack}>
-        <Animated.View style={[styles.progressFill, progressStyle]} />
+        <View
+          style={[
+            styles.progressFill,
+            { width: `${startedAt === null ? 0 : ((stepIdx + 1) / steps.length) * 100}%` },
+          ]}
+        />
       </View>
 
-      {/* Main content */}
-      {!started ? (
+      {startedAt === null ? (
         <View style={styles.startCenter}>
-          <Text style={styles.exIcon}>{ex.icon}</Text>
-          <Text style={styles.startTitle}>{t(ex.titleKey)}</Text>
-          <Text style={styles.startSub}>{t(ex.subKey)}</Text>
+          <Text style={styles.exIcon}>{exercise.emoji}</Text>
+          <Text style={styles.startTitle}>{title}</Text>
+          <Text style={styles.startSub}>{t(`exercises.${exercise.id}_sub`)}</Text>
           <View style={styles.metaRow}>
             <View style={styles.metaChip}>
-              <Text style={styles.metaText}>⏱ {ex.mins} {t('common.min_short')}</Text>
+              <Text style={styles.metaText}>⏱ {exercise.minutes} {t('common.min_short')}</Text>
             </View>
             <View style={styles.metaChip}>
-              <Text style={styles.metaText}>{ex.steps.length} kroků</Text>
+              <Text style={styles.metaText}>{tn('exercises.steps_count', steps.length)}</Text>
             </View>
           </View>
-          <TouchableOpacity onPress={() => setStarted(true)} style={styles.startBtn}>
-            <LinearGradient colors={['#1741C4', '#2563EB']} style={styles.startBtnGrad}>
-              <Text style={styles.startBtnText}>▶ Spustit cvičení</Text>
+          <TouchableOpacity onPress={() => setStartedAt(Date.now())} style={styles.startBtn} accessibilityRole="button">
+            <LinearGradient colors={Gradients.primary} style={styles.startBtnGrad}>
+              <Text style={styles.startBtnText}>{t('exercises.start')}</Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
       ) : (
         <View style={styles.sessionWrap}>
-          {/* Step indicator */}
           <View style={styles.stepDots}>
-            {ex.steps.map((_, i) => (
+            {steps.map((_, i) => (
               <View
                 key={i}
                 style={[styles.stepDot, i === stepIdx && styles.stepDotActive, i < stepIdx && styles.stepDotDone]}
@@ -182,24 +169,27 @@ export default function ExercisePlayer() {
             ))}
           </View>
 
-          {/* Step content */}
-          <Animated.View style={[styles.stepCard, stepStyle]}>
-            <Text style={styles.stepNum}>Krok {stepIdx + 1}/{ex.steps.length}</Text>
-            <Text style={styles.stepText}>{ex.steps[stepIdx]}</Text>
+          <Animated.View style={[styles.stepCard, stepStyle]} accessibilityLiveRegion="polite">
+            <Text style={styles.stepNum}>{t('exercises.step_of', { n: stepIdx + 1, total: steps.length })}</Text>
+            <Text style={styles.stepText}>{steps[stepIdx]}</Text>
           </Animated.View>
 
-          {/* Navigation */}
           <View style={styles.navRow}>
             <TouchableOpacity
               style={[styles.navBtn, stepIdx === 0 && styles.navBtnDisabled]}
-              onPress={goPrev}
+              onPress={() => goTo(stepIdx - 1)}
               disabled={stepIdx === 0}
+              accessibilityRole="button"
             >
-              <Text style={styles.navBtnText}>← Zpět</Text>
+              <Text style={styles.navBtnText}>{t('exercises.prev')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.navBtnPrimary} onPress={goNext}>
+            <TouchableOpacity
+              style={styles.navBtnPrimary}
+              onPress={isLastStep ? finish : () => goTo(stepIdx + 1)}
+              accessibilityRole="button"
+            >
               <Text style={styles.navBtnPrimaryText}>
-                {stepIdx < ex.steps.length - 1 ? 'Další →' : 'Dokončit ✓'}
+                {isLastStep ? t('exercises.finish') : t('exercises.next')}
               </Text>
             </TouchableOpacity>
           </View>
@@ -218,13 +208,6 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 12,
   },
-  closeBtn: {
-    width: 36, height: 36, borderRadius: 18,
-    backgroundColor: Colors.surface.card,
-    borderWidth: 1, borderColor: Colors.hairline,
-    alignItems: 'center', justifyContent: 'center',
-  },
-  closeText: { color: Colors.text.primary, fontSize: 14 },
   headerCenter: { flex: 1, alignItems: 'center' },
   headerTitle: {
     fontFamily: FontFamily.soraSemiBold,

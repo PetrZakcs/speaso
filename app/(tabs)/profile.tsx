@@ -1,197 +1,135 @@
-import { ScrollView } from 'react-native-gesture-handler';
-import React from 'react';
-import {
-  View, Text, TouchableOpacity, StyleSheet, SafeAreaView,  Switch,
-} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, Linking } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { useTranslation } from '../../i18n/useTranslation';
 import { LinearGradient } from 'expo-linear-gradient';
+import Constants from 'expo-constants';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { useTranslation } from '../../i18n/useTranslation';
 import { useStore, useShallow } from '../../state/store';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
-import type { SupportedLang } from '../../state/store';
+import { initials } from '../../lib/names';
+import { manageSubscription, restorePurchases } from '../../lib/purchases';
+import { PRIVACY_URL, TERMS_URL } from '../../lib/links';
+import { Colors, FontFamily, FontSize, Gradients, Radius, Spacing } from '../../theme/tokens';
+
+type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
 function SettingRow({
-  icon, label, value, onPress, toggle, toggleValue, onToggle, premium,
+  icon, label, value, onPress,
 }: {
-  icon: string;
+  icon: IconName;
   label: string;
   value?: string;
   onPress?: () => void;
-  toggle?: boolean;
-  toggleValue?: boolean;
-  onToggle?: (v: boolean) => void;
-  premium?: boolean;
 }) {
   return (
     <TouchableOpacity
       style={styles.row}
       onPress={onPress}
-      disabled={!onPress && !toggle}
+      disabled={!onPress}
       activeOpacity={0.75}
+      accessibilityRole={onPress ? 'button' : 'text'}
     >
-      <Text style={styles.rowIcon}>{icon}</Text>
+      <Ionicons name={icon} size={18} color={Colors.text.secondary} style={styles.rowIcon} />
       <Text style={styles.rowLabel}>{label}</Text>
-      {premium && !toggle && <Text style={styles.premiumBadge}>👑</Text>}
-      {value && <Text style={styles.rowValue}>{value} ›</Text>}
-      {toggle && (
-        <Switch
-          value={toggleValue}
-          onValueChange={onToggle}
-          trackColor={{ false: Colors.surface.card2, true: Colors.primary.blue }}
-          thumbColor={Colors.text.primary}
-        />
-      )}
+      {!!value && <Text style={styles.rowValue}>{value}</Text>}
+      {onPress && <Ionicons name="chevron-forward" size={16} color={Colors.text.tertiary} />}
     </TouchableOpacity>
   );
 }
 
 export default function ProfileScreen() {
-  const { t, i18n } = useTranslation();
-  const {
-    user, subscription, therapist, language, setLanguage,
-    remindersEnabled, soundsEnabled, panicLockscreen,
-    toggleReminders, toggleSounds, togglePanicLockscreen,
-  } = useStore(useShallow((s) => ({
-    user: s.user,
+  const { t } = useTranslation();
+  const [restoring, setRestoring] = useState(false);
+  const { name, subscription, language, setLanguage } = useStore(useShallow((s) => ({
+    name: s.user.name,
     subscription: s.subscription,
-    therapist: s.therapist,
     language: s.language,
     setLanguage: s.setLanguage,
-    remindersEnabled: s.remindersEnabled,
-    soundsEnabled: s.soundsEnabled,
-    panicLockscreen: s.panicLockscreen,
-    toggleReminders: s.toggleReminders,
-    toggleSounds: s.toggleSounds,
-    togglePanicLockscreen: s.togglePanicLockscreen,
   })));
+  const version = Constants.expoConfig?.version ?? '—';
 
-  const isPremium = subscription.tier === 'premium';
-  const initials = user.name ? user.name[0].toUpperCase() : 'S';
-
-  const handleLangSwitch = () => {
-    const next: SupportedLang = language === 'cs' ? 'en' : 'cs';
-    setLanguage(next);
-    i18n.changeLanguage(next);
+  const handleRestore = async () => {
+    setRestoring(true);
+    try {
+      const restored = await restorePurchases();
+      Alert.alert(t('settings.restore'), t(restored ? 'premium.restore_success' : 'premium.restore_none'));
+    } catch {
+      Alert.alert(t('settings.restore'), t('premium.unavailable'));
+    } finally {
+      setRestoring(false);
+    }
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        <Text style={styles.screenTitle}>{t('settings.title')}</Text>
+        <Text style={styles.screenTitle} accessibilityRole="header">{t('settings.title')}</Text>
 
         {/* Profile card */}
         <View style={styles.profileCard}>
-          <LinearGradient colors={['#1741C4', '#2563EB']} style={styles.avatar}>
-            <Text style={styles.avatarText}>{initials}</Text>
+          <LinearGradient colors={Gradients.primary} style={styles.avatar}>
+            <Text style={styles.avatarText}>{initials(name)}</Text>
           </LinearGradient>
           <View style={{ flex: 1 }}>
-            <Text style={styles.profileName}>{user.name || 'Speasy User'}</Text>
-            <View style={styles.planRow}>
-              {isPremium ? (
-                <>
-                  <Text style={{ fontSize: 12 }}>👑</Text>
-                  <Text style={styles.planLabel}>{t('settings.plan_premium')}</Text>
-                </>
-              ) : (
-                <TouchableOpacity onPress={() => router.push('/paywall/premium')}>
-                  <Text style={[styles.planLabel, { color: Colors.premium.gold }]}>Free · Upgradovat →</Text>
-                </TouchableOpacity>
-              )}
-            </View>
+            <Text style={styles.profileName}>{name || t('settings.default_name')}</Text>
+            {subscription.isPremium ? (
+              <Text style={[styles.planLabel, { color: Colors.premium.gold }]}>
+                👑 {t(subscription.isTrial ? 'settings.plan_trial' : 'settings.plan_premium')}
+              </Text>
+            ) : (
+              <TouchableOpacity onPress={() => router.push('/paywall')} accessibilityRole="button">
+                <Text style={[styles.planLabel, { color: Colors.premium.gold }]}>{t('settings.plan_free')}</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
 
-        {/* Therapist row */}
-        {isPremium && (
-          <TouchableOpacity style={styles.therapistRow} onPress={() => router.push('/therapist')}>
-            <Text style={{ fontSize: 20 }}>🩺</Text>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.therapistLabel}>{t('settings.therapist_connected')}</Text>
-              <Text style={styles.therapistName}>
-                {therapist?.name ?? 'Připojit logopeda →'}
-              </Text>
-            </View>
-            <Text style={styles.therapistArrow}>›</Text>
-          </TouchableOpacity>
-        )}
-
-        {/* App section */}
+        {/* App */}
         <View style={styles.section}>
           <Text style={styles.sectionLabel}>{t('settings.section_app')}</Text>
           <View style={styles.sectionCard}>
             <SettingRow
-              icon="🔔"
-              label={t('settings.reminders')}
-              toggle
-              toggleValue={remindersEnabled}
-              onToggle={toggleReminders}
-            />
-            <View style={styles.divider} />
-            <SettingRow
-              icon="🔊"
-              label={t('settings.sounds')}
-              toggle
-              toggleValue={soundsEnabled}
-              onToggle={toggleSounds}
-            />
-            <View style={styles.divider} />
-            <SettingRow
-              icon="📱"
-              label={t('settings.panic_lockscreen')}
-              toggle
-              toggleValue={panicLockscreen}
-              onToggle={isPremium ? togglePanicLockscreen : () => router.push('/paywall/premium')}
-              premium={!isPremium}
-            />
-            <View style={styles.divider} />
-            <SettingRow
-              icon="🌍"
+              icon="globe-outline"
               label={t('settings.language')}
               value={language === 'cs' ? 'Čeština' : 'English'}
-              onPress={handleLangSwitch}
+              onPress={() => setLanguage(language === 'cs' ? 'en' : 'cs')}
             />
           </View>
         </View>
 
-        {/* Premium section */}
-        {isPremium && (
-          <View style={styles.section}>
-            <Text style={styles.sectionLabel}>{t('settings.section_premium')}</Text>
-            <View style={styles.sectionCard}>
-              <SettingRow
-                icon="📄"
-                label={t('settings.export_report')}
-                onPress={() => {}}
-                value=""
-              />
-              <View style={styles.divider} />
-              <SettingRow
-                icon="🩺"
-                label={t('settings.therapist_portal')}
-                onPress={() => router.push('/therapist')}
-                value=""
-              />
-              <View style={styles.divider} />
-              <SettingRow
-                icon="💳"
-                label={t('settings.manage_sub')}
-                onPress={() => {}}
-                value=""
-              />
-            </View>
+        {/* Subscription */}
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>{t('settings.section_subscription')}</Text>
+          <View style={styles.sectionCard}>
+            {subscription.isPremium && (
+              <>
+                <SettingRow icon="card-outline" label={t('settings.manage_sub')} onPress={manageSubscription} />
+                <View style={styles.divider} />
+              </>
+            )}
+            <SettingRow
+              icon="refresh-outline"
+              label={t('settings.restore')}
+              value={restoring ? '…' : undefined}
+              onPress={restoring ? undefined : handleRestore}
+            />
           </View>
-        )}
+        </View>
 
         {/* About */}
         <View style={styles.section}>
           <Text style={styles.sectionLabel}>{t('settings.section_about')}</Text>
           <View style={styles.sectionCard}>
-            <SettingRow icon="ℹ️" label={t('settings.version')} value="1.0.0" />
+            <SettingRow icon="information-circle-outline" label={t('settings.version')} value={version} />
             <View style={styles.divider} />
-            <SettingRow icon="🔒" label={t('settings.privacy')} onPress={() => {}} value="" />
+            <SettingRow icon="lock-closed-outline" label={t('settings.privacy')} onPress={() => Linking.openURL(PRIVACY_URL)} />
+            <View style={styles.divider} />
+            <SettingRow icon="document-text-outline" label={t('settings.terms')} onPress={() => Linking.openURL(TERMS_URL)} />
           </View>
         </View>
 
+        <Text style={styles.disclaimer}>{t('settings.disclaimer')}</Text>
         <Text style={styles.footer}>{t('settings.footer_tagline')}</Text>
       </ScrollView>
     </SafeAreaView>
@@ -230,36 +168,12 @@ const styles = StyleSheet.create({
     fontSize: FontSize.cardTitle,
     color: Colors.text.primary,
   },
-  planRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
   planLabel: {
     fontFamily: FontFamily.dmSansMedium,
     fontSize: FontSize.bodySmall,
     color: Colors.text.secondary,
+    marginTop: 4,
   },
-  therapistRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    backgroundColor: Colors.therapist.purple + '18',
-    borderRadius: Radius.card,
-    borderWidth: 1,
-    borderColor: Colors.therapist.purple + '40',
-    padding: 16,
-  },
-  therapistLabel: {
-    fontFamily: FontFamily.dmSansMedium,
-    fontSize: 10,
-    color: Colors.therapist.purple,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  therapistName: {
-    fontFamily: FontFamily.soraSemiBold,
-    fontSize: FontSize.cardTitle,
-    color: Colors.text.primary,
-    marginTop: 2,
-  },
-  therapistArrow: { color: Colors.text.tertiary, fontSize: 20 },
   section: { gap: 8 },
   sectionLabel: {
     fontFamily: FontFamily.dmSansBold,
@@ -283,7 +197,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 16,
   },
-  rowIcon: { fontSize: 18, width: 24 },
+  rowIcon: { width: 24 },
   rowLabel: {
     flex: 1,
     fontFamily: FontFamily.dmSansMedium,
@@ -295,13 +209,19 @@ const styles = StyleSheet.create({
     fontSize: FontSize.bodySmall,
     color: Colors.text.secondary,
   },
-  premiumBadge: { fontSize: 14 },
   divider: { height: 1, backgroundColor: Colors.hairline, marginHorizontal: 18 },
+  disclaimer: {
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: FontSize.meta,
+    color: Colors.text.tertiary,
+    textAlign: 'center',
+    lineHeight: 17,
+    paddingHorizontal: 12,
+  },
   footer: {
     fontFamily: FontFamily.dmSansRegular,
     fontSize: FontSize.bodySmall,
     color: Colors.text.tertiary,
     textAlign: 'center',
-    marginTop: 8,
   },
 });

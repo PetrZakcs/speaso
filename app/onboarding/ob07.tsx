@@ -22,7 +22,7 @@ export default function OB07() {
   };
 
   return (
-    <OnboardingShell step={6} onBack={() => router.back()}>
+    <OnboardingShell step={6}>
       <View style={styles.wrap}>
         <Text style={styles.title}>{t('onboarding.therapy_title')}</Text>
         <Text style={styles.sub}>{t('onboarding.therapy_sub')}</Text>

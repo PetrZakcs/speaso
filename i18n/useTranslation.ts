@@ -1,24 +1,18 @@
-import { useCallback, useReducer, useEffect } from 'react';
-import { getLang, subscribe, t as translate, setLang, type SupportedLang } from './index';
+import { useMemo } from 'react';
+import { useStore } from '../state/store';
+import { translate, translateList, translatePlural } from './index';
+
+type Vars = Record<string, string | number>;
 
 export function useTranslation() {
-  const [, rerender] = useReducer((x) => x + 1, 0);
-
-  useEffect(() => {
-    const unsub = subscribe(rerender);
-    return () => { unsub(); };
-  }, []);
-
-  const t = useCallback(
-    (key: string, vars?: Record<string, string>) => translate(key, vars),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [getLang()],
+  const lang = useStore((s) => s.language);
+  return useMemo(
+    () => ({
+      lang,
+      t: (key: string, vars?: Vars) => translate(lang, key, vars),
+      tList: (key: string) => translateList(lang, key),
+      tn: (key: string, n: number, vars?: Vars) => translatePlural(lang, key, n, vars),
+    }),
+    [lang],
   );
-
-  const i18n = {
-    language: getLang(),
-    changeLanguage: (lang: SupportedLang) => setLang(lang),
-  };
-
-  return { t, i18n };
 }

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useTranslation } from '../../i18n/useTranslation';
 import Animated, {
@@ -8,7 +9,7 @@ import Animated, {
 import PillButton from '../../components/PillButton';
 import Card from '../../components/Card';
 import { useStore, useShallow } from '../../state/store';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Spacing } from '../../theme/tokens';
 
 export default function OBDone() {
   const { t } = useTranslation();
@@ -23,7 +24,7 @@ export default function OBDone() {
   useEffect(() => {
     scale.value = withSpring(1, { damping: 12, stiffness: 120 });
     opacity.value = withTiming(1, { duration: 600 });
-  }, []);
+  }, [scale, opacity]);
 
   const checkStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
@@ -50,7 +51,7 @@ export default function OBDone() {
         </Animated.View>
 
         <Text style={styles.title}>
-          {t('onboarding.done_title').replace('{name}', user.name)}
+          {user.name ? t('onboarding.done_title', { name: user.name }) : t('onboarding.done_title_noname')}
         </Text>
         <Text style={styles.sub}>{t('onboarding.done_sub')}</Text>
 
@@ -65,11 +66,6 @@ export default function OBDone() {
               label: t('onboarding.done_daily'),
               value: `${user.dailyMinutes} ${t('common.min_short')}`,
               icon: '⏱️',
-            },
-            {
-              label: t('onboarding.done_therapist'),
-              value: t('onboarding.done_therapist_val'),
-              icon: '🩺',
             },
             {
               label: t('onboarding.done_panic'),

@@ -1,153 +1,134 @@
-import { ScrollView } from 'react-native-gesture-handler';
-import React from 'react';
-import {
-  View, Text, TouchableOpacity, StyleSheet, SafeAreaView,  Dimensions,
-} from 'react-native';
+import React, { useMemo } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { useTranslation } from '../../i18n/useTranslation';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTranslation } from '../../i18n/useTranslation';
 import { useStore, useShallow } from '../../state/store';
 import Card from '../../components/Card';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
+import WeekDots from '../../components/WeekDots';
+import { currentStreak, weekActivity, weekMinutes } from '../../lib/streak';
+import { weekdayIndex } from '../../lib/dates';
+import { useToday } from '../../lib/useToday';
+import { Colors, FontFamily, FontSize, Gradients, Radius, Spacing } from '../../theme/tokens';
 
-const { width } = Dimensions.get('window');
 const CHART_HEIGHT = 80;
-const DAYS_DATA = [40, 60, 50, 75, 80, 55, 85];
 
-export default function ProgressScreen() {
-  const { t } = useTranslation();
-  const { subscription, streak, progress } = useStore(useShallow((s) => ({
-    subscription: s.subscription,
-    streak: s.streak,
-    progress: s.progress,
-  })));
-  const isPremium = subscription.tier === 'premium';
-  const todayIdx = (new Date().getDay() + 6) % 7;
-  const days = t('common.weekdays_short') as unknown as string[];
+function WeekChart({ minutes, todayIdx }: { minutes: number[]; todayIdx: number }) {
+  const { t, tList } = useTranslation();
+  const labels = tList('common.weekdays_short');
+  const max = Math.max(...minutes, 1);
+  const empty = minutes.every((m) => m === 0);
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <Card>
+      <Text style={styles.sectionTitle}>{t('progress.activity_week')}</Text>
+      {empty ? (
+        <Text style={styles.emptyText}>{t('progress.activity_empty')}</Text>
+      ) : (
+        <View style={styles.chart}>
+          {minutes.map((val, i) => (
+            <View
+              key={i}
+              style={styles.barCol}
+              accessible
+              accessibilityLabel={`${labels[i]}: ${val} ${t('common.min_short')}`}
+            >
+              <Text style={styles.barValue}>{val > 0 ? val : ''}</Text>
+              <View
+                style={[
+                  styles.bar,
+                  {
+                    height: (val / max) * CHART_HEIGHT,
+                    backgroundColor: i === todayIdx ? Colors.accent.cyan : Colors.primary.blue,
+                  },
+                ]}
+              />
+              <Text style={[styles.barLabel, i === todayIdx && { color: Colors.accent.cyan }]}>
+                {labels[i]}
+              </Text>
+            </View>
+          ))}
+        </View>
+      )}
+    </Card>
+  );
+}
+
+export default function ProgressScreen() {
+  const { t, tn } = useTranslation();
+  const today = useToday();
+  const { isPremium, streak, sessions, panicUses } = useStore(useShallow((s) => ({
+    isPremium: s.subscription.isPremium,
+    streak: s.streak,
+    sessions: s.sessions,
+    panicUses: s.panicUses,
+  })));
+
+  const streakDays = currentStreak(streak, today);
+  const activity = useMemo(() => weekActivity(sessions, today), [sessions, today]);
+  const minutes = useMemo(() => weekMinutes(sessions, today), [sessions, today]);
+  const totalMinutes = useMemo(
+    () => Math.round(sessions.reduce((sum, s) => sum + s.durationSec, 0) / 60),
+    [sessions],
+  );
+
+  return (
+    <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        <Text style={styles.screenTitle}>{t('progress.title')}</Text>
+        <Text style={styles.screenTitle} accessibilityRole="header">{t('progress.title')}</Text>
 
         {/* Streak hero */}
-        <LinearGradient colors={['#1741C4', '#2563EB']} style={styles.streakHero}>
+        <LinearGradient colors={Gradients.primary} style={styles.streakHero}>
           <Text style={styles.streakEmoji}>🔥</Text>
           <View>
-            <Text style={styles.streakVal}>{streak.days} {t('progress.stat_total').includes('cv') ? 'dní' : 'days'}</Text>
-            <Text style={styles.streakLabel}>{t('progress.current_streak')}</Text>
+            <Text style={styles.streakVal}>{tn('progress.streak_value', streakDays)}</Text>
+            <Text style={styles.streakLabel}>
+              {t('progress.current_streak')} · {t('progress.streak_record', { n: streak.record })}
+            </Text>
           </View>
         </LinearGradient>
 
-        {/* Stats grid */}
+        {/* Stats */}
         <View style={styles.statsRow}>
           <Card style={styles.statCard}>
-            <Text style={styles.statNum}>{progress.exercisesTotal}</Text>
+            <Text style={styles.statNum}>{sessions.length}</Text>
             <Text style={styles.statLabel}>{t('progress.stat_total')}</Text>
           </Card>
           <Card style={styles.statCard}>
-            <Text style={styles.statNum}>{progress.panicUses}</Text>
+            <Text style={styles.statNum}>{totalMinutes}</Text>
+            <Text style={styles.statLabel}>{t('progress.stat_minutes')}</Text>
+          </Card>
+          <Card style={styles.statCard}>
+            <Text style={styles.statNum}>{panicUses}</Text>
             <Text style={styles.statLabel}>{t('progress.stat_panic')}</Text>
           </Card>
-          {isPremium && (
-            <Card style={styles.statCard}>
-              <Text style={[styles.statNum, { color: Colors.success.green }]}>+24%</Text>
-              <Text style={styles.statLabel}>{t('progress.stat_fluency')}</Text>
-            </Card>
-          )}
         </View>
 
-        {/* Weekly streak dots */}
+        {/* This week */}
         <Card>
           <Text style={styles.sectionTitle}>{t('progress.this_week')}</Text>
-          <View style={styles.dotRow}>
-            {streak.weekMap.map((done, i) => (
-              <View key={i} style={styles.dotCol}>
-                <View
-                  style={[
-                    styles.dot,
-                    done && styles.dotDone,
-                    i === todayIdx && styles.dotToday,
-                  ]}
-                />
-                <Text style={[styles.dotLabel, i === todayIdx && styles.dotLabelToday]}>
-                  {Array.isArray(days) ? days[i] : ''}
-                </Text>
-              </View>
-            ))}
-          </View>
+          <WeekDots activity={activity} today={today} />
         </Card>
 
-        {/* Advanced stats — Premium only */}
         {isPremium ? (
-          <>
-            {/* Bar chart */}
-            <Card>
-              <Text style={styles.sectionTitle}>{t('progress.activity_week')}</Text>
-              <View style={styles.chart}>
-                {DAYS_DATA.map((val, i) => (
-                  <View key={i} style={styles.barCol}>
-                    <View
-                      style={[
-                        styles.bar,
-                        {
-                          height: (val / 100) * CHART_HEIGHT,
-                          backgroundColor: i === todayIdx ? Colors.accent.cyan : Colors.primary.blue,
-                          shadowColor: i === todayIdx ? Colors.accent.cyan : 'transparent',
-                          shadowOpacity: 0.5,
-                          shadowRadius: 8,
-                        },
-                      ]}
-                    />
-                    <Text style={[styles.barLabel, i === todayIdx && { color: Colors.accent.cyan }]}>
-                      {Array.isArray(days) ? days[i] : ''}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            </Card>
-
-            {/* AI insight */}
-            <Card style={styles.aiCard}>
-              <View style={styles.aiHeader}>
-                <Text style={styles.aiDot}>✦</Text>
-                <Text style={styles.aiLabel}>AI insight</Text>
-              </View>
-              <Text style={styles.aiText}>{t('progress.ai_insight')}</Text>
-            </Card>
-          </>
+          <WeekChart minutes={minutes} todayIdx={weekdayIndex(today)} />
         ) : (
-          /* Locked stats */
-          <View style={styles.lockedWrap}>
-            <Card style={styles.lockedBlur}>
-              {/* blurred mock */}
-              <View style={styles.blurOverlay}>
-                <Text style={styles.lockIcon}>🔒</Text>
-                <Text style={styles.lockedTitle}>{t('progress.locked_title')}</Text>
-                <Text style={styles.lockedSub}>{t('progress.locked_sub')}</Text>
-                <TouchableOpacity
-                  onPress={() => router.push('/paywall/stats')}
-                  style={styles.unlockBtn}
-                >
-                  <Text style={styles.unlockBtnText}>👑 {t('progress.unlock')} →</Text>
-                </TouchableOpacity>
-              </View>
-            </Card>
-          </View>
+          <Card>
+            <View style={styles.lockedContent}>
+              <Text style={styles.lockIcon}>🔒</Text>
+              <Text style={styles.lockedTitle}>{t('progress.locked_title')}</Text>
+              <Text style={styles.lockedSub}>{t('progress.locked_sub')}</Text>
+              <TouchableOpacity
+                onPress={() => router.push({ pathname: '/paywall', params: { context: 'stats' } })}
+                style={styles.unlockBtn}
+                accessibilityRole="button"
+              >
+                <Text style={styles.unlockBtnText}>👑 {t('progress.unlock')} →</Text>
+              </TouchableOpacity>
+            </View>
+          </Card>
         )}
-
-        {/* PDF report */}
-        <TouchableOpacity
-          style={[styles.pdfCard, !isPremium && styles.pdfCardLocked]}
-          onPress={() => isPremium ? undefined : router.push('/paywall/premium')}
-        >
-          <Text style={styles.pdfIcon}>📄</Text>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.pdfTitle}>{t('progress.pdf_report')}</Text>
-            <Text style={styles.pdfSub}>{t('progress.pdf_report_sub')}</Text>
-          </View>
-          {!isPremium && <Text style={{ color: Colors.premium.gold }}>👑</Text>}
-        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -183,7 +164,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   statsRow: { flexDirection: 'row', gap: 10 },
-  statCard: { flex: 1, alignItems: 'center', paddingVertical: 16 },
+  statCard: { flex: 1, alignItems: 'center', paddingVertical: 16, paddingHorizontal: 8 },
   statNum: {
     fontFamily: FontFamily.soraBold,
     fontSize: 26,
@@ -202,72 +183,36 @@ const styles = StyleSheet.create({
     color: Colors.text.primary,
     marginBottom: 14,
   },
-  dotRow: { flexDirection: 'row', justifyContent: 'space-between' },
-  dotCol: { alignItems: 'center', gap: 6 },
-  dot: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: Colors.surface.card2,
-    borderWidth: 1,
-    borderColor: Colors.hairline,
+  emptyText: {
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: FontSize.bodySmall,
+    color: Colors.text.secondary,
+    lineHeight: 20,
   },
-  dotDone: { backgroundColor: Colors.primary.blue },
-  dotToday: {
-    backgroundColor: Colors.accent.cyan,
-    shadowColor: Colors.accent.cyan,
-    shadowOpacity: 0.5,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 0 },
-  },
-  dotLabel: {
-    fontFamily: FontFamily.dmSansMedium,
-    fontSize: 10,
-    color: Colors.text.tertiary,
-  },
-  dotLabelToday: { color: Colors.accent.cyan },
   chart: {
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'space-between',
-    height: CHART_HEIGHT + 24,
+    height: CHART_HEIGHT + 40,
     gap: 4,
   },
   barCol: { flex: 1, alignItems: 'center', justifyContent: 'flex-end', gap: 4 },
+  barValue: {
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: 9,
+    color: Colors.text.secondary,
+  },
   bar: {
     width: '70%',
     borderRadius: 6,
     minHeight: 4,
-    backgroundColor: Colors.primary.blue,
   },
   barLabel: {
     fontFamily: FontFamily.dmSansMedium,
     fontSize: 9,
     color: Colors.text.tertiary,
   },
-  aiCard: { gap: 10 },
-  aiHeader: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  aiDot: { color: Colors.accent.cyan, fontSize: 12 },
-  aiLabel: {
-    fontFamily: FontFamily.dmSansBold,
-    fontSize: 9,
-    color: Colors.accent.cyan,
-    textTransform: 'uppercase',
-    letterSpacing: 1.2,
-  },
-  aiText: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: FontSize.bodySmall,
-    color: Colors.text.secondary,
-    lineHeight: 20,
-  },
-  lockedWrap: {},
-  lockedBlur: { overflow: 'hidden' },
-  blurOverlay: {
-    alignItems: 'center',
-    paddingVertical: 28,
-    gap: 10,
-  },
+  lockedContent: { alignItems: 'center', paddingVertical: 16, gap: 10 },
   lockIcon: { fontSize: 32 },
   lockedTitle: {
     fontFamily: FontFamily.soraSemiBold,
@@ -296,28 +241,5 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.dmSansBold,
     fontSize: FontSize.bodySmall,
     color: Colors.premium.gold,
-  },
-  pdfCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-    backgroundColor: Colors.surface.card,
-    borderRadius: Radius.card,
-    borderWidth: 1,
-    borderColor: Colors.hairline,
-    padding: 18,
-  },
-  pdfCardLocked: { opacity: 0.7 },
-  pdfIcon: { fontSize: 28 },
-  pdfTitle: {
-    fontFamily: FontFamily.soraSemiBold,
-    fontSize: FontSize.cardTitle,
-    color: Colors.text.primary,
-  },
-  pdfSub: {
-    fontFamily: FontFamily.dmSansRegular,
-    fontSize: FontSize.bodySmall,
-    color: Colors.text.secondary,
-    marginTop: 2,
   },
 });

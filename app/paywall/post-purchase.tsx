@@ -1,23 +1,24 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { useTranslation } from '../../i18n/useTranslation';
 import Animated, { useSharedValue, withSpring, useAnimatedStyle } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTranslation } from '../../i18n/useTranslation';
 import { useStore } from '../../state/store';
 import PillButton from '../../components/PillButton';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Gradients, Spacing } from '../../theme/tokens';
 
-const UNLOCKED = ['post_unlimited', 'post_ai_sit', 'post_stats', 'post_therapist', 'post_lockscreen'];
+const UNLOCKED = ['post_unlimited', 'post_stats', 'post_future'];
 
 export default function PostPurchase() {
   const { t } = useTranslation();
-  const user = useStore((s) => s.user);
+  const name = useStore((s) => s.user.name);
   const scale = useSharedValue(0.5);
 
   useEffect(() => {
     scale.value = withSpring(1, { damping: 10, stiffness: 100 });
-  }, []);
+  }, [scale]);
 
   const crownStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
 
@@ -25,13 +26,13 @@ export default function PostPurchase() {
     <SafeAreaView style={styles.safe}>
       <View style={styles.center}>
         <Animated.View style={[styles.crownCircle, crownStyle]}>
-          <LinearGradient colors={['#d97706', '#F59E0B']} style={styles.crownGrad}>
+          <LinearGradient colors={Gradients.gold} style={styles.crownGrad}>
             <Text style={styles.crownEmoji}>👑</Text>
           </LinearGradient>
         </Animated.View>
 
-        <Text style={styles.title}>
-          {t('premium.post_title').replace('{name}', user.name)}
+        <Text style={styles.title} accessibilityRole="header">
+          {name ? t('premium.post_title', { name }) : t('premium.post_title_noname')}
         </Text>
         <Text style={styles.sub}>{t('premium.post_sub')}</Text>
 
@@ -43,24 +44,10 @@ export default function PostPurchase() {
             </View>
           ))}
         </View>
-
-        <View style={styles.trialPill}>
-          <Text style={styles.trialText}>{t('premium.post_trial_note')}</Text>
-        </View>
       </View>
 
       <View style={styles.footer}>
-        <PillButton
-          label={t('premium.post_connect')}
-          onPress={() => router.replace('/therapist/connect')}
-          variant="purple"
-        />
-        <PillButton
-          label={t('premium.post_skip')}
-          onPress={() => router.replace('/(tabs)/home')}
-          variant="ghost"
-          style={{ shadowOpacity: 0 }}
-        />
+        <PillButton label={t('premium.post_cta')} onPress={() => router.back()} variant="gold" />
       </View>
     </SafeAreaView>
   );
@@ -115,20 +102,6 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.dmSansMedium,
     fontSize: FontSize.bodySmall,
     color: Colors.text.primary,
-  },
-  trialPill: {
-    backgroundColor: Colors.premium.gold + '22',
-    borderRadius: Radius.pill,
-    paddingHorizontal: 18,
-    paddingVertical: 10,
-    borderWidth: 1,
-    borderColor: Colors.premium.gold + '40',
-  },
-  trialText: {
-    fontFamily: FontFamily.dmSansMedium,
-    fontSize: FontSize.bodySmall,
-    color: Colors.premium.gold,
-    textAlign: 'center',
   },
   footer: { paddingBottom: 32, gap: 10 },
 });

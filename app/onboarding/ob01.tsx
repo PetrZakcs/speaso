@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useTranslation } from '../../i18n/useTranslation';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -20,6 +21,9 @@ export default function OB01() {
           <TouchableOpacity
             key={lang}
             onPress={() => setLanguage(lang)}
+            accessibilityRole="button"
+            accessibilityState={{ selected: language === lang }}
+            accessibilityLabel={lang === 'cs' ? 'Čeština' : 'English'}
             style={[styles.langChip, language === lang && styles.langChipActive]}
           >
             <Text style={[styles.langLabel, language === lang && styles.langLabelActive]}>
@@ -55,9 +59,6 @@ export default function OB01() {
           label={t('onboarding.welcome_cta') + ' →'}
           onPress={() => router.push('/onboarding/ob02')}
         />
-        <TouchableOpacity onPress={() => router.push('/onboarding/ob02')} style={styles.skipBtn}>
-          <Text style={styles.skipLabel}>{t('onboarding.welcome_skip')}</Text>
-        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -144,11 +145,5 @@ const styles = StyleSheet.create({
   footer: {
     paddingBottom: 32,
     gap: 12,
-  },
-  skipBtn: { alignItems: 'center', paddingVertical: 12 },
-  skipLabel: {
-    fontFamily: FontFamily.dmSansMedium,
-    fontSize: FontSize.bodySmall,
-    color: Colors.text.tertiary,
   },
 });

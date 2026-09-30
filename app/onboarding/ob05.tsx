@@ -7,27 +7,17 @@ import PillButton from '../../components/PillButton';
 import { useStore } from '../../state/store';
 import { Colors, FontFamily, FontSize, Radius } from '../../theme/tokens';
 
-const DEFAULT_SITUATIONS = [
-  'onboarding.sit_phone',
-  'onboarding.sit_shop',
-  'onboarding.sit_presentation',
-  'onboarding.sit_meeting',
-  'onboarding.sit_date',
-  'onboarding.sit_work',
-];
-
-// Fallback labels if keys don't exist in strings
-const FALLBACK_CS = ['Telefonát', 'V obchodě', 'Prezentace', 'Pracovní porada', 'Rande', 'Pracovní pohovor'];
-const FALLBACK_EN = ['Phone call', 'In a shop', 'Presentation', 'Work meeting', 'Date', 'Job interview'];
+// Stored as ids; custom situations are stored as the user's own text.
+const SITUATION_IDS = ['phone', 'shop', 'presentation', 'meeting', 'date', 'interview'];
 
 export default function OB05() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const setUser = useStore((s) => s.setUser);
-  const [selected, setSelected] = useState<string[]>([]);
+  const saved = useStore((s) => s.user.situations);
+  const [selected, setSelected] = useState<string[]>(saved);
+  const custom = selected.filter((s) => !SITUATION_IDS.includes(s));
   const [showCustom, setShowCustom] = useState(false);
   const [customText, setCustomText] = useState('');
-
-  const fallbacks = i18n.language === 'cs' ? FALLBACK_CS : FALLBACK_EN;
 
   const toggle = (sit: string) => {
     if (selected.includes(sit)) {
@@ -38,8 +28,9 @@ export default function OB05() {
   };
 
   const addCustom = () => {
-    if (customText.trim() && selected.length < 3) {
-      setSelected([...selected, customText.trim()]);
+    const text = customText.trim();
+    if (text && selected.length < 3 && !selected.includes(text)) {
+      setSelected([...selected, text]);
       setCustomText('');
       setShowCustom(false);
     }
@@ -51,26 +42,29 @@ export default function OB05() {
   };
 
   return (
-    <OnboardingShell step={4} onBack={() => router.back()}>
+    <OnboardingShell step={4}>
       <View style={styles.wrap}>
         <Text style={styles.title}>{t('onboarding.situations_title')}</Text>
         <Text style={styles.sub}>{t('onboarding.situations_pick')}</Text>
 
         <Text style={styles.counter}>
-          {t('onboarding.situations_count').replace('{n}', String(selected.length))}
+          {t('onboarding.situations_count', { n: selected.length })}
         </Text>
 
         <View style={styles.chips}>
-          {fallbacks.map((label) => {
-            const active = selected.includes(label);
+          {[...SITUATION_IDS, ...custom].map((id) => {
+            const label = SITUATION_IDS.includes(id) ? t(`onboarding.sit_${id}`) : id;
+            const active = selected.includes(id);
             const disabled = !active && selected.length >= 3;
             return (
               <TouchableOpacity
-                key={label}
+                key={id}
                 style={[styles.chip, active && styles.chipActive, disabled && styles.chipDisabled]}
-                onPress={() => toggle(label)}
+                onPress={() => toggle(id)}
                 disabled={disabled}
                 activeOpacity={0.75}
+                accessibilityRole="checkbox"
+                accessibilityState={{ checked: active, disabled }}
               >
                 <Text style={[styles.chipText, active && styles.chipTextActive]}>{label}</Text>
               </TouchableOpacity>

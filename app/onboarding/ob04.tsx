@@ -4,45 +4,46 @@ import { router } from 'expo-router';
 import { useTranslation } from '../../i18n/useTranslation';
 import OnboardingShell from '../../components/OnboardingShell';
 import PillButton from '../../components/PillButton';
-import AiDots from '../../components/AiDots';
+import { useStore } from '../../state/store';
 import { Colors, FontFamily, FontSize, Radius } from '../../theme/tokens';
 
 export default function OB04() {
   const { t } = useTranslation();
-  const [text, setText] = useState('');
+  const note = useStore((s) => s.user.note);
+  const setUser = useStore((s) => s.setUser);
+  const [text, setText] = useState(note);
+
+  const handleContinue = () => {
+    setUser({ note: text.trim() });
+    router.push('/onboarding/ob05');
+  };
 
   return (
-    <OnboardingShell step={3} onBack={() => router.back()}>
+    <OnboardingShell step={3}>
       <View style={styles.wrap}>
-        <Text style={styles.title}>{t('onboarding.ai_title')}</Text>
-        <Text style={styles.sub}>{t('onboarding.ai_sub')}</Text>
+        <Text style={styles.title}>{t('onboarding.note_title')}</Text>
+        <Text style={styles.sub}>{t('onboarding.note_sub')}</Text>
 
         <TextInput
           style={styles.textarea}
           multiline
           numberOfLines={6}
-          placeholder={t('onboarding.ai_sub')}
+          placeholder={t('onboarding.note_placeholder')}
+          maxLength={1000}
           placeholderTextColor={Colors.text.tertiary}
           value={text}
           onChangeText={setText}
           textAlignVertical="top"
         />
 
-        {text.length > 10 && (
-          <View style={styles.analyzingRow}>
-            <AiDots />
-            <Text style={styles.analyzingText}>{t('onboarding.ai_analyzing')}</Text>
-          </View>
-        )}
-
         <View style={styles.privacyRow}>
           <Text style={styles.privacyIcon}>🔒</Text>
-          <Text style={styles.privacyText}>{t('onboarding.ai_privacy')}</Text>
+          <Text style={styles.privacyText}>{t('onboarding.note_privacy')}</Text>
         </View>
       </View>
 
       <View style={styles.footer}>
-        <PillButton label={t('common.continue')} onPress={() => router.push('/onboarding/ob05')} />
+        <PillButton label={text.trim() ? t('common.continue') : t('common.skip')} onPress={handleContinue} />
       </View>
     </OnboardingShell>
   );
