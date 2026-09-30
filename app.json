@@ -7,12 +7,12 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "backgroundColor": "#020810",
-    "splash": {
-      "backgroundColor": "#020810"
-    },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.speasy.app"
+      "bundleIdentifier": "com.speasy.app",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -43,7 +43,6 @@
         }
       ],
       "expo-localization",
-      "expo-secure-store",
       [
         "expo-notifications",
         {
@@ -51,7 +50,14 @@
           "color": "#2563EB"
         }
       ],
-      "expo-splash-screen"
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#020810",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 160
+        }
+      ]
     ]
   }
 }
