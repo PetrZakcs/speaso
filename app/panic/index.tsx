@@ -116,7 +116,7 @@ export default function PanicScreen() {
       {affirmations.length > 0 && (
         <View style={styles.affirmCard}>
           <Text style={styles.affirmText}>
-            💙 „{affirmations[affirmIdx % affirmations.length]}“
+            „{affirmations[affirmIdx % affirmations.length]}“
           </Text>
           <TouchableOpacity
             onPress={() => setAffirmIdx((a) => a + 1)}

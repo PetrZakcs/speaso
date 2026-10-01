@@ -68,7 +68,7 @@
     "greeting_morning":  { "cs": "Dobré ráno", "en": "Good morning" },
     "greeting_day":      { "cs": "Dobrý den", "en": "Good afternoon" },
     "greeting_evening":  { "cs": "Dobrý večer", "en": "Good evening" },
-    "greeting_name":     { "cs": "{name}", "en": "{name}" },
+    "greeting_name":     { "cs": "{greeting}, {name}", "en": "{greeting}, {name}" },
     "greeting_noname":   { "cs": "Vítej zpátky", "en": "Welcome back" },
     "first_label":       { "cs": "Začni tady", "en": "Start here" },
     "next_label":        { "cs": "Doporučujeme teď", "en": "Suggested now" },
@@ -190,7 +190,7 @@
     },
     "level":             { "cs": "Úroveň {n}", "en": "Level {n}" },
     "steps_count":       { "cs": { "one": "# krok", "few": "# kroky", "other": "# kroků" }, "en": { "one": "# step", "other": "# steps" } },
-    "start":             { "cs": "▶ Spustit cvičení", "en": "▶ Start exercise" },
+    "start":             { "cs": "Začít", "en": "Start" },
     "step_of":           { "cs": "Krok {n}/{total}", "en": "Step {n}/{total}" },
     "prev":              { "cs": "← Zpět", "en": "← Back" },
     "next":              { "cs": "Další →", "en": "Next →" },
@@ -199,7 +199,7 @@
     "elapsed":           { "cs": "{time} · doporučeno {n} min", "en": "{time} · suggested {n} min" },
     "done_title":        { "cs": "Výborně!", "en": "Well done!" },
     "done_sub":          { "cs": "Cvičení dokončeno", "en": "Exercise complete" },
-    "done_streak":       { "cs": "Série 🔥", "en": "Streak 🔥" },
+    "done_streak":       { "cs": "Série", "en": "Streak" },
     "done_minutes":      { "cs": "Minut", "en": "Minutes" },
     "done_cta":          { "cs": "Hotovo →", "en": "Done →" },
     "not_found":         { "cs": "Cvičení nebylo nalezeno.", "en": "Exercise not found." }
@@ -278,7 +278,7 @@
     "section":           { "cs": "Připomínky", "en": "Reminders" },
     "daily":             { "cs": "Denní připomínka", "en": "Daily reminder" },
     "channel":           { "cs": "Denní připomínky", "en": "Daily reminders" },
-    "title":             { "cs": "Čas na chvilku cvičení 🎙️", "en": "Time for a little practice 🎙️" },
+    "title":             { "cs": "Čas na chvilku cvičení", "en": "Time for a little practice" },
     "body":              { "cs": "Pár minut denně dělá rozdíl. Jdeme na to?", "en": "A few minutes a day makes a difference. Shall we?" },
     "denied_title":      { "cs": "Oznámení jsou vypnutá", "en": "Notifications are off" },
     "denied_body":       { "cs": "Pro připomínky povol Speasy oznámení v nastavení telefonu.", "en": "To get reminders, allow notifications for Speasy in your phone settings." }
@@ -371,10 +371,10 @@
     "pending":           { "cs": "Platba čeká na potvrzení. Premium se odemkne, jakmile projde.", "en": "Your payment is pending. Premium unlocks as soon as it goes through." },
     "retry":             { "cs": "Zkusit znovu", "en": "Try again" },
     "stay_free":         { "cs": "Zůstat na free", "en": "Stay on free" },
-    "already_premium":   { "cs": "Premium máš aktivní. Díky! 💙", "en": "Your Premium is active. Thank you! 💙" },
+    "already_premium":   { "cs": "Premium máš aktivní. Díky!", "en": "Your Premium is active. Thank you!" },
 
-    "post_title":        { "cs": "Vítej v Premium, {name}! 🎉", "en": "Welcome to Premium, {name}! 🎉" },
-    "post_title_noname": { "cs": "Vítej v Premium! 🎉", "en": "Welcome to Premium! 🎉" },
+    "post_title":        { "cs": "Vítej v Premium, {name}", "en": "Welcome to Premium, {name}" },
+    "post_title_noname": { "cs": "Vítej v Premium", "en": "Welcome to Premium" },
     "post_sub":          { "cs": "Co teď máš navíc:", "en": "What you now have:" },
     "post_unlimited":    { "cs": "Neomezená cvičení", "en": "Unlimited exercises" },
     "post_situations":   { "cs": "Všechny reálné situace", "en": "All real-life situations" },
@@ -400,7 +400,7 @@
     "privacy":           { "cs": "Zásady soukromí", "en": "Privacy policy" },
     "terms":             { "cs": "Podmínky použití", "en": "Terms of use" },
     "disclaimer":        { "cs": "Speasy není zdravotnický prostředek a nenahrazuje péči logopeda.", "en": "Speasy is not a medical device and does not replace a speech therapist." },
-    "footer_tagline":    { "cs": "Made with ❤️ for people who stutter", "en": "Made with ❤️ for people who stutter" }
+    "footer_tagline":    { "cs": "Vytvořeno pro lidi, kteří koktají", "en": "Made for people who stutter" }
   },
 
   "tabbar": {

@@ -54,7 +54,7 @@ export default function ExercisePlayer() {
           icon={exercise.icon}
           title={title}
           sub={t(`exercises.${exercise.id}_sub`)}
-          chips={[`⏱ ${exercise.minutes} ${t('common.min_short')}`, tn('exercises.steps_count', steps.length)]}
+          chips={[`${exercise.minutes} ${t('common.min_short')}`, tn('exercises.steps_count', steps.length)]}
           onStart={() => session.start('steps')}
         />
       )}

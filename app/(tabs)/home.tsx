@@ -74,9 +74,10 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         <View style={styles.header}>
-          <Text style={styles.greeting}>{t(greetingKey(new Date().getHours()))}</Text>
           <Text style={styles.name} accessibilityRole="header">
-            {name ? t('home.greeting_name', { name }) : t('home.greeting_noname')}
+            {name
+              ? t('home.greeting_name', { greeting: t(greetingKey(new Date().getHours())), name })
+              : t(greetingKey(new Date().getHours()))}
           </Text>
         </View>
 
@@ -162,7 +163,6 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bg.base },
   scroll: { paddingHorizontal: Spacing.screenH, paddingTop: 12, paddingBottom: 40, gap: 20 },
   header: { gap: 2, marginBottom: 4 },
-  greeting: { fontFamily: FontFamily.dmSansMedium, fontSize: FontSize.body, color: Colors.text.secondary },
   name: {
     fontFamily: FontFamily.soraSemiBold,
     fontSize: 30,

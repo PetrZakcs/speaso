@@ -60,7 +60,7 @@ export default function SituationPlayer() {
           title={c.title}
           sub={c.sub}
           chips={[
-            `⏱ ${situation.minutes} ${t('common.min_short')}`,
+            `${situation.minutes} ${t('common.min_short')}`,
             t(`situations.level_${situation.difficulty}`),
           ]}
           onStart={() => session.start('steps')}
