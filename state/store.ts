@@ -95,6 +95,24 @@ const initialUser: UserState = {
   note: '',
 };
 
+/*
+ * Readiness is tracked separately from zustand's hasHydrated(): that flag
+ * never flips when hydration throws (corrupted JSON, a failing migration or
+ * write), which left the app rendering nothing forever. onRehydrateStorage's
+ * callback runs on success *and* on error, so the app always starts.
+ */
+let storeReady = false;
+const readyListeners = new Set<() => void>();
+
+function markStoreReady() {
+  storeReady = true;
+  readyListeners.forEach((cb) => cb());
+}
+
+export function isStoreReady() {
+  return storeReady;
+}
+
 export const useStore = create<AppState>()(
   persist(
     (set, get) => ({
@@ -164,6 +182,10 @@ export const useStore = create<AppState>()(
       name: 'speasy-storage',
       version: 2,
       storage: createJSONStorage(() => AsyncStorage),
+      onRehydrateStorage: () => (_state, error) => {
+        if (error) console.warn('[store] rehydration failed, starting with defaults:', error);
+        markStoreReady();
+      },
       migrate: (persisted, version) => {
         let old = (persisted ?? {}) as any;
         if (version === 0) {
@@ -200,13 +222,16 @@ export const useStore = create<AppState>()(
   ),
 );
 
-function subscribeHydration(cb: () => void) {
-  return useStore.persist.onFinishHydration(cb);
+function subscribeReady(cb: () => void) {
+  readyListeners.add(cb);
+  return () => {
+    readyListeners.delete(cb);
+  };
 }
 
-/** True once persisted state has been loaded from AsyncStorage. */
+/** True once persisted state has been loaded (or loading failed and defaults are used). */
 export function useStoreHydrated() {
-  return useSyncExternalStore(subscribeHydration, () => useStore.persist.hasHydrated());
+  return useSyncExternalStore(subscribeReady, isStoreReady);
 }
 
 export const useIsPremium = () => useStore((s) => s.subscription.isPremium);

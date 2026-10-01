@@ -6,6 +6,7 @@ import Animated, {
   withTiming, Easing,
 } from 'react-native-reanimated';
 import { router } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useStore } from '../../state/store';
 import IconButton from '../../components/IconButton';
@@ -81,7 +82,9 @@ export default function PanicScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <Animated.View style={[styles.glowTop, glowStyle]} />
+      <Animated.View style={[styles.glowTop, glowStyle]} pointerEvents="none">
+        <LinearGradient colors={[Colors.danger.panic, 'transparent']} style={StyleSheet.absoluteFill} />
+      </Animated.View>
 
       <View style={styles.header}>
         <IconButton icon="close" onPress={() => router.back()} accessibilityLabel={t('panic.close_a11y')} />
@@ -132,13 +135,10 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bg.base },
   glowTop: {
     position: 'absolute',
-    top: -60,
-    left: -40,
-    right: -40,
-    height: 280,
-    backgroundColor: Colors.danger.panic,
-    borderRadius: 999,
-    opacity: 0.18,
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 360,
     zIndex: 0,
   },
   header: {
