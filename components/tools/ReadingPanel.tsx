@@ -42,7 +42,7 @@ export default function ReadingPanel({ initialLevel = 1 }: { initialLevel?: 1 | 
             style={styles.another}
             accessibilityRole="button"
           >
-            <Ionicons name="shuffle" size={14} color={Colors.accent.cyan} />
+            <Ionicons name="shuffle" size={14} color={Colors.accent.main} />
             <Text style={styles.anotherText}>{t('reading.another')}</Text>
           </TouchableOpacity>
         )}
@@ -61,8 +61,6 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: Colors.surface.card,
     borderRadius: Radius.card,
-    borderWidth: 1,
-    borderColor: Colors.hairline,
     padding: 18,
     gap: 12,
   },
@@ -76,11 +74,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  levelActive: { backgroundColor: Colors.accent.cyan },
+  levelActive: { backgroundColor: Colors.accent.main },
   levelText: { fontFamily: FontFamily.dmSansBold, fontSize: FontSize.bodySmall, color: Colors.text.secondary },
   levelTextActive: { color: Colors.bg.base },
   another: { flexDirection: 'row', alignItems: 'center', gap: 4, padding: 4 },
-  anotherText: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.bodySmall, color: Colors.accent.cyan },
+  anotherText: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.bodySmall, color: Colors.accent.main },
   title: { fontFamily: FontFamily.soraSemiBold, fontSize: FontSize.cardTitle, color: Colors.text.primary },
   body: {
     fontFamily: FontFamily.dmSansRegular,

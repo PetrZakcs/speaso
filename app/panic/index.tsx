@@ -83,7 +83,7 @@ export default function PanicScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <Animated.View style={[styles.glowTop, glowStyle]} pointerEvents="none">
-        <LinearGradient colors={[Colors.danger.panic, 'transparent']} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={[Colors.accent.main, 'transparent']} style={StyleSheet.absoluteFill} />
       </Animated.View>
 
       <View style={styles.header}>
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   title: {
-    fontFamily: FontFamily.soraBold,
+    fontFamily: FontFamily.soraSemiBold,
     fontSize: FontSize.hero,
     color: Colors.text.primary,
     letterSpacing: -0.5,
@@ -176,10 +176,10 @@ const styles = StyleSheet.create({
     width: BALL_SIZE,
     height: BALL_SIZE,
     borderRadius: BALL_SIZE / 2,
-    backgroundColor: Colors.primary.blue,
+    backgroundColor: Colors.accent.main,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: Colors.primary.blue,
+    shadowColor: Colors.accent.main,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 32,
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   phaseCount: {
-    fontFamily: FontFamily.soraBold,
+    fontFamily: FontFamily.soraSemiBold,
     fontSize: 38,
     color: Colors.text.primary,
     letterSpacing: -1,
@@ -196,8 +196,6 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.dmSansMedium,
     fontSize: FontSize.bodySmall,
     color: 'rgba(240,246,255,0.75)',
-    textTransform: 'uppercase',
-    letterSpacing: 1.2,
   },
   roundDots: {
     flexDirection: 'row',
@@ -211,13 +209,11 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     backgroundColor: Colors.surface.card2,
   },
-  roundDotActive: { backgroundColor: Colors.primary.blue },
+  roundDotActive: { backgroundColor: Colors.accent.main },
   affirmCard: {
     marginHorizontal: Spacing.screenH,
     backgroundColor: Colors.surface.card,
     borderRadius: Radius.card,
-    borderWidth: 1,
-    borderColor: Colors.hairline,
     padding: 18,
     gap: 12,
   },
@@ -232,6 +228,6 @@ const styles = StyleSheet.create({
   affirmNextText: {
     fontFamily: FontFamily.dmSansSemiBold,
     fontSize: FontSize.bodySmall,
-    color: Colors.primary.blue,
+    color: Colors.accent.main,
   },
 });

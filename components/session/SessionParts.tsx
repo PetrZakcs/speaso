@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSequence } from 'react-native-reanimated';
-import { LinearGradient } from 'expo-linear-gradient';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from '../../i18n/useTranslation';
 import IconButton from '../IconButton';
-import { Colors, FontFamily, FontSize, Gradients, Radius, Spacing } from '../../theme/tokens';
+import PillButton from '../PillButton';
+import ActivityIcon from '../ActivityIcon';
+import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
 
 export function formatTime(totalSec: number) {
   const m = Math.floor(totalSec / 60);
@@ -56,9 +58,9 @@ export function SessionHeader({
 }
 
 export function IntroView({
-  emoji, title, sub, chips, onStart,
+  icon, title, sub, chips, onStart,
 }: {
-  emoji: string;
+  icon: string;
   title: string;
   sub: string;
   chips: string[];
@@ -67,7 +69,7 @@ export function IntroView({
   const { t } = useTranslation();
   return (
     <View style={styles.startCenter}>
-      <Text style={styles.exIcon}>{emoji}</Text>
+      <ActivityIcon name={icon} size={72} />
       <Text style={styles.startTitle} accessibilityRole="header">{title}</Text>
       <Text style={styles.startSub}>{sub}</Text>
       <View style={styles.metaRow}>
@@ -77,11 +79,7 @@ export function IntroView({
           </View>
         ))}
       </View>
-      <TouchableOpacity onPress={onStart} style={styles.startBtn} accessibilityRole="button">
-        <LinearGradient colors={Gradients.primary} style={styles.startBtnGrad}>
-          <Text style={styles.startBtnText}>{t('exercises.start')}</Text>
-        </LinearGradient>
-      </TouchableOpacity>
+      <PillButton label={t('exercises.start')} onPress={onStart} style={styles.startBtn} />
     </View>
   );
 }
@@ -195,7 +193,9 @@ export function DoneView({
   const { t } = useTranslation();
   return (
     <View style={styles.doneCenter}>
-      <Text style={styles.doneEmoji}>🎉</Text>
+      <View style={styles.doneMark}>
+        <Ionicons name="checkmark" size={40} color={Colors.accent.main} />
+      </View>
       <Text style={styles.doneTitle} accessibilityRole="header">{t('exercises.done_title')}</Text>
       <Text style={styles.doneSub}>{subtitle}</Text>
       <View style={styles.doneStats}>
@@ -209,11 +209,7 @@ export function DoneView({
           <Text style={styles.doneStatLabel}>{t('exercises.done_minutes')}</Text>
         </View>
       </View>
-      <TouchableOpacity style={styles.doneCta} onPress={onClose} accessibilityRole="button">
-        <LinearGradient colors={Gradients.primary} style={styles.doneCtaGrad}>
-          <Text style={styles.doneCtaText}>{t('exercises.done_cta')}</Text>
-        </LinearGradient>
-      </TouchableOpacity>
+      <PillButton label={t('exercises.done_cta')} onPress={onClose} style={styles.doneCta} />
     </View>
   );
 }
@@ -239,7 +235,7 @@ const styles = StyleSheet.create({
   timer: {
     fontFamily: FontFamily.dmSansMedium,
     fontSize: FontSize.bodySmall,
-    color: Colors.accent.cyan,
+    color: Colors.accent.main,
     marginTop: 2,
   },
   progressTrack: {
@@ -249,7 +245,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: 3,
-    backgroundColor: Colors.primary.blue,
+    backgroundColor: Colors.accent.main,
     borderRadius: 2,
   },
   startCenter: {
@@ -259,9 +255,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.screenH,
     gap: 16,
   },
-  exIcon: { fontSize: 72 },
   startTitle: {
-    fontFamily: FontFamily.soraBold,
+    fontFamily: FontFamily.soraSemiBold,
     fontSize: 26,
     color: Colors.text.primary,
     textAlign: 'center',
@@ -280,21 +275,13 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
     paddingHorizontal: 14,
     paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: Colors.hairline,
   },
   metaText: {
     fontFamily: FontFamily.dmSansMedium,
     fontSize: FontSize.bodySmall,
     color: Colors.text.secondary,
   },
-  startBtn: { width: '100%', borderRadius: Radius.pill, overflow: 'hidden', marginTop: 8 },
-  startBtnGrad: { height: 56, alignItems: 'center', justifyContent: 'center' },
-  startBtnText: {
-    fontFamily: FontFamily.dmSansBold,
-    fontSize: FontSize.body,
-    color: Colors.text.primary,
-  },
+  startBtn: { alignSelf: 'stretch', marginTop: 8 },
   sessionWrap: {
     flex: 1,
     paddingHorizontal: Spacing.screenH,
@@ -303,23 +290,19 @@ const styles = StyleSheet.create({
   },
   stepDots: { flexDirection: 'row', gap: 6, justifyContent: 'center' },
   stepDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: Colors.surface.card2 },
-  stepDotActive: { backgroundColor: Colors.primary.blue, width: 20 },
-  stepDotDone: { backgroundColor: Colors.success.green },
+  stepDotActive: { backgroundColor: Colors.accent.main, width: 20 },
+  stepDotDone: { backgroundColor: Colors.accent.main },
   stepCard: {
     backgroundColor: Colors.surface.card,
     borderRadius: Radius.card,
-    borderWidth: 1,
-    borderColor: Colors.hairline,
     padding: 28,
     justifyContent: 'center',
     gap: 16,
   },
   stepNum: {
-    fontFamily: FontFamily.dmSansBold,
-    fontSize: 10,
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: FontSize.bodySmall,
     color: Colors.text.tertiary,
-    textTransform: 'uppercase',
-    letterSpacing: 1.5,
   },
   stepText: {
     fontFamily: FontFamily.soraSemiBold,
@@ -334,8 +317,6 @@ const styles = StyleSheet.create({
     height: 54,
     borderRadius: Radius.pill,
     backgroundColor: Colors.surface.card,
-    borderWidth: 1,
-    borderColor: Colors.hairline,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -349,14 +330,14 @@ const styles = StyleSheet.create({
     flex: 2,
     height: 54,
     borderRadius: Radius.pill,
-    backgroundColor: Colors.primary.blue,
+    backgroundColor: Colors.accent.main,
     alignItems: 'center',
     justifyContent: 'center',
   },
   navBtnPrimaryText: {
     fontFamily: FontFamily.dmSansBold,
     fontSize: FontSize.bodySmall,
-    color: Colors.text.primary,
+    color: Colors.accent.on,
   },
   doneCenter: {
     flex: 1,
@@ -365,9 +346,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.screenH,
     gap: 16,
   },
-  doneEmoji: { fontSize: 80 },
+  doneMark: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: Colors.accent.soft,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   doneTitle: {
-    fontFamily: FontFamily.soraBold,
+    fontFamily: FontFamily.soraSemiBold,
     fontSize: 32,
     color: Colors.text.primary,
     letterSpacing: -0.6,
@@ -382,8 +370,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: Colors.surface.card,
     borderRadius: Radius.card,
-    borderWidth: 1,
-    borderColor: Colors.hairline,
     padding: 20,
     gap: 20,
     alignSelf: 'stretch',
@@ -392,10 +378,8 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   doneStat: { alignItems: 'center', gap: 4, flex: 1 },
-  doneStatVal: { fontFamily: FontFamily.soraBold, fontSize: 32, color: Colors.success.green },
+  doneStatVal: { fontFamily: FontFamily.soraSemiBold, fontSize: 30, color: Colors.text.primary },
   doneStatLabel: { fontFamily: FontFamily.dmSansMedium, fontSize: FontSize.bodySmall, color: Colors.text.secondary },
   doneStatDiv: { width: 1, height: 40, backgroundColor: Colors.hairline },
-  doneCta: { width: '100%', borderRadius: Radius.pill, overflow: 'hidden', marginTop: 8 },
-  doneCtaGrad: { height: 56, alignItems: 'center', justifyContent: 'center' },
-  doneCtaText: { fontFamily: FontFamily.dmSansBold, fontSize: FontSize.body, color: Colors.text.primary },
+  doneCta: { alignSelf: 'stretch', marginTop: 8 },
 });

@@ -17,7 +17,8 @@ interface SituationContent {
 
 export interface Situation {
   id: SituationId;
-  emoji: string;
+  /** Ionicons name. */
+  icon: string;
   difficulty: 'easy' | 'medium' | 'hard';
   premium: boolean;
   minutes: number;
@@ -27,7 +28,7 @@ export interface Situation {
 export const SITUATIONS: Situation[] = [
   {
     id: 'shop',
-    emoji: '🛒',
+    icon: 'bag-handle-outline',
     difficulty: 'easy',
     premium: false,
     minutes: 6,
@@ -72,7 +73,7 @@ export const SITUATIONS: Situation[] = [
   },
   {
     id: 'phone',
-    emoji: '📞',
+    icon: 'call-outline',
     difficulty: 'medium',
     premium: false,
     minutes: 8,
@@ -119,7 +120,7 @@ export const SITUATIONS: Situation[] = [
   },
   {
     id: 'meeting',
-    emoji: '💼',
+    icon: 'people-outline',
     difficulty: 'hard',
     premium: true,
     minutes: 8,
@@ -164,7 +165,7 @@ export const SITUATIONS: Situation[] = [
   },
   {
     id: 'presentation',
-    emoji: '🎤',
+    icon: 'easel-outline',
     difficulty: 'hard',
     premium: true,
     minutes: 10,
@@ -211,7 +212,7 @@ export const SITUATIONS: Situation[] = [
   },
   {
     id: 'interview',
-    emoji: '🤝',
+    icon: 'briefcase-outline',
     difficulty: 'hard',
     premium: true,
     minutes: 10,

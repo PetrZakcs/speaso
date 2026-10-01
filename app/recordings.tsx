@@ -71,7 +71,7 @@ export default function RecordingsScreen() {
           accessibilityRole="button"
         >
           <Text style={styles.bannerText}>
-            {t('recordings.free_limit', { n: FREE_RECORDINGS_LIMIT })} <Text style={styles.gold}>👑 Premium →</Text>
+            {t('recordings.free_limit', { n: FREE_RECORDINGS_LIMIT })} <Text style={styles.gold}>Premium →</Text>
           </Text>
         </TouchableOpacity>
       )}
@@ -132,14 +132,14 @@ const styles = StyleSheet.create({
   title: { fontFamily: FontFamily.soraSemiBold, fontSize: FontSize.cardTitle, color: Colors.text.primary },
   banner: {
     marginHorizontal: Spacing.screenH,
-    backgroundColor: Colors.premium.gold + '18',
-    borderColor: Colors.premium.gold + '40',
+    backgroundColor: Colors.premium.main + '18',
+    borderColor: Colors.premium.main + '40',
     borderWidth: 1,
     borderRadius: Radius.cardSmall,
     padding: 12,
   },
   bannerText: { fontFamily: FontFamily.dmSansMedium, fontSize: FontSize.bodySmall, color: Colors.text.secondary },
-  gold: { color: Colors.premium.gold, fontFamily: FontFamily.dmSansBold },
+  gold: { color: Colors.premium.main, fontFamily: FontFamily.dmSansBold },
   list: { padding: Spacing.screenH, gap: 10 },
   empty: {
     fontFamily: FontFamily.dmSansRegular,
@@ -155,8 +155,6 @@ const styles = StyleSheet.create({
     gap: 12,
     backgroundColor: Colors.surface.card,
     borderRadius: Radius.cardSmall,
-    borderWidth: 1,
-    borderColor: Colors.hairline,
     padding: 12,
   },
   playBtn: {
@@ -167,7 +165,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  playBtnActive: { backgroundColor: Colors.primary.blue },
+  playBtnActive: { backgroundColor: Colors.accent.main },
   rowTitle: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.bodySmall, color: Colors.text.primary },
   rowSub: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.meta, color: Colors.text.tertiary, marginTop: 2 },
   deleteBtn: { padding: 8 },

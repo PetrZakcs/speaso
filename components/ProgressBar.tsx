@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
   fill: {
     height: 5,
-    backgroundColor: Colors.primary.blue,
+    backgroundColor: Colors.accent.main,
     borderRadius: 99,
   },
 });

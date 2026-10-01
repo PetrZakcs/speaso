@@ -133,7 +133,6 @@ export default function PaywallScreen() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         <IconButton icon="close" size={36} onPress={() => router.back()} accessibilityLabel={t('common.close')} />
 
-        <Text style={styles.crown}>👑</Text>
         <Text style={styles.title} accessibilityRole="header">{t('premium.title')}</Text>
         <Text style={styles.tagline}>{t('premium.tagline')}</Text>
 
@@ -264,9 +263,8 @@ export default function PaywallScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bg.base },
   scroll: { paddingHorizontal: Spacing.screenH, paddingTop: 16, paddingBottom: 48, gap: 16 },
-  crown: { fontSize: 56, textAlign: 'center' },
   title: {
-    fontFamily: FontFamily.soraBold,
+    fontFamily: FontFamily.soraSemiBold,
     fontSize: FontSize.hero,
     color: Colors.text.primary,
     textAlign: 'center',
@@ -279,8 +277,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   contextBanner: {
-    backgroundColor: Colors.premium.gold + '18',
-    borderColor: Colors.premium.gold + '40',
+    backgroundColor: Colors.premium.main + '18',
+    borderColor: Colors.premium.main + '40',
     borderWidth: 1,
     borderRadius: Radius.cardSmall,
     padding: 14,
@@ -313,7 +311,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.bodySmall,
   },
   freeCol: { color: Colors.text.tertiary },
-  premiumCol: { color: Colors.premium.gold },
+  premiumCol: { color: Colors.premium.main },
   premiumVal: { fontFamily: FontFamily.dmSansBold },
   stateBox: { alignItems: 'center', gap: 10, paddingVertical: 24 },
   stateText: {
@@ -333,7 +331,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.hairline,
     padding: 16,
   },
-  planActive: { borderColor: Colors.primary.blue, backgroundColor: Colors.surface.card2 },
+  planActive: { borderColor: Colors.accent.main, backgroundColor: Colors.surface.card2 },
   radio: {
     width: 22,
     height: 22,
@@ -343,8 +341,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  radioActive: { borderColor: Colors.primary.blue },
-  radioDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: Colors.primary.blue },
+  radioActive: { borderColor: Colors.accent.main },
+  radioDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: Colors.accent.main },
   planName: {
     fontFamily: FontFamily.soraSemiBold,
     fontSize: FontSize.cardTitle,
@@ -357,7 +355,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   planPrice: {
-    fontFamily: FontFamily.soraBold,
+    fontFamily: FontFamily.soraSemiBold,
     fontSize: FontSize.cardTitle,
     color: Colors.text.primary,
   },
@@ -383,7 +381,7 @@ const styles = StyleSheet.create({
   link: {
     fontFamily: FontFamily.dmSansMedium,
     fontSize: FontSize.bodySmall,
-    color: Colors.accent.cyan,
+    color: Colors.accent.main,
   },
   dot: { color: Colors.text.tertiary },
   stayFree: { alignItems: 'center', paddingVertical: 4 },

@@ -3,11 +3,11 @@ import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import Animated, { useSharedValue, withSpring, useAnimatedStyle } from 'react-native-reanimated';
-import { LinearGradient } from 'expo-linear-gradient';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useStore } from '../../state/store';
 import PillButton from '../../components/PillButton';
-import { Colors, FontFamily, FontSize, Gradients, Spacing } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Spacing } from '../../theme/tokens';
 
 const UNLOCKED = ['post_unlimited', 'post_situations', 'post_recordings', 'post_stats', 'post_pdf'];
 
@@ -26,9 +26,9 @@ export default function PostPurchase() {
     <SafeAreaView style={styles.safe}>
       <View style={styles.center}>
         <Animated.View style={[styles.crownCircle, crownStyle]}>
-          <LinearGradient colors={Gradients.gold} style={styles.crownGrad}>
-            <Text style={styles.crownEmoji}>👑</Text>
-          </LinearGradient>
+          <View style={styles.crownGrad}>
+            <Ionicons name="checkmark" size={44} color={Colors.premium.main} />
+          </View>
         </Animated.View>
 
         <Text style={styles.title} accessibilityRole="header">
@@ -47,7 +47,7 @@ export default function PostPurchase() {
       </View>
 
       <View style={styles.footer}>
-        <PillButton label={t('premium.post_cta')} onPress={() => router.back()} variant="gold" />
+        <PillButton label={t('premium.post_cta')} onPress={() => router.back()} />
       </View>
     </SafeAreaView>
   );
@@ -56,22 +56,17 @@ export default function PostPurchase() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bg.base, paddingHorizontal: Spacing.screenH },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 20 },
-  crownCircle: {
-    shadowColor: Colors.premium.gold,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.6,
-    shadowRadius: 40,
-  },
+  crownCircle: {},
   crownGrad: {
     width: 100,
     height: 100,
     borderRadius: 50,
+    backgroundColor: Colors.premium.soft,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  crownEmoji: { fontSize: 48 },
   title: {
-    fontFamily: FontFamily.soraBold,
+    fontFamily: FontFamily.soraSemiBold,
     fontSize: FontSize.hero,
     color: Colors.text.primary,
     textAlign: 'center',
@@ -90,8 +85,8 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: Colors.success.green + '22',
-    color: Colors.success.green,
+    backgroundColor: Colors.accent.main + '22',
+    color: Colors.accent.main,
     textAlign: 'center',
     lineHeight: 24,
     fontFamily: FontFamily.dmSansBold,

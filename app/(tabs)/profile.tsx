@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, Linking, Switch } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from '../../i18n/useTranslation';
@@ -11,7 +10,7 @@ import { initials } from '../../lib/names';
 import { manageSubscription, restorePurchases } from '../../lib/purchases';
 import { PRIVACY_URL, TERMS_URL } from '../../lib/links';
 import { REMINDER_TIMES, disableReminder, enableReminder, formatTime } from '../../lib/reminders';
-import { Colors, FontFamily, FontSize, Gradients, Radius, Spacing } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -85,18 +84,18 @@ export default function ProfileScreen() {
 
         {/* Profile card */}
         <View style={styles.profileCard}>
-          <LinearGradient colors={Gradients.primary} style={styles.avatar}>
+          <View style={styles.avatar}>
             <Text style={styles.avatarText}>{initials(name)}</Text>
-          </LinearGradient>
+          </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.profileName}>{name || t('settings.default_name')}</Text>
             {subscription.isPremium ? (
-              <Text style={[styles.planLabel, { color: Colors.premium.gold }]}>
-                👑 {t(subscription.isTrial ? 'settings.plan_trial' : 'settings.plan_premium')}
+              <Text style={[styles.planLabel, { color: Colors.premium.main }]}>
+                {t(subscription.isTrial ? 'settings.plan_trial' : 'settings.plan_premium')}
               </Text>
             ) : (
               <TouchableOpacity onPress={() => router.push('/paywall')} accessibilityRole="button">
-                <Text style={[styles.planLabel, { color: Colors.premium.gold }]}>{t('settings.plan_free')}</Text>
+                <Text style={[styles.planLabel, { color: Colors.premium.main }]}>{t('settings.plan_free')}</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -125,7 +124,7 @@ export default function ProfileScreen() {
               <Switch
                 value={reminder.enabled}
                 onValueChange={toggleReminder}
-                trackColor={{ false: Colors.surface.card2, true: Colors.primary.blue }}
+                trackColor={{ false: Colors.surface.card2, true: Colors.accent.main }}
                 thumbColor={Colors.text.primary}
                 accessibilityLabel={t('reminders.daily')}
               />
@@ -198,7 +197,7 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bg.base },
   scroll: { paddingHorizontal: Spacing.screenH, paddingTop: 20, paddingBottom: 40, gap: 16 },
   screenTitle: {
-    fontFamily: FontFamily.soraBold,
+    fontFamily: FontFamily.soraSemiBold,
     fontSize: FontSize.screenTitle,
     color: Colors.text.primary,
     letterSpacing: -0.4,
@@ -209,18 +208,17 @@ const styles = StyleSheet.create({
     gap: 16,
     backgroundColor: Colors.surface.card,
     borderRadius: Radius.card,
-    borderWidth: 1,
-    borderColor: Colors.hairline,
     padding: 18,
   },
   avatar: {
     width: 56,
     height: 56,
     borderRadius: 28,
+    backgroundColor: Colors.accent.soft,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  avatarText: { fontFamily: FontFamily.soraBold, fontSize: 22, color: Colors.text.primary },
+  avatarText: { fontFamily: FontFamily.soraSemiBold, fontSize: 22, color: Colors.accent.main },
   profileName: {
     fontFamily: FontFamily.soraSemiBold,
     fontSize: FontSize.cardTitle,
@@ -234,18 +232,14 @@ const styles = StyleSheet.create({
   },
   section: { gap: 8 },
   sectionLabel: {
-    fontFamily: FontFamily.dmSansBold,
-    fontSize: 9,
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: FontSize.bodySmall,
     color: Colors.text.tertiary,
-    textTransform: 'uppercase',
-    letterSpacing: 1.5,
     paddingLeft: 4,
   },
   sectionCard: {
     backgroundColor: Colors.surface.card,
     borderRadius: Radius.card,
-    borderWidth: 1,
-    borderColor: Colors.hairline,
     overflow: 'hidden',
   },
   row: {
@@ -274,7 +268,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
     backgroundColor: Colors.surface.card2,
   },
-  timeChipActive: { backgroundColor: Colors.primary.blue },
+  timeChipActive: { backgroundColor: Colors.accent.main },
   timeText: { fontFamily: FontFamily.dmSansBold, fontSize: FontSize.bodySmall, color: Colors.text.secondary },
   timeTextActive: { color: Colors.text.primary },
   divider: { height: 1, backgroundColor: Colors.hairline, marginHorizontal: 18 },

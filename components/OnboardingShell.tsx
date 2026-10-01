@@ -1,78 +1,87 @@
 import React from 'react';
-import {
-  View, Text, StyleSheet, ScrollView,
-  KeyboardAvoidingView, Platform,
-} from 'react-native';
+import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import ProgressBar from './ProgressBar';
 import IconButton from './IconButton';
 import { useTranslation } from '../i18n/useTranslation';
 import { Colors, FontFamily, FontSize, Spacing } from '../theme/tokens';
 
+export const ONBOARDING_STEPS = 4;
+
 interface Props {
-  step: number; // 1–7
-  total?: number;
-  onBack?: () => void;
+  /** 1-based step after the welcome screen. */
+  step: number;
+  title: string;
+  subtitle?: string;
   children: React.ReactNode;
-  hideProgress?: boolean;
+  /** Pinned to the bottom (primary action). */
+  footer: React.ReactNode;
 }
 
-export default function OnboardingShell({ step, total = 7, onBack, children, hideProgress }: Props) {
+/** Shared layout: back button, segmented progress, left-aligned title, pinned footer. */
+export default function OnboardingShell({ step, title, subtitle, children, footer }: Props) {
   const { t } = useTranslation();
-  const handleBack = onBack ?? (() => router.back());
-
   return (
     <SafeAreaView style={styles.safe}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        {/* Header */}
-        {!hideProgress && (
-          <View style={styles.header}>
-            <IconButton icon="arrow-back" onPress={handleBack} accessibilityLabel={t('common.back')} />
-            <View style={styles.progressWrap}>
-              <ProgressBar progress={step / total} />
-            </View>
-            <Text style={styles.stepLabel}>{step}/{total}</Text>
+        <View style={styles.header}>
+          <IconButton icon="chevron-back" size={36} onPress={() => router.back()} accessibilityLabel={t('common.back')} />
+          <View
+            style={styles.segments}
+            accessible
+            accessibilityLabel={t('onboarding.step_of', { n: step, total: ONBOARDING_STEPS })}
+          >
+            {Array.from({ length: ONBOARDING_STEPS }, (_, i) => (
+              <View key={i} style={[styles.segment, i < step && styles.segmentDone]} />
+            ))}
           </View>
-        )}
+          <View style={{ width: 36 }} />
+        </View>
+
         <ScrollView
           style={{ flex: 1 }}
           contentContainerStyle={styles.content}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {children}
+          <Text style={styles.title} accessibilityRole="header">{title}</Text>
+          {!!subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
+          <View style={styles.body}>{children}</View>
         </ScrollView>
+
+        <View style={styles.footer}>{footer}</View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: Colors.bg.base,
-  },
+  safe: { flex: 1, backgroundColor: Colors.bg.base },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: Spacing.screenH,
-    paddingTop: 12,
-    paddingBottom: 8,
-    gap: 12,
+    paddingTop: 8,
+    gap: 16,
   },
-  progressWrap: {
-    flex: 1,
+  segments: { flex: 1, flexDirection: 'row', gap: 6 },
+  segment: { flex: 1, height: 3, borderRadius: 2, backgroundColor: Colors.surface.card2 },
+  segmentDone: { backgroundColor: Colors.accent.main },
+  content: { paddingHorizontal: Spacing.screenH, paddingTop: 36, paddingBottom: 24 },
+  title: {
+    fontFamily: FontFamily.soraSemiBold,
+    fontSize: 28,
+    lineHeight: 36,
+    color: Colors.text.primary,
+    letterSpacing: -0.4,
   },
-  stepLabel: {
-    color: Colors.text.tertiary,
-    fontSize: FontSize.meta,
-    fontFamily: FontFamily.dmSansMedium,
-    minWidth: 28,
-    textAlign: 'right',
+  subtitle: {
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: FontSize.body,
+    lineHeight: 22,
+    color: Colors.text.secondary,
+    marginTop: 10,
   },
-  content: {
-    paddingHorizontal: Spacing.screenH,
-    paddingBottom: 40,
-  },
+  body: { marginTop: 28 },
+  footer: { paddingHorizontal: Spacing.screenH, paddingBottom: 12, paddingTop: 8, gap: 4 },
 });

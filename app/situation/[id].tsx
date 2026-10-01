@@ -56,7 +56,7 @@ export default function SituationPlayer() {
 
       {stage === 'intro' && (
         <IntroView
-          emoji={situation.emoji}
+          icon={situation.icon}
           title={c.title}
           sub={c.sub}
           chips={[
@@ -123,11 +123,9 @@ const styles = StyleSheet.create({
     lineHeight: 19,
   },
   label: {
-    fontFamily: FontFamily.dmSansBold,
-    fontSize: 10,
-    color: Colors.accent.cyan,
-    textTransform: 'uppercase',
-    letterSpacing: 1.5,
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: FontSize.bodySmall,
+    color: Colors.accent.main,
   },
   challenge: {
     fontFamily: FontFamily.soraSemiBold,

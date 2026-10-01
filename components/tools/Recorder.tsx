@@ -149,8 +149,6 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: Colors.surface.card,
     borderRadius: Radius.card,
-    borderWidth: 1,
-    borderColor: Colors.hairline,
     padding: 16,
     gap: 8,
   },
@@ -159,7 +157,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: Colors.primary.blue,
+    backgroundColor: Colors.accent.main,
     alignItems: 'center',
     justifyContent: 'center',
   },

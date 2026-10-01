@@ -29,8 +29,6 @@ export default function IconButton({ icon, onPress, accessibilityLabel, size = 3
 const styles = StyleSheet.create({
   btn: {
     backgroundColor: Colors.surface.card,
-    borderWidth: 1,
-    borderColor: Colors.hairline,
     alignItems: 'center',
     justifyContent: 'center',
   },

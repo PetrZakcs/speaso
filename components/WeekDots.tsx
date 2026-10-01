@@ -35,14 +35,12 @@ const styles = StyleSheet.create({
     height: 32,
     borderRadius: 16,
     backgroundColor: Colors.surface.card2,
-    borderWidth: 1,
-    borderColor: Colors.hairline,
   },
-  dotDone: { backgroundColor: Colors.primary.blue },
+  dotDone: { backgroundColor: Colors.accent.main },
   dotToday: {
     borderWidth: 2,
-    borderColor: Colors.accent.cyan,
+    borderColor: Colors.accent.main,
   },
   label: { fontFamily: FontFamily.dmSansMedium, fontSize: 10, color: Colors.text.tertiary },
-  labelToday: { color: Colors.accent.cyan },
+  labelToday: { color: Colors.accent.main },
 });

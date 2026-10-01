@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'rea
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useStore, useShallow } from '../../state/store';
 import Card from '../../components/Card';
@@ -12,9 +11,9 @@ import { averageRating, currentStreak, weekActivity, weekMinutes } from '../../l
 import { addDays, mondayOf, weekdayIndex } from '../../lib/dates';
 import { activityTitle, formatDate } from '../../lib/activities';
 import { exportReport } from '../../lib/report';
-import { RATING_EMOJI } from '../../components/session/RatingView';
+import PremiumTag from '../../components/PremiumTag';
 import { useToday } from '../../lib/useToday';
-import { Colors, FontFamily, FontSize, Gradients, Radius, Spacing } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
 
 const CHART_HEIGHT = 80;
 
@@ -44,11 +43,11 @@ function WeekChart({ minutes, todayIdx }: { minutes: number[]; todayIdx: number 
                   styles.bar,
                   {
                     height: (val / max) * CHART_HEIGHT,
-                    backgroundColor: i === todayIdx ? Colors.accent.cyan : Colors.primary.blue,
+                    backgroundColor: i === todayIdx ? Colors.accent.main : Colors.accent.main,
                   },
                 ]}
               />
-              <Text style={[styles.barLabel, i === todayIdx && { color: Colors.accent.cyan }]}>
+              <Text style={[styles.barLabel, i === todayIdx && { color: Colors.accent.main }]}>
                 {labels[i]}
               </Text>
             </View>
@@ -105,15 +104,11 @@ export default function ProgressScreen() {
         <Text style={styles.screenTitle} accessibilityRole="header">{t('progress.title')}</Text>
 
         {/* Streak hero */}
-        <LinearGradient colors={Gradients.primary} style={styles.streakHero}>
-          <Text style={styles.streakEmoji}>🔥</Text>
-          <View>
-            <Text style={styles.streakVal}>{tn('progress.streak_value', streakDays)}</Text>
-            <Text style={styles.streakLabel}>
-              {t('progress.current_streak')} · {t('progress.streak_record', { n: streak.record })}
-            </Text>
-          </View>
-        </LinearGradient>
+        <View style={styles.streakHero}>
+          <Text style={styles.streakLabel}>{t('progress.current_streak')}</Text>
+          <Text style={styles.streakVal}>{tn('progress.streak_value', streakDays)}</Text>
+          <Text style={styles.streakLabel}>{t('progress.streak_record', { n: streak.record })}</Text>
+        </View>
 
         {/* Stats */}
         <View style={styles.statsRow}>
@@ -158,7 +153,7 @@ export default function ProgressScreen() {
         ) : (
           <Card>
             <View style={styles.lockedContent}>
-              <Text style={styles.lockIcon}>🔒</Text>
+              <Ionicons name="lock-closed-outline" size={26} color={Colors.text.tertiary} />
               <Text style={styles.lockedTitle}>{t('progress.locked_title')}</Text>
               <Text style={styles.lockedSub}>{t('progress.locked_sub')}</Text>
               <TouchableOpacity
@@ -166,7 +161,7 @@ export default function ProgressScreen() {
                 style={styles.unlockBtn}
                 accessibilityRole="button"
               >
-                <Text style={styles.unlockBtnText}>👑 {t('progress.unlock')} →</Text>
+                <Text style={styles.unlockBtnText}>{t('progress.unlock')}</Text>
               </TouchableOpacity>
             </View>
           </Card>
@@ -181,7 +176,9 @@ export default function ProgressScreen() {
             <View style={{ gap: 12 }}>
               {journal.map((s) => (
                 <View key={s.id} style={styles.journalRow}>
-                  <Text style={styles.journalEmoji}>{s.rating ? RATING_EMOJI[s.rating] : ''}</Text>
+                  <View style={styles.ratingChip}>
+                    <Text style={styles.ratingChipText}>{s.rating}/5</Text>
+                  </View>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.journalTitle}>
                       {activityTitle(s.exerciseId, lang)} · <Text style={styles.journalDate}>{formatDate(s.completedAt, lang)}</Text>
@@ -195,7 +192,7 @@ export default function ProgressScreen() {
         </Card>
 
         <TouchableOpacity style={styles.linkCard} onPress={() => router.push('/recordings')} accessibilityRole="button">
-          <Ionicons name="mic-outline" size={22} color={Colors.accent.cyan} />
+          <Ionicons name="mic-outline" size={22} color={Colors.accent.main} />
           <View style={{ flex: 1 }}>
             <Text style={styles.linkTitle}>{t('recordings.title')}</Text>
             <Text style={styles.linkSub}>{tn('recordings.count', recordingsCount)}</Text>
@@ -209,7 +206,7 @@ export default function ProgressScreen() {
           disabled={exporting}
           accessibilityRole="button"
         >
-          <Ionicons name="document-text-outline" size={22} color={Colors.accent.cyan} />
+          <Ionicons name="document-text-outline" size={22} color={Colors.accent.main} />
           <View style={{ flex: 1 }}>
             <Text style={styles.linkTitle}>{t('report.cta')}</Text>
             <Text style={styles.linkSub}>{exporting ? t('report.generating') : t('report.cta_sub')}</Text>
@@ -217,7 +214,7 @@ export default function ProgressScreen() {
           {isPremium ? (
             <Ionicons name="share-outline" size={18} color={Colors.text.tertiary} />
           ) : (
-            <Text>👑</Text>
+            <PremiumTag />
           )}
         </TouchableOpacity>
       </ScrollView>
@@ -229,21 +226,19 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bg.base },
   scroll: { paddingHorizontal: Spacing.screenH, paddingTop: 20, paddingBottom: 40, gap: 12 },
   screenTitle: {
-    fontFamily: FontFamily.soraBold,
+    fontFamily: FontFamily.soraSemiBold,
     fontSize: FontSize.screenTitle,
     color: Colors.text.primary,
     letterSpacing: -0.4,
   },
   streakHero: {
+    backgroundColor: Colors.surface.card,
     borderRadius: Radius.card,
-    padding: 22,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
+    padding: 20,
+    gap: 4,
   },
-  streakEmoji: { fontSize: 44 },
   streakVal: {
-    fontFamily: FontFamily.soraBold,
+    fontFamily: FontFamily.soraSemiBold,
     fontSize: 28,
     color: Colors.text.primary,
     letterSpacing: -0.5,
@@ -251,19 +246,18 @@ const styles = StyleSheet.create({
   streakLabel: {
     fontFamily: FontFamily.dmSansMedium,
     fontSize: FontSize.bodySmall,
-    color: 'rgba(240,246,255,0.7)',
-    marginTop: 2,
+    color: Colors.text.secondary,
   },
   statsRow: { flexDirection: 'row', gap: 10 },
   statCard: { flex: 1, alignItems: 'center', paddingVertical: 16, paddingHorizontal: 8 },
   statNum: {
-    fontFamily: FontFamily.soraBold,
+    fontFamily: FontFamily.soraSemiBold,
     fontSize: 26,
     color: Colors.text.primary,
   },
   statLabel: {
     fontFamily: FontFamily.dmSansMedium,
-    fontSize: 10,
+    fontSize: FontSize.meta,
     color: Colors.text.secondary,
     textAlign: 'center',
     marginTop: 4,
@@ -290,7 +284,7 @@ const styles = StyleSheet.create({
   barCol: { flex: 1, alignItems: 'center', justifyContent: 'flex-end', gap: 4 },
   barValue: {
     fontFamily: FontFamily.dmSansMedium,
-    fontSize: 9,
+    fontSize: 11,
     color: Colors.text.secondary,
   },
   bar: {
@@ -300,11 +294,10 @@ const styles = StyleSheet.create({
   },
   barLabel: {
     fontFamily: FontFamily.dmSansMedium,
-    fontSize: 9,
+    fontSize: 11,
     color: Colors.text.tertiary,
   },
   lockedContent: { alignItems: 'center', paddingVertical: 16, gap: 10 },
-  lockIcon: { fontSize: 32 },
   lockedTitle: {
     fontFamily: FontFamily.soraSemiBold,
     fontSize: FontSize.cardTitle,
@@ -321,19 +314,23 @@ const styles = StyleSheet.create({
   },
   unlockBtn: {
     marginTop: 6,
-    backgroundColor: Colors.premium.gold + '22',
+    backgroundColor: Colors.accent.main,
     borderRadius: Radius.pill,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderWidth: 1,
-    borderColor: Colors.premium.gold + '60',
+    paddingHorizontal: 22,
+    paddingVertical: 11,
   },
   ratingRow: { flexDirection: 'row', marginBottom: 8 },
   ratingCol: { flex: 1, alignItems: 'center' },
-  ratingVal: { fontFamily: FontFamily.soraBold, fontSize: 28, color: Colors.accent.cyan },
+  ratingVal: { fontFamily: FontFamily.soraSemiBold, fontSize: 28, color: Colors.accent.main },
   ratingPrev: { color: Colors.text.secondary },
   journalRow: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
-  journalEmoji: { fontSize: 22 },
+  ratingChip: {
+    backgroundColor: Colors.accent.soft,
+    borderRadius: Radius.pill,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  ratingChipText: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.meta, color: Colors.accent.main },
   journalTitle: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.bodySmall, color: Colors.text.primary },
   journalDate: { fontFamily: FontFamily.dmSansRegular, color: Colors.text.tertiary },
   journalNote: {
@@ -349,8 +346,6 @@ const styles = StyleSheet.create({
     gap: 14,
     backgroundColor: Colors.surface.card,
     borderRadius: Radius.card,
-    borderWidth: 1,
-    borderColor: Colors.hairline,
     padding: 16,
   },
   linkTitle: { fontFamily: FontFamily.soraSemiBold, fontSize: FontSize.cardTitleSmall, color: Colors.text.primary },
@@ -358,6 +353,6 @@ const styles = StyleSheet.create({
   unlockBtnText: {
     fontFamily: FontFamily.dmSansBold,
     fontSize: FontSize.bodySmall,
-    color: Colors.premium.gold,
+    color: Colors.accent.on,
   },
 });

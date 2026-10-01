@@ -46,7 +46,7 @@ export default function TabLayout() {
           height: 60 + insets.bottom,
           paddingBottom: insets.bottom,
         },
-        tabBarActiveTintColor: Colors.primary.blue,
+        tabBarActiveTintColor: Colors.accent.main,
         tabBarInactiveTintColor: Colors.text.tertiary,
         tabBarLabelStyle: { fontFamily: FontFamily.dmSansMedium, fontSize: 10 },
       }}

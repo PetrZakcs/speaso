@@ -7,7 +7,7 @@ import { addressName } from '../lib/names';
 describe('translate', () => {
   it('interpolates every placeholder occurrence', () => {
     expect(translate('cs', 'exercises.step_of', { n: 2, total: 6 })).toBe('Krok 2/6');
-    expect(translate('en', 'home.greeting_name', { name: 'Anna' })).toBe('Hi, Anna!');
+    expect(translate('en', 'onboarding.name_preview', { name: 'Anna' })).toBe("We'll call you Anna");
   });
 
   it('returns lists', () => {
