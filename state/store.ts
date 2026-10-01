@@ -4,13 +4,18 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { toDateKey } from '../lib/dates';
 import { detectDeviceLanguage, type SupportedLang } from '../lib/locale';
-import { EMPTY_STREAK, registerActivity, type Session, type StreakData } from '../lib/streak';
+import {
+  EMPTY_STREAK, registerActivity, type Rating, type Session, type StreakData,
+} from '../lib/streak';
+import { deleteRecordingFile } from '../lib/recordings';
 
 export type AgeGroup = 'child' | 'teen' | 'adult' | 'senior';
 export type TherapyStatus = 'never' | 'past' | 'current' | 'self';
 export type { SupportedLang };
 
 const MAX_SESSIONS = 2000;
+/** Free users keep their most recent recordings only. */
+export const FREE_RECORDINGS_LIMIT = 3;
 
 interface UserState {
   name: string;
@@ -33,23 +38,51 @@ export interface SubscriptionState {
   expiresAt: string | null;
 }
 
+export interface Recording {
+  id: string;
+  /** File name inside <documents>/recordings — resolve with recordingUri(). */
+  fileName: string;
+  /** Exercise id, or `situation:<id>`. */
+  exerciseId: string;
+  createdAt: string;
+  durationSec: number;
+}
+
+export interface ReminderSettings {
+  enabled: boolean;
+  hour: number;
+  minute: number;
+}
+
 interface AppState {
   onboardingDone: boolean;
   language: SupportedLang;
-  remindersEnabled: boolean;
+  reminder: ReminderSettings;
 
   user: UserState;
   subscription: SubscriptionState;
   streak: StreakData;
   sessions: Session[];
   panicUses: number;
+  recordings: Recording[];
 
   setOnboardingDone: (v: boolean) => void;
   setLanguage: (lang: SupportedLang) => void;
   setUser: (partial: Partial<UserState>) => void;
   setSubscription: (s: SubscriptionState) => void;
-  recordSession: (exerciseId: string, durationSec: number) => void;
+  /** Saves a finished session and returns its id (for rating it afterwards). */
+  recordSession: (exerciseId: string, durationSec: number) => string;
+  rateSession: (id: string, rating: Rating, note?: string) => void;
   incrementPanicUses: () => void;
+  addRecording: (recording: Omit<Recording, 'id' | 'createdAt'>) => void;
+  removeRecording: (id: string) => void;
+  setReminder: (reminder: ReminderSettings) => void;
+}
+
+const DEFAULT_REMINDER: ReminderSettings = { enabled: false, hour: 18, minute: 0 };
+
+function newId(now: Date) {
+  return `${now.getTime().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
 }
 
 const initialUser: UserState = {
@@ -64,51 +97,80 @@ const initialUser: UserState = {
 
 export const useStore = create<AppState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       onboardingDone: false,
       language: detectDeviceLanguage(),
-      remindersEnabled: false,
+      reminder: DEFAULT_REMINDER,
 
       user: initialUser,
       subscription: { isPremium: false, isTrial: false, expiresAt: null },
       streak: EMPTY_STREAK,
       sessions: [],
       panicUses: 0,
+      recordings: [],
 
       setOnboardingDone: (v) => set({ onboardingDone: v }),
       setLanguage: (language) => set({ language }),
       setUser: (partial) => set((s) => ({ user: { ...s.user, ...partial } })),
       setSubscription: (subscription) => set({ subscription }),
 
-      recordSession: (exerciseId, durationSec) =>
-        set((s) => {
-          const now = new Date();
-          const today = toDateKey(now);
-          const session: Session = {
-            exerciseId,
-            date: today,
-            durationSec: Math.round(durationSec),
-            completedAt: now.toISOString(),
-          };
-          return {
-            sessions: [...s.sessions, session].slice(-MAX_SESSIONS),
-            streak: registerActivity(s.streak, today),
-          };
-        }),
+      recordSession: (exerciseId, durationSec) => {
+        const now = new Date();
+        const today = toDateKey(now);
+        const session: Session = {
+          id: newId(now),
+          exerciseId,
+          date: today,
+          durationSec: Math.round(durationSec),
+          completedAt: now.toISOString(),
+        };
+        set((s) => ({
+          sessions: [...s.sessions, session].slice(-MAX_SESSIONS),
+          streak: registerActivity(s.streak, today),
+        }));
+        return session.id;
+      },
+
+      rateSession: (id, rating, note) =>
+        set((s) => ({
+          sessions: s.sessions.map((x) =>
+            x.id === id ? { ...x, rating, note: note?.trim() || undefined } : x,
+          ),
+        })),
 
       incrementPanicUses: () => set((s) => ({ panicUses: s.panicUses + 1 })),
+
+      addRecording: (rec) => {
+        const now = new Date();
+        const recording: Recording = { ...rec, id: newId(now), createdAt: now.toISOString() };
+        let recordings = [...get().recordings, recording];
+        if (!get().subscription.isPremium && recordings.length > FREE_RECORDINGS_LIMIT) {
+          const dropped = recordings.slice(0, recordings.length - FREE_RECORDINGS_LIMIT);
+          dropped.forEach((r) => deleteRecordingFile(r.fileName));
+          recordings = recordings.slice(-FREE_RECORDINGS_LIMIT);
+        }
+        set({ recordings });
+      },
+
+      removeRecording: (id) => {
+        const rec = get().recordings.find((r) => r.id === id);
+        if (rec) deleteRecordingFile(rec.fileName);
+        set((s) => ({ recordings: s.recordings.filter((r) => r.id !== id) }));
+      },
+
+      setReminder: (reminder) => set({ reminder }),
     }),
     {
       name: 'speasy-storage',
-      version: 1,
+      version: 2,
       storage: createJSONStorage(() => AsyncStorage),
       migrate: (persisted, version) => {
-        const old = (persisted ?? {}) as any;
+        let old = (persisted ?? {}) as any;
         if (version === 0) {
           // v0 was the prototype: fake progress numbers, per-exercise streak,
           // a premium flag that could be granted without paying. Keep only
           // what the user actually entered.
-          return {
+          old = {
             onboardingDone: !!old.onboardingDone,
             language: old.language === 'en' ? 'en' : 'cs',
             remindersEnabled: false,
@@ -117,6 +179,19 @@ export const useStore = create<AppState>()(
             streak: { ...EMPTY_STREAK, record: old.streak?.record ?? 0 },
             sessions: [],
             panicUses: old.progress?.panicUses ?? 0,
+          };
+        }
+        if (version <= 1) {
+          // v2: sessions get ids, recordings and reminder settings.
+          const { remindersEnabled: _unused, ...rest } = old;
+          old = {
+            ...rest,
+            sessions: (old.sessions ?? []).map((x: Session, i: number) => ({
+              ...x,
+              id: x.id ?? `${x.completedAt}-${i}`,
+            })),
+            recordings: [],
+            reminder: DEFAULT_REMINDER,
           };
         }
         return old;

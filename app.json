@@ -57,7 +57,22 @@
           "image": "./assets/splash-icon.png",
           "imageWidth": 160
         }
-      ]
-    ]
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Speasy uses the microphone so you can record your practice and listen back. Recordings stay on your phone.",
+          "enableBackgroundPlayback": false,
+          "enableBackgroundRecording": false,
+          "recordAudioAndroid": true
+        }
+      ],
+      "expo-sharing",
+      "expo-asset"
+    ],
+    "locales": {
+      "cs": "./locales/cs.json",
+      "en": "./locales/en.json"
+    }
   }
 }

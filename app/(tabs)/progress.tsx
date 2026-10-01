@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -7,8 +8,11 @@ import { useTranslation } from '../../i18n/useTranslation';
 import { useStore, useShallow } from '../../state/store';
 import Card from '../../components/Card';
 import WeekDots from '../../components/WeekDots';
-import { currentStreak, weekActivity, weekMinutes } from '../../lib/streak';
-import { weekdayIndex } from '../../lib/dates';
+import { averageRating, currentStreak, weekActivity, weekMinutes } from '../../lib/streak';
+import { addDays, mondayOf, weekdayIndex } from '../../lib/dates';
+import { activityTitle, formatDate } from '../../lib/activities';
+import { exportReport } from '../../lib/report';
+import { RATING_EMOJI } from '../../components/session/RatingView';
 import { useToday } from '../../lib/useToday';
 import { Colors, FontFamily, FontSize, Gradients, Radius, Spacing } from '../../theme/tokens';
 
@@ -56,18 +60,40 @@ function WeekChart({ minutes, todayIdx }: { minutes: number[]; todayIdx: number 
 }
 
 export default function ProgressScreen() {
-  const { t, tn } = useTranslation();
+  const { t, tn, lang } = useTranslation();
   const today = useToday();
-  const { isPremium, streak, sessions, panicUses } = useStore(useShallow((s) => ({
+  const [exporting, setExporting] = useState(false);
+  const { isPremium, streak, sessions, panicUses, recordingsCount } = useStore(useShallow((s) => ({
     isPremium: s.subscription.isPremium,
     streak: s.streak,
     sessions: s.sessions,
     panicUses: s.panicUses,
+    recordingsCount: s.recordings.length,
   })));
 
   const streakDays = currentStreak(streak, today);
   const activity = useMemo(() => weekActivity(sessions, today), [sessions, today]);
   const minutes = useMemo(() => weekMinutes(sessions, today), [sessions, today]);
+  const journal = useMemo(() => sessions.filter((s) => s.rating).slice(-5).reverse(), [sessions]);
+  const monday = mondayOf(today);
+  const ratingThisWeek = averageRating(sessions, monday, today);
+  const ratingLastWeek = averageRating(sessions, addDays(monday, -7), addDays(monday, -1));
+
+  const handleExport = async () => {
+    if (!isPremium) {
+      router.push({ pathname: '/paywall', params: { context: 'pdf' } });
+      return;
+    }
+    setExporting(true);
+    try {
+      await exportReport(lang);
+    } catch {
+      Alert.alert(t('report.title'), t('report.error'));
+    } finally {
+      setExporting(false);
+    }
+  };
+
   const totalMinutes = useMemo(
     () => Math.round(sessions.reduce((sum, s) => sum + s.durationSec, 0) / 60),
     [sessions],
@@ -112,7 +138,23 @@ export default function ProgressScreen() {
         </Card>
 
         {isPremium ? (
-          <WeekChart minutes={minutes} todayIdx={weekdayIndex(today)} />
+          <>
+            <WeekChart minutes={minutes} todayIdx={weekdayIndex(today)} />
+            <Card>
+              <Text style={styles.sectionTitle}>{t('progress.rating_title')}</Text>
+              <View style={styles.ratingRow}>
+                <View style={styles.ratingCol}>
+                  <Text style={styles.ratingVal}>{ratingThisWeek ? ratingThisWeek.toFixed(1) : '—'}</Text>
+                  <Text style={styles.statLabel}>{t('progress.this_week')}</Text>
+                </View>
+                <View style={styles.ratingCol}>
+                  <Text style={[styles.ratingVal, styles.ratingPrev]}>{ratingLastWeek ? ratingLastWeek.toFixed(1) : '—'}</Text>
+                  <Text style={styles.statLabel}>{t('progress.last_week')}</Text>
+                </View>
+              </View>
+              <Text style={styles.emptyText}>{t('progress.rating_explain')}</Text>
+            </Card>
+          </>
         ) : (
           <Card>
             <View style={styles.lockedContent}>
@@ -129,6 +171,55 @@ export default function ProgressScreen() {
             </View>
           </Card>
         )}
+
+        {/* Journal */}
+        <Card>
+          <Text style={styles.sectionTitle}>{t('progress.journal_title')}</Text>
+          {journal.length === 0 ? (
+            <Text style={styles.emptyText}>{t('progress.journal_empty')}</Text>
+          ) : (
+            <View style={{ gap: 12 }}>
+              {journal.map((s) => (
+                <View key={s.id} style={styles.journalRow}>
+                  <Text style={styles.journalEmoji}>{s.rating ? RATING_EMOJI[s.rating] : ''}</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.journalTitle}>
+                      {activityTitle(s.exerciseId, lang)} · <Text style={styles.journalDate}>{formatDate(s.completedAt, lang)}</Text>
+                    </Text>
+                    {!!s.note && <Text style={styles.journalNote} numberOfLines={3}>{s.note}</Text>}
+                  </View>
+                </View>
+              ))}
+            </View>
+          )}
+        </Card>
+
+        <TouchableOpacity style={styles.linkCard} onPress={() => router.push('/recordings')} accessibilityRole="button">
+          <Ionicons name="mic-outline" size={22} color={Colors.accent.cyan} />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.linkTitle}>{t('recordings.title')}</Text>
+            <Text style={styles.linkSub}>{tn('recordings.count', recordingsCount)}</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color={Colors.text.tertiary} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.linkCard}
+          onPress={handleExport}
+          disabled={exporting}
+          accessibilityRole="button"
+        >
+          <Ionicons name="document-text-outline" size={22} color={Colors.accent.cyan} />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.linkTitle}>{t('report.cta')}</Text>
+            <Text style={styles.linkSub}>{exporting ? t('report.generating') : t('report.cta_sub')}</Text>
+          </View>
+          {isPremium ? (
+            <Ionicons name="share-outline" size={18} color={Colors.text.tertiary} />
+          ) : (
+            <Text>👑</Text>
+          )}
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -237,6 +328,33 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.premium.gold + '60',
   },
+  ratingRow: { flexDirection: 'row', marginBottom: 8 },
+  ratingCol: { flex: 1, alignItems: 'center' },
+  ratingVal: { fontFamily: FontFamily.soraBold, fontSize: 28, color: Colors.accent.cyan },
+  ratingPrev: { color: Colors.text.secondary },
+  journalRow: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
+  journalEmoji: { fontSize: 22 },
+  journalTitle: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.bodySmall, color: Colors.text.primary },
+  journalDate: { fontFamily: FontFamily.dmSansRegular, color: Colors.text.tertiary },
+  journalNote: {
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: FontSize.bodySmall,
+    color: Colors.text.secondary,
+    marginTop: 2,
+    lineHeight: 18,
+  },
+  linkCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    backgroundColor: Colors.surface.card,
+    borderRadius: Radius.card,
+    borderWidth: 1,
+    borderColor: Colors.hairline,
+    padding: 16,
+  },
+  linkTitle: { fontFamily: FontFamily.soraSemiBold, fontSize: FontSize.cardTitleSmall, color: Colors.text.primary },
+  linkSub: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.meta, color: Colors.text.secondary, marginTop: 2 },
   unlockBtnText: {
     fontFamily: FontFamily.dmSansBold,
     fontSize: FontSize.bodySmall,

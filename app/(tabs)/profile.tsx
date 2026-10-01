@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, Linking } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, Linking, Switch } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -10,6 +10,7 @@ import { useStore, useShallow } from '../../state/store';
 import { initials } from '../../lib/names';
 import { manageSubscription, restorePurchases } from '../../lib/purchases';
 import { PRIVACY_URL, TERMS_URL } from '../../lib/links';
+import { REMINDER_TIMES, disableReminder, enableReminder, formatTime } from '../../lib/reminders';
 import { Colors, FontFamily, FontSize, Gradients, Radius, Spacing } from '../../theme/tokens';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -41,12 +42,28 @@ function SettingRow({
 export default function ProfileScreen() {
   const { t } = useTranslation();
   const [restoring, setRestoring] = useState(false);
-  const { name, subscription, language, setLanguage } = useStore(useShallow((s) => ({
+  const { name, subscription, language, setLanguage, reminder, setReminder } = useStore(useShallow((s) => ({
     name: s.user.name,
     subscription: s.subscription,
     language: s.language,
     setLanguage: s.setLanguage,
+    reminder: s.reminder,
+    setReminder: s.setReminder,
   })));
+
+  const toggleReminder = async (on: boolean) => {
+    if (!on) {
+      disableReminder();
+      return;
+    }
+    const ok = await enableReminder(reminder.hour, reminder.minute);
+    if (!ok) {
+      Alert.alert(t('reminders.denied_title'), t('reminders.denied_body'), [
+        { text: t('common.close'), style: 'cancel' },
+        { text: t('recorder.open_settings'), onPress: () => Linking.openSettings() },
+      ]);
+    }
+  };
   const version = Constants.expoConfig?.version ?? '—';
 
   const handleRestore = async () => {
@@ -95,6 +112,47 @@ export default function ProfileScreen() {
               value={language === 'cs' ? 'Čeština' : 'English'}
               onPress={() => setLanguage(language === 'cs' ? 'en' : 'cs')}
             />
+          </View>
+        </View>
+
+        {/* Reminders */}
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>{t('reminders.section')}</Text>
+          <View style={styles.sectionCard}>
+            <View style={styles.row}>
+              <Ionicons name="notifications-outline" size={18} color={Colors.text.secondary} style={styles.rowIcon} />
+              <Text style={styles.rowLabel}>{t('reminders.daily')}</Text>
+              <Switch
+                value={reminder.enabled}
+                onValueChange={toggleReminder}
+                trackColor={{ false: Colors.surface.card2, true: Colors.primary.blue }}
+                thumbColor={Colors.text.primary}
+                accessibilityLabel={t('reminders.daily')}
+              />
+            </View>
+            {reminder.enabled && (
+              <>
+                <View style={styles.divider} />
+                <View style={styles.timeRow} accessibilityRole="radiogroup">
+                  {REMINDER_TIMES.map((time) => {
+                    const active = time.hour === reminder.hour && time.minute === reminder.minute;
+                    return (
+                      <TouchableOpacity
+                        key={`${time.hour}:${time.minute}`}
+                        onPress={() => setReminder({ ...reminder, ...time })}
+                        style={[styles.timeChip, active && styles.timeChipActive]}
+                        accessibilityRole="radio"
+                        accessibilityState={{ checked: active }}
+                      >
+                        <Text style={[styles.timeText, active && styles.timeTextActive]}>
+                          {formatTime(time.hour, time.minute)}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </>
+            )}
           </View>
         </View>
 
@@ -209,6 +267,16 @@ const styles = StyleSheet.create({
     fontSize: FontSize.bodySmall,
     color: Colors.text.secondary,
   },
+  timeRow: { flexDirection: 'row', gap: 8, padding: 14, flexWrap: 'wrap' },
+  timeChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: Radius.pill,
+    backgroundColor: Colors.surface.card2,
+  },
+  timeChipActive: { backgroundColor: Colors.primary.blue },
+  timeText: { fontFamily: FontFamily.dmSansBold, fontSize: FontSize.bodySmall, color: Colors.text.secondary },
+  timeTextActive: { color: Colors.text.primary },
   divider: { height: 1, backgroundColor: Colors.hairline, marginHorizontal: 18 },
   disclaimer: {
     fontFamily: FontFamily.dmSansRegular,

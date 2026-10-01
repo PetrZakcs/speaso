@@ -9,7 +9,7 @@ import { useStore } from '../../state/store';
 import PillButton from '../../components/PillButton';
 import { Colors, FontFamily, FontSize, Gradients, Spacing } from '../../theme/tokens';
 
-const UNLOCKED = ['post_unlimited', 'post_stats', 'post_future'];
+const UNLOCKED = ['post_unlimited', 'post_situations', 'post_recordings', 'post_stats', 'post_pdf'];
 
 export default function PostPurchase() {
   const { t } = useTranslation();

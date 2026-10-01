@@ -1,6 +1,6 @@
 # Privacy Policy — Speasy
 
-*Poslední aktualizace: 30. září 2026*
+*Poslední aktualizace: 1. října 2026*
 
 > TODO před vydáním: doplnit provozovatele a kontaktní e-mail, zveřejnit na veřejné URL
 > a tu samou URL vložit do `lib/links.ts` (`PRIVACY_URL`) a do App Store Connect.
@@ -14,8 +14,13 @@ Speasy je mobilní aplikace podporující lidi, kteří koktají. Provozovatel: 
 **Uloženo pouze ve tvém zařízení (nikam je neodesíláme):**
 - Jméno, věková skupina, cíl, vybrané situace a denní čas zadané při úvodním nastavení
 - Volitelná poznámka „Popiš to vlastními slovy“
-- Historie cvičení (které cvičení, kdy a jak dlouho), série a počet použití Panic tlačítka
-- Nastavení aplikace (jazyk)
+- Historie cvičení (které cvičení, kdy a jak dlouho), tvoje hodnocení a poznámky po cvičení, série a počet použití Panic tlačítka
+- Hlasové nahrávky, které si sám/sama pořídíš během cvičení (mikrofon se používá jen ve chvíli, kdy klepneš na nahrávání)
+- Nastavení aplikace (jazyk, čas denní připomínky)
+
+Denní připomínky jsou lokální oznámení naplánovaná přímo v telefonu — nejde přes žádný server.
+
+**Když sám/sama sdílíš PDF přehled:** aplikace vytvoří PDF z dat za posledních 30 dní a otevře systémové sdílení. Komu a jak ho pošleš, určuješ ty; Speasy tato data nikam neodesílá.
 
 Speasy nemá uživatelské účty a nepoužívá analytické ani reklamní nástroje.
 
@@ -25,7 +30,8 @@ Speasy nemá uživatelské účty a nepoužívá analytické ani reklamní nást
 
 ## 3. K čemu data používáme
 
-- Zobrazení tvého pokroku, série a statistik v aplikaci
+- Zobrazení tvého pokroku, série, statistik, deníku a nahrávek v aplikaci
+- Denní připomínka, pokud ji zapneš
 - Ověření, zda máš aktivní předplatné Premium
 
 ## 4. Sdílení dat
@@ -34,7 +40,7 @@ Data neprodáváme ani je nesdílíme za účelem reklamy. Jediným příjemcem 
 
 ## 5. Uchovávání a smazání dat
 
-Data uložená v zařízení smažeš odinstalováním aplikace. Historii nákupů spravuje Apple / Google; o smazání údajů u RevenueCat nás můžeš požádat e-mailem níže.
+Jednotlivé nahrávky můžeš kdykoli smazat v aplikaci (Pokrok → Moje nahrávky). Všechna data uložená v zařízení smažeš odinstalováním aplikace. Historii nákupů spravuje Apple / Google; o smazání údajů u RevenueCat nás můžeš požádat e-mailem níže.
 
 ## 6. Děti
 

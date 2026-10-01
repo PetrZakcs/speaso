@@ -4,12 +4,22 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from '../../i18n/useTranslation';
 import { EXERCISES } from '../../content/exercises';
-import { useStartExercise } from '../../lib/useStartExercise';
+import { SITUATIONS } from '../../content/situations';
+import { useStartExercise, useStartSituation } from '../../lib/useStartExercise';
+import { useIsPremium } from '../../state/store';
 import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
 
+const DIFF_COLORS = {
+  easy: Colors.success.green,
+  medium: Colors.premium.gold,
+  hard: Colors.danger.panic,
+} as const;
+
 export default function ExercisesScreen() {
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
   const startExercise = useStartExercise();
+  const startSituation = useStartSituation();
+  const isPremium = useIsPremium();
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -46,13 +56,46 @@ export default function ExercisesScreen() {
           ))}
         </View>
 
-        {/* Situations are planned for phase 2 — shown as a teaser, not sold. */}
-        <View style={styles.soonCard}>
-          <View style={styles.soonBadge}>
-            <Text style={styles.soonBadgeText}>{t('common.coming_soon')}</Text>
-          </View>
-          <Text style={styles.soonTitle}>{t('exercises.situations_title')}</Text>
-          <Text style={styles.soonSub}>{t('exercises.situations_sub')}</Text>
+        <Text style={styles.sectionTitle} accessibilityRole="header">{t('situations.title')}</Text>
+        <Text style={styles.sectionSub}>{t('situations.intro')}</Text>
+        <View style={styles.list}>
+          {SITUATIONS.map((sit) => {
+            const locked = sit.premium && !isPremium;
+            const c = sit.content[lang];
+            return (
+              <TouchableOpacity
+                key={sit.id}
+                style={[styles.exCard, locked && styles.locked]}
+                onPress={() => startSituation(sit)}
+                activeOpacity={0.8}
+                accessibilityRole="button"
+                accessibilityLabel={`${c.title}, ${t(`situations.level_${sit.difficulty}`)}${locked ? `, ${t('common.premium')}` : ''}`}
+              >
+                <View style={styles.exIconWrap}>
+                  <Text style={styles.exIcon}>{sit.emoji}</Text>
+                </View>
+                <View style={styles.exInfo}>
+                  <Text style={styles.exTitle}>{c.title}</Text>
+                  <Text style={styles.exSub}>{c.sub}</Text>
+                  <View style={styles.levelDots}>
+                    <View style={[styles.diffBadge, { backgroundColor: DIFF_COLORS[sit.difficulty] + '22' }]}>
+                      <Text style={[styles.diffText, { color: DIFF_COLORS[sit.difficulty] }]}>
+                        {t(`situations.level_${sit.difficulty}`)}
+                      </Text>
+                    </View>
+                    <Text style={styles.minsText}>{sit.minutes} {t('common.min_short')}</Text>
+                  </View>
+                </View>
+                {locked ? (
+                  <Text style={styles.crown}>👑</Text>
+                ) : (
+                  <View style={styles.playBtn}>
+                    <Ionicons name="play" size={16} color={Colors.text.primary} />
+                  </View>
+                )}
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -117,35 +160,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  soonCard: {
-    borderWidth: 1.5,
-    borderStyle: 'dashed',
-    borderColor: Colors.hairline,
-    borderRadius: Radius.card,
-    padding: 18,
-    gap: 6,
-  },
-  soonBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: Colors.accent.cyan + '22',
-    borderRadius: Radius.pill,
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-  },
-  soonBadgeText: {
-    fontFamily: FontFamily.dmSansBold,
-    fontSize: 11,
-    color: Colors.accent.cyan,
-  },
-  soonTitle: {
+  sectionTitle: {
     fontFamily: FontFamily.soraSemiBold,
     fontSize: FontSize.cardTitle,
     color: Colors.text.primary,
+    marginTop: 8,
   },
-  soonSub: {
+  sectionSub: {
     fontFamily: FontFamily.dmSansRegular,
     fontSize: FontSize.bodySmall,
     color: Colors.text.secondary,
     lineHeight: 19,
+    marginTop: -6,
   },
+  locked: { opacity: 0.75 },
+  crown: { fontSize: 18 },
+  diffBadge: { borderRadius: Radius.pill, paddingHorizontal: 8, paddingVertical: 2 },
+  diffText: { fontFamily: FontFamily.dmSansBold, fontSize: 10, textTransform: 'uppercase', letterSpacing: 0.5 },
 });

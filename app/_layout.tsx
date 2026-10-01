@@ -7,6 +7,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useStoreHydrated } from '../state/store';
 import { Colors } from '../theme/tokens';
 import { initPurchases } from '../lib/purchases';
+import { useReminderSync } from '../lib/reminders';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,6 +25,7 @@ export default function RootLayout() {
   });
   // Don't block the app forever if a font fails — system font is fine.
   const ready = hydrated && (fontsLoaded || !!fontError);
+  useReminderSync(hydrated);
 
   useEffect(() => {
     initPurchases();
@@ -45,6 +47,8 @@ export default function RootLayout() {
         <Stack.Screen name="onboarding" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="exercise/[id]" options={{ presentation: 'fullScreenModal' }} />
+        <Stack.Screen name="situation/[id]" options={{ presentation: 'fullScreenModal' }} />
+        <Stack.Screen name="recordings" options={{ presentation: 'modal' }} />
         <Stack.Screen name="panic" options={{ presentation: 'modal', animation: 'fade' }} />
         <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
       </Stack>

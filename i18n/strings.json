@@ -97,6 +97,7 @@
     "freq_15_sub":       { "cs": "Ideální rovnováha", "en": "The ideal balance" },
     "freq_30_title":     { "cs": "Naplno", "en": "All in" },
     "freq_30_sub":       { "cs": "Intenzivní pokrok", "en": "Intensive progress" },
+    "freq_reminder":     { "cs": "Připomeň mi denně v {time}", "en": "Remind me daily at {time}" },
     "freq_cta":          { "cs": "🚀 Spustit Speasy!", "en": "🚀 Launch Speasy!" },
 
     "done_title":        { "cs": "Vše je připraveno, {name}! 🎉", "en": "You're all set, {name}! 🎉" },
@@ -158,6 +159,8 @@
     "reading_sub":       { "cs": "Trénink tempa a rytmu", "en": "Pace and rhythm training" },
     "softstart":         { "cs": "Měkký start hlásek", "en": "Soft consonant onset" },
     "softstart_sub":     { "cs": "Jemné nasazení slov", "en": "Gentle word onsets" },
+    "metronome":         { "cs": "Metronomická řeč", "en": "Metronome speech" },
+    "metronome_sub":     { "cs": "Jedna slabika na jeden úder", "en": "One syllable per beat" },
     "steps": {
       "breathing": {
         "cs": [
@@ -212,6 +215,22 @@
           "Repeat each word 3×. Set your own pace.",
           "Then try a whole sentence with the same technique."
         ]
+      },
+      "metronome": {
+        "cs": [
+          "Metronom ti dá klidný, pravidelný rytmus. Řeč se pak méně zasekává.",
+          "Na každý úder řekni jednu slabiku: „Dob-rý den“ = tři údery.",
+          "Začni pomalu, kolem 60 úderů za minutu. Rychlost můžeš měnit tlačítky − a +.",
+          "Mluv měkce a souvisle, slabiky na sebe navazují.",
+          "Až ti to půjde, zrychli o 5–10 úderů. Pak zkus pár vět bez metronomu."
+        ],
+        "en": [
+          "The metronome gives you a calm, steady rhythm. Speech gets stuck less.",
+          "Say one syllable per beat: “Good mor-ning” = three beats.",
+          "Start slowly, around 60 beats per minute. Change the speed with − and +.",
+          "Speak softly and smoothly, letting the syllables flow into each other.",
+          "Once it feels easy, speed up by 5–10 beats. Then try a few sentences without it."
+        ]
       }
     },
     "level":             { "cs": "Úroveň {n}", "en": "Level {n}" },
@@ -221,15 +240,118 @@
     "prev":              { "cs": "← Zpět", "en": "← Back" },
     "next":              { "cs": "Další →", "en": "Next →" },
     "finish":            { "cs": "Dokončit ✓", "en": "Finish ✓" },
+    "to_practice":       { "cs": "Jdu na to →", "en": "Let's practise →" },
     "elapsed":           { "cs": "{time} · doporučeno {n} min", "en": "{time} · suggested {n} min" },
     "done_title":        { "cs": "Výborně!", "en": "Well done!" },
     "done_sub":          { "cs": "Cvičení dokončeno", "en": "Exercise complete" },
     "done_streak":       { "cs": "Série 🔥", "en": "Streak 🔥" },
     "done_minutes":      { "cs": "Minut", "en": "Minutes" },
     "done_cta":          { "cs": "Hotovo →", "en": "Done →" },
-    "not_found":         { "cs": "Cvičení nebylo nalezeno.", "en": "Exercise not found." },
-    "situations_title":  { "cs": "Nácvik reálných situací", "en": "Real-life situation practice" },
-    "situations_sub":    { "cs": "Telefonát, obchod, prezentace — řízené scénáře krok za krokem. Pracujeme na nich.", "en": "Phone calls, shops, presentations — guided step-by-step scenarios. We're working on them." }
+    "not_found":         { "cs": "Cvičení nebylo nalezeno.", "en": "Exercise not found." }
+  },
+
+  "situations": {
+    "title":             { "cs": "Reálné situace", "en": "Real-life situations" },
+    "intro":             { "cs": "Připrav se, nacvič si věty nahlas a pak to zkus naživo.", "en": "Prepare, rehearse the phrases out loud, then try it for real." },
+    "level_easy":        { "cs": "Lehké", "en": "Easy" },
+    "level_medium":      { "cs": "Střední", "en": "Medium" },
+    "level_hard":        { "cs": "Těžké", "en": "Hard" },
+    "prep_of":           { "cs": "Příprava {n}/{total}", "en": "Preparation {n}/{total}" },
+    "phrase_of":         { "cs": "Věta {n}/{total} · řekni nahlas", "en": "Phrase {n}/{total} · say it out loud" },
+    "to_phrases":        { "cs": "Nacvičit věty →", "en": "Rehearse phrases →" },
+    "to_challenge":      { "cs": "Výzva →", "en": "Challenge →" },
+    "phrase_hint":       { "cs": "Řekni větu pomalu a klidně. Chceš-li, nahraj se a poslechni si to.", "en": "Say the phrase slowly and calmly. If you like, record yourself and listen back." },
+    "challenge_title":   { "cs": "Tvoje výzva", "en": "Your challenge" },
+    "challenge_hint":    { "cs": "Nemusí to být dokonalé. Důležité je to zkusit — každý pokus se počítá.", "en": "It doesn't have to be perfect. What matters is trying — every attempt counts." }
+  },
+
+  "recorder": {
+    "title":             { "cs": "Nahraj se", "en": "Record yourself" },
+    "hint":              { "cs": "Čti nahlas a pak si to poslechni", "en": "Read aloud, then listen back" },
+    "record":            { "cs": "Začít nahrávat", "en": "Start recording" },
+    "stop":              { "cs": "Zastavit nahrávání", "en": "Stop recording" },
+    "recording":         { "cs": "Nahrávám…", "en": "Recording…" },
+    "listen_back":       { "cs": "Poslechni si to", "en": "Listen back" },
+    "play":              { "cs": "Přehrát", "en": "Play" },
+    "pause":             { "cs": "Pozastavit", "en": "Pause" },
+    "again_hint":        { "cs": "Mikrofonem nahraješ nový pokus — nahradí tento.", "en": "Tap the mic to record a new take — it replaces this one." },
+    "permission_title":  { "cs": "Přístup k mikrofonu", "en": "Microphone access" },
+    "permission_body":   { "cs": "Pro nahrávání povol Speasy přístup k mikrofonu v nastavení telefonu.", "en": "To record, allow Speasy to use the microphone in your phone settings." },
+    "open_settings":     { "cs": "Otevřít nastavení", "en": "Open settings" },
+    "error":             { "cs": "Nahrávání se nepodařilo. Zkus to prosím znovu.", "en": "Recording failed. Please try again." }
+  },
+
+  "metronome": {
+    "bpm":               { "cs": "úderů/min", "en": "beats/min" },
+    "start":             { "cs": "Spustit metronom", "en": "Start metronome" },
+    "stop":              { "cs": "Zastavit metronom", "en": "Stop metronome" },
+    "slower":            { "cs": "Pomaleji", "en": "Slower" },
+    "faster":            { "cs": "Rychleji", "en": "Faster" },
+    "sound":             { "cs": "Zvuk metronomu", "en": "Metronome sound" },
+    "hint":              { "cs": "Klepni na kruh a metronom se spustí", "en": "Tap the circle to start" },
+    "hint_running":      { "cs": "Jedna slabika na každý úder. Klepnutím zastavíš.", "en": "One syllable per beat. Tap to stop." }
+  },
+
+  "reading": {
+    "another":           { "cs": "Jiný text", "en": "Another text" }
+  },
+
+  "rating": {
+    "title":             { "cs": "Jak se ti mluvilo?", "en": "How did speaking feel?" },
+    "sub":               { "cs": "Upřímně, jen pro tebe. Uvidíš, jak se to v čase mění.", "en": "Honestly, just for you. You'll see how it changes over time." },
+    "level_1":           { "cs": "Hodně těžko", "en": "Very hard" },
+    "level_2":           { "cs": "Spíš těžko", "en": "Rather hard" },
+    "level_3":           { "cs": "Tak napůl", "en": "So-so" },
+    "level_4":           { "cs": "Docela dobře", "en": "Pretty good" },
+    "level_5":           { "cs": "Skvěle", "en": "Great" },
+    "note_placeholder":  { "cs": "Poznámka (nepovinné): co šlo dobře, co bylo těžké…", "en": "Note (optional): what went well, what was hard…" },
+    "privacy":           { "cs": "Zůstává jen v tvém telefonu.", "en": "Stays on your phone." },
+    "save":              { "cs": "Uložit", "en": "Save" }
+  },
+
+  "recordings": {
+    "title":             { "cs": "Moje nahrávky", "en": "My recordings" },
+    "count":             { "cs": { "one": "# nahrávka", "few": "# nahrávky", "other": "# nahrávek" }, "en": { "one": "# recording", "other": "# recordings" } },
+    "empty":             { "cs": "Zatím tu nic není. Nahrát se můžeš u cvičení Plynulé čtení nebo v situacích.", "en": "Nothing here yet. You can record yourself in Fluent reading or in situations." },
+    "free_limit":        { "cs": "Free verze uchovává poslední {n} nahrávky.", "en": "The free plan keeps your last {n} recordings." },
+    "delete":            { "cs": "Smazat", "en": "Delete" },
+    "delete_title":      { "cs": "Smazat nahrávku?", "en": "Delete recording?" },
+    "delete_body":       { "cs": "Nahrávka se nenávratně smaže z telefonu.", "en": "The recording will be permanently deleted from your phone." }
+  },
+
+  "reminders": {
+    "section":           { "cs": "Připomínky", "en": "Reminders" },
+    "daily":             { "cs": "Denní připomínka", "en": "Daily reminder" },
+    "channel":           { "cs": "Denní připomínky", "en": "Daily reminders" },
+    "title":             { "cs": "Čas na chvilku cvičení 🎙️", "en": "Time for a little practice 🎙️" },
+    "body":              { "cs": "Pár minut denně dělá rozdíl. Jdeme na to?", "en": "A few minutes a day makes a difference. Shall we?" },
+    "denied_title":      { "cs": "Oznámení jsou vypnutá", "en": "Notifications are off" },
+    "denied_body":       { "cs": "Pro připomínky povol Speasy oznámení v nastavení telefonu.", "en": "To get reminders, allow notifications for Speasy in your phone settings." }
+  },
+
+  "report": {
+    "title":             { "cs": "Speasy · přehled pokroku", "en": "Speasy · progress report" },
+    "cta":               { "cs": "PDF přehled pro logopeda", "en": "PDF report for your therapist" },
+    "cta_sub":           { "cs": "Posledních 30 dní — cvičení, minuty, hodnocení, poznámky", "en": "Last 30 days — exercises, minutes, ratings, notes" },
+    "generating":        { "cs": "Připravuji PDF…", "en": "Preparing PDF…" },
+    "error":             { "cs": "PDF se nepodařilo vytvořit nebo sdílet.", "en": "Couldn't create or share the PDF." },
+    "sessions":          { "cs": "cvičení", "en": "sessions" },
+    "minutes":           { "cs": "minut", "en": "minutes" },
+    "active_days":       { "cs": "aktivních dní", "en": "active days" },
+    "avg_rating":        { "cs": "průměrné hodnocení", "en": "average rating" },
+    "streak":            { "cs": "Aktuální série", "en": "Current streak" },
+    "panic":             { "cs": "Použití Panic", "en": "Panic uses" },
+    "by_activity":       { "cs": "Podle aktivity", "en": "By activity" },
+    "activity":          { "cs": "Aktivita", "en": "Activity" },
+    "count":             { "cs": "Počet", "en": "Count" },
+    "journal":           { "cs": "Deník", "en": "Journal" },
+    "date":              { "cs": "Datum", "en": "Date" },
+    "min":               { "cs": "Min", "en": "Min" },
+    "rating":            { "cs": "Hodnocení", "en": "Rating" },
+    "note":              { "cs": "Poznámka", "en": "Note" },
+    "empty":             { "cs": "V tomto období žádná data.", "en": "No data for this period." },
+    "rating_explain":    { "cs": "Hodnocení je subjektivní sebehodnocení uživatele po cvičení (1 = hodně těžko, 5 = skvěle), nikoli měření plynulosti.", "en": "The rating is the user's subjective self-assessment after each session (1 = very hard, 5 = great), not a fluency measurement." },
+    "footer":            { "cs": "Vygenerováno aplikací Speasy. Speasy není zdravotnický prostředek.", "en": "Generated by Speasy. Speasy is not a medical device." }
   },
 
   "progress": {
@@ -244,15 +366,23 @@
     "activity_week":     { "cs": "Minuty cvičení · tento týden", "en": "Practice minutes · this week" },
     "activity_empty":    { "cs": "Tento týden zatím nic. Graf se naplní, jakmile začneš cvičit.", "en": "Nothing yet this week. The chart fills up once you start practising." },
     "locked_title":      { "cs": "Podrobné statistiky", "en": "Detailed statistics" },
-    "locked_sub":        { "cs": "Graf minut po dnech a přehled tvé aktivity.", "en": "Daily minutes chart and an overview of your activity." },
+    "locked_sub":        { "cs": "Graf minut po dnech a srovnání tvého hodnocení týden po týdnu.", "en": "Daily minutes chart and your self-rating compared week by week." },
+    "last_week":         { "cs": "Minulý týden", "en": "Last week" },
+    "rating_title":      { "cs": "Jak se ti mluvilo", "en": "How speaking felt" },
+    "rating_explain":    { "cs": "Průměr tvého hodnocení po cvičeních (1–5).", "en": "Average of your ratings after sessions (1–5)." },
+    "journal_title":     { "cs": "Deník", "en": "Journal" },
+    "journal_empty":     { "cs": "Po každém cvičení můžeš ohodnotit, jak se ti mluvilo. Záznamy uvidíš tady.", "en": "After each session you can rate how speaking felt. Your entries will show up here." },
     "unlock":            { "cs": "Odemknout", "en": "Unlock" }
   },
 
   "premium": {
     "title":             { "cs": "Speasy Premium", "en": "Speasy Premium" },
-    "tagline":           { "cs": "Trénuj, kolikrát chceš — bez limitů.", "en": "Practise as often as you like — no limits." },
+    "tagline":           { "cs": "Trénuj bez limitů, se všemi situacemi a přehledem pro logopeda.", "en": "Practise without limits, with every situation and a report for your therapist." },
     "context_limit":     { "cs": "Tento týden máš za sebou {n} cvičení 💪 Free verze jich má 5 týdně.", "en": "You've done {n} exercises this week 💪 The free plan includes 5 per week." },
     "context_stats":     { "cs": "Podrobné statistiky jsou součástí Premium.", "en": "Detailed statistics are part of Premium." },
+    "context_situation": { "cs": "Tahle situace je součástí Premium.", "en": "This situation is part of Premium." },
+    "context_recordings":{ "cs": "Free verze uchovává poslední {n} nahrávky. S Premium si uchováš všechny a uslyšíš svůj pokrok.", "en": "The free plan keeps your last {n} recordings. With Premium you keep them all and can hear your progress." },
+    "context_pdf":       { "cs": "PDF přehled pro logopeda je součástí Premium.", "en": "The PDF report for your therapist is part of Premium." },
     "plan_monthly":      { "cs": "Měsíčně", "en": "Monthly" },
     "plan_yearly":       { "cs": "Ročně", "en": "Yearly" },
     "per_month":         { "cs": "měsíc", "en": "month" },
@@ -271,7 +401,10 @@
     "table_free":        { "cs": "Free", "en": "Free" },
     "feat_panic":        { "cs": "Panic tlačítko", "en": "Panic button" },
     "feat_weekly":       { "cs": "Cvičení / týden", "en": "Exercises / week" },
+    "feat_situations":   { "cs": "Reálné situace", "en": "Real-life situations" },
+    "feat_recordings":   { "cs": "Uložené nahrávky", "en": "Saved recordings" },
     "feat_stats":        { "cs": "Podrobné statistiky", "en": "Detailed statistics" },
+    "feat_pdf":          { "cs": "PDF pro logopeda", "en": "PDF for your therapist" },
     "restore":           { "cs": "Obnovit nákupy", "en": "Restore purchases" },
     "restore_success":   { "cs": "Premium bylo obnoveno.", "en": "Premium has been restored." },
     "restore_none":      { "cs": "Nenašli jsme žádné aktivní předplatné.", "en": "We couldn't find an active subscription." },
@@ -289,8 +422,10 @@
     "post_title_noname": { "cs": "Vítej v Premium! 🎉", "en": "Welcome to Premium! 🎉" },
     "post_sub":          { "cs": "Co teď máš navíc:", "en": "What you now have:" },
     "post_unlimited":    { "cs": "Neomezená cvičení", "en": "Unlimited exercises" },
+    "post_situations":   { "cs": "Všechny reálné situace", "en": "All real-life situations" },
+    "post_recordings":   { "cs": "Neomezená historie nahrávek", "en": "Unlimited recording history" },
     "post_stats":        { "cs": "Podrobné statistiky", "en": "Detailed statistics" },
-    "post_future":       { "cs": "Všechna nová cvičení, která přidáme", "en": "Every new exercise we add" },
+    "post_pdf":          { "cs": "PDF přehled pro logopeda", "en": "PDF report for your therapist" },
     "post_cta":          { "cs": "Jdeme na to →", "en": "Let's go →" }
   },
 

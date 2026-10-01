@@ -6,7 +6,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
 import type { PurchasesOffering, PurchasesPackage } from 'react-native-purchases';
 import { useTranslation } from '../../i18n/useTranslation';
-import { useStore, useIsPremium } from '../../state/store';
+import { FREE_RECORDINGS_LIMIT, useStore, useIsPremium } from '../../state/store';
+import { FREE_SITUATIONS, SITUATIONS } from '../../content/situations';
 import PillButton from '../../components/PillButton';
 import Card from '../../components/Card';
 import IconButton from '../../components/IconButton';
@@ -18,13 +19,16 @@ import { toDateKey } from '../../lib/dates';
 import { PRIVACY_URL, TERMS_URL } from '../../lib/links';
 import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
 
-type Context = 'limit' | 'stats' | undefined;
+type Context = 'limit' | 'stats' | 'situation' | 'recordings' | 'pdf' | undefined;
 type LoadState = 'loading' | 'ready' | 'unavailable';
 
 const COMPARISON_ROWS = [
   { key: 'panic', free: '✓', premium: '✓' },
   { key: 'weekly', free: String(FREE_WEEKLY_LIMIT), premium: '∞' },
+  { key: 'situations', free: String(FREE_SITUATIONS), premium: String(SITUATIONS.length) },
+  { key: 'recordings', free: String(FREE_RECORDINGS_LIMIT), premium: '∞' },
   { key: 'stats', free: '—', premium: '✓' },
+  { key: 'pdf', free: '—', premium: '✓' },
 ];
 
 function periodKey(pkg: PurchasesPackage) {
@@ -120,8 +124,8 @@ export default function PaywallScreen() {
   const contextText =
     context === 'limit'
       ? t('premium.context_limit', { n: sessionsThisWeek(useStore.getState().sessions, toDateKey()) })
-      : context === 'stats'
-        ? t('premium.context_stats')
+      : context
+        ? t(`premium.context_${context}`, { n: FREE_RECORDINGS_LIMIT })
         : null;
 
   return (

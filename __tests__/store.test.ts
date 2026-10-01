@@ -2,6 +2,10 @@ jest.mock('@react-native-async-storage/async-storage', () =>
   require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
 );
 jest.mock('expo-localization', () => ({ getLocales: () => [{ languageCode: 'en' }] }));
+const deleted: string[] = [];
+jest.mock('../lib/recordings', () => ({
+  deleteRecordingFile: (name: string) => deleted.push(name),
+}));
 
 import { useStore } from '../state/store';
 import { toDateKey } from '../lib/dates';
@@ -38,5 +42,50 @@ describe('store', () => {
     expect(migrated.streak).toEqual({ current: 0, record: 12, lastActiveDate: null });
     expect(migrated.panicUses).toBe(3);
     expect(migrated.progress).toBeUndefined();
+    // v0 flows through the v1→v2 step as well
+    expect(migrated.recordings).toEqual([]);
+    expect(migrated.reminder).toEqual({ enabled: false, hour: 18, minute: 0 });
+    expect(migrated.remindersEnabled).toBeUndefined();
+  });
+
+  it('migrates v1 sessions to have ids', () => {
+    const migrate = useStore.persist.getOptions().migrate!;
+    const v1 = {
+      onboardingDone: true,
+      remindersEnabled: false,
+      sessions: [{ exerciseId: 'reading', date: '2026-09-29', durationSec: 60, completedAt: '2026-09-29T10:00:00.000Z' }],
+    };
+    const migrated = migrate(v1, 1) as any;
+    expect(migrated.sessions[0].id).toBeTruthy();
+    expect(migrated.recordings).toEqual([]);
+  });
+
+  it('rates a session by id', () => {
+    const id = useStore.getState().recordSession('metronome', 300);
+    useStore.getState().rateSession(id, 4, '  went ok  ');
+    const s = useStore.getState().sessions.find((x) => x.id === id)!;
+    expect(s.rating).toBe(4);
+    expect(s.note).toBe('went ok');
+  });
+
+  it('keeps only the last 3 recordings for free users and deletes the files', () => {
+    const { addRecording } = useStore.getState();
+    for (let i = 1; i <= 4; i++) addRecording({ fileName: `${i}.m4a`, exerciseId: 'reading', durationSec: 10 });
+    expect(useStore.getState().recordings.map((r) => r.fileName)).toEqual(['2.m4a', '3.m4a', '4.m4a']);
+    expect(deleted).toContain('1.m4a');
+  });
+
+  it('keeps every recording for premium users', () => {
+    useStore.setState({ recordings: [], subscription: { isPremium: true, isTrial: false, expiresAt: null } });
+    const { addRecording } = useStore.getState();
+    for (let i = 1; i <= 5; i++) addRecording({ fileName: `p${i}.m4a`, exerciseId: 'reading', durationSec: 10 });
+    expect(useStore.getState().recordings).toHaveLength(5);
+  });
+
+  it('removes a recording and its file', () => {
+    const rec = useStore.getState().recordings[0];
+    useStore.getState().removeRecording(rec.id);
+    expect(useStore.getState().recordings.find((r) => r.id === rec.id)).toBeUndefined();
+    expect(deleted).toContain(rec.fileName);
   });
 });

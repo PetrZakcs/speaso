@@ -7,11 +7,18 @@ export interface StreakData {
   lastActiveDate: DateKey | null;
 }
 
+export type Rating = 1 | 2 | 3 | 4 | 5;
+
 export interface Session {
+  id: string;
+  /** Exercise id, or `situation:<id>` for guided situations. */
   exerciseId: string;
   date: DateKey;
   durationSec: number;
   completedAt: string; // ISO timestamp
+  /** Self-assessment after the session: how speaking felt (1 hard … 5 easy). */
+  rating?: Rating;
+  note?: string;
 }
 
 export const FREE_WEEKLY_LIMIT = 5;
@@ -57,4 +64,11 @@ export function sessionsThisWeek(sessions: Session[], today: DateKey): number {
 
 export function canStartExercise(sessions: Session[], today: DateKey, isPremium: boolean): boolean {
   return isPremium || sessionsThisWeek(sessions, today) < FREE_WEEKLY_LIMIT;
+}
+
+/** Average self-rating of sessions between two dates (inclusive), or null if none were rated. */
+export function averageRating(sessions: Session[], from: DateKey, to: DateKey): number | null {
+  const rated = sessions.filter((s) => s.rating && s.date >= from && s.date <= to);
+  if (rated.length === 0) return null;
+  return rated.reduce((sum, s) => sum + (s.rating ?? 0), 0) / rated.length;
 }

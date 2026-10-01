@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Switch } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from '../../i18n/useTranslation';
 import OnboardingShell from '../../components/OnboardingShell';
 import PillButton from '../../components/PillButton';
 import { useStore } from '../../state/store';
+import { enableReminder } from '../../lib/reminders';
 import { Colors, FontFamily, FontSize, Radius } from '../../theme/tokens';
 
 const FREQ_OPTIONS: { mins: 5 | 15 | 30; icon: string; titleKey: string; subKey: string; recommended?: boolean }[] = [
@@ -17,9 +18,13 @@ export default function OB08() {
   const { t } = useTranslation();
   const setUser = useStore((s) => s.setUser);
   const [selected, setSelected] = useState<5 | 15 | 30>(15);
+  const [remind, setRemind] = useState(true);
+  const reminder = useStore((s) => s.reminder);
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     setUser({ dailyMinutes: selected });
+    // The permission prompt appears here, right after the user opted in.
+    if (remind) await enableReminder(reminder.hour, reminder.minute).catch(() => false);
     router.push('/onboarding/done');
   };
 
@@ -56,6 +61,18 @@ export default function OB08() {
               </TouchableOpacity>
             );
           })}
+        </View>
+
+        <View style={styles.reminderRow}>
+          <Text style={styles.reminderIcon}>🔔</Text>
+          <Text style={styles.reminderText}>{t('onboarding.freq_reminder', { time: '18:00' })}</Text>
+          <Switch
+            value={remind}
+            onValueChange={setRemind}
+            trackColor={{ false: Colors.surface.card2, true: Colors.primary.blue }}
+            thumbColor={Colors.text.primary}
+            accessibilityLabel={t('onboarding.freq_reminder', { time: '18:00' })}
+          />
         </View>
       </View>
 

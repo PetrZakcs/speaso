@@ -5,6 +5,7 @@ import {
 } from '../lib/streak';
 
 const session = (date: string, durationSec = 300): Session => ({
+  id: `${date}-${durationSec}`,
   exerciseId: 'breathing',
   date,
   durationSec,
