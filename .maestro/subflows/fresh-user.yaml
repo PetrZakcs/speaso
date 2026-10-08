@@ -1,0 +1,22 @@
+# Wipes app data and completes onboarding as "Petr" (phone call is hard).
+appId: host.exp.Exponent
+---
+- clearState
+- runFlow: open-app.yaml
+- extendedWaitUntil:
+    visible: "Mluv svým tempem."
+    timeout: 90000
+- tapOn: "Začít"
+- inputText: "Petr"
+- tapOn: "Pokračovat"
+- tapOn: "Pro sebe.*"
+- tapOn: "Pokračovat"
+- tapOn: "Telefonát.*"
+- tapOn: "Pokračovat"
+- tapOn: "Hotovo"
+- tapOn:
+    text: "Povolit|Allow"
+    optional: true
+- extendedWaitUntil:
+    visible: "Začni tady"
+    timeout: 15000

@@ -1,0 +1,37 @@
+# Fresh install → onboarding → home with a first recommendation.
+appId: host.exp.Exponent
+---
+- clearState
+- runFlow: subflows/open-app.yaml
+- extendedWaitUntil:
+    visible: "Mluv svým tempem."
+    timeout: 90000
+- tapOn: "Začít"
+
+- assertVisible: "Jak ti máme říkat?"
+- inputText: "Petr"
+- assertVisible: "Budeme tě oslovovat: Petře"
+- tapOn: "Pokračovat"
+
+- assertVisible: "Pro koho Speasy nastavujeme?"
+- tapOn: "Pro sebe.*"
+- tapOn: "Pokračovat"
+
+- assertVisible: "Kdy se ti mluví nejhůř?"
+- tapOn: "Telefonát.*"
+- tapOn: "Pokračovat"
+
+- assertVisible: "Kolik času denně?"
+- tapOn: "15 minut.*"
+- tapOn: "Hotovo"
+# Reminder is on by default → the system asks for notification permission.
+- tapOn:
+    text: "Povolit|Allow"
+    optional: true
+
+- extendedWaitUntil:
+    visible: "Začni tady"
+    timeout: 15000
+- assertVisible: "Dobrý.*, Petře|Dobré ráno, Petře|Dobrý večer, Petře"
+- assertVisible: "Bránicové dýchání"
+- takeScreenshot: 01-home-first-run

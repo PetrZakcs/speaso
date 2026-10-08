@@ -1,0 +1,60 @@
+# Practice tools render and work; 5 free sessions a week, the 6th opens the paywall.
+appId: host.exp.Exponent
+---
+- runFlow: subflows/fresh-user.yaml
+
+# 1 — reading: text library + recorder
+- tapOn: "Cvičení, .*"
+- tapOn: "Plynulé čtení.*"
+- tapOn: "Začít"
+- repeat:
+    times: 5
+    commands:
+      - tapOn: "Další →"
+- tapOn: "Jdu na to →"
+- assertVisible: "Nahraj se"
+- tapOn: "Úroveň 3"
+- tapOn: ".*Jiný text.*"
+- takeScreenshot: 04-reading-practice
+- tapOn: "Dokončit ✓"
+- waitForAnimationToEnd
+- tapOn: "Přeskočit"
+- tapOn: "Hotovo →"
+
+# 2 — metronome: start, change tempo, stop
+- tapOn: "Cvičení, .*"
+- tapOn: "Metronomická řeč.*"
+- tapOn: "Začít"
+- repeat:
+    times: 4
+    commands:
+      - tapOn: "Další →"
+- tapOn: "Jdu na to →"
+- tapOn: "Spustit metronom.*"
+- assertVisible: "Jedna slabika na každý úder.*"
+- tapOn: "Rychleji"
+- assertVisible: "Zastavit metronom, 75.*"
+- takeScreenshot: 04-metronome
+- tapOn: "Zastavit metronom.*"
+- tapOn: "Dokončit ✓"
+- waitForAnimationToEnd
+- tapOn: "Přeskočit"
+- tapOn: "Hotovo →"
+
+# 3–5 — three more free sessions
+- runFlow:
+    file: subflows/run-exercise.yaml
+    env: { NAME: "Měkký start hlásek", STEPS: 6, PRACTICE: "no" }
+- runFlow:
+    file: subflows/run-exercise.yaml
+    env: { NAME: "Bránicové dýchání", STEPS: 6, PRACTICE: "no" }
+- runFlow:
+    file: subflows/run-exercise.yaml
+    env: { NAME: "Bránicové dýchání", STEPS: 6, PRACTICE: "no" }
+
+# 6th → weekly limit paywall
+- tapOn: "Cvičení, .*"
+- tapOn: "Měkký start hlásek.*"
+- assertVisible: "Speasy Premium"
+- assertVisible: "Tento týden máš za sebou 5 cvičení.*"
+- takeScreenshot: 04-limit-paywall

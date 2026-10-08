@@ -35,11 +35,25 @@ export default function Recorder({ exerciseId }: { exerciseId: string }) {
   const [busy, setBusy] = useState(false);
   const isRecording = recState.isRecording;
   const stopping = useRef(false);
+  const recordingRef = useRef(false);
+
+  useEffect(() => {
+    recordingRef.current = isRecording;
+  }, [isRecording]);
 
   // Leaving the screen mid-recording: stop and restore the playback route.
+  // useAudioRecorder may already have released its native object by the time
+  // this cleanup runs, so never read recorder properties here — only call
+  // stop() when we know a recording is running, and swallow a release race.
   useEffect(() => {
     return () => {
-      if (recorder.isRecording) recorder.stop().catch(() => {});
+      if (recordingRef.current) {
+        try {
+          recorder.stop().catch(() => {});
+        } catch {
+          // native recorder already released — nothing left to stop
+        }
+      }
       setAudioModeAsync({ allowsRecording: false, playsInSilentMode: true }).catch(() => {});
     };
   }, [recorder]);
@@ -115,7 +129,7 @@ export default function Recorder({ exerciseId }: { exerciseId: string }) {
           accessibilityRole="button"
           accessibilityLabel={isRecording ? t('recorder.stop') : t('recorder.record')}
         >
-          <Ionicons name={isRecording ? 'stop' : 'mic'} size={26} color={Colors.text.primary} />
+          <Ionicons name={isRecording ? 'stop' : 'mic'} size={26} color={isRecording ? Colors.text.primary : Colors.accent.on} />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
           <Text style={styles.title}>

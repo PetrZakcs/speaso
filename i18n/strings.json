@@ -333,7 +333,7 @@
   "premium": {
     "title":             { "cs": "Speasy Premium", "en": "Speasy Premium" },
     "tagline":           { "cs": "Trénuj bez limitů, se všemi situacemi a přehledem pro logopeda.", "en": "Practise without limits, with every situation and a report for your therapist." },
-    "context_limit":     { "cs": "Tento týden máš za sebou {n} cvičení 💪 Free verze jich má 5 týdně.", "en": "You've done {n} exercises this week 💪 The free plan includes 5 per week." },
+    "context_limit":     { "cs": "Tento týden máš za sebou {n} cvičení. Free verze jich má 5 týdně.", "en": "You've done {n} exercises this week. The free plan includes 5 per week." },
     "context_stats":     { "cs": "Podrobné statistiky jsou součástí Premium.", "en": "Detailed statistics are part of Premium." },
     "context_situation": { "cs": "Tahle situace je součástí Premium.", "en": "This situation is part of Premium." },
     "context_recordings":{ "cs": "Free verze uchovává poslední {n} nahrávky. S Premium si uchováš všechny a uslyšíš svůj pokrok.", "en": "The free plan keeps your last {n} recordings. With Premium you keep them all and can hear your progress." },

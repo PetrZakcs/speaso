@@ -81,11 +81,11 @@ export default function Metronome() {
         <TouchableOpacity
           onPress={() => setRunning((r) => !r)}
           accessibilityRole="button"
-          accessibilityLabel={running ? t('metronome.stop') : t('metronome.start')}
+          accessibilityLabel={`${running ? t('metronome.stop') : t('metronome.start')}, ${bpm} ${t('metronome.bpm')}`}
         >
           <Animated.View style={[styles.beat, running && styles.beatRunning, pulseStyle]}>
-            <Text style={styles.bpm}>{bpm}</Text>
-            <Text style={styles.bpmLabel}>{t('metronome.bpm')}</Text>
+            <Text style={[styles.bpm, running && styles.onAccent]}>{bpm}</Text>
+            <Text style={[styles.bpmLabel, running && styles.onAccent]}>{t('metronome.bpm')}</Text>
           </Animated.View>
         </TouchableOpacity>
 
@@ -159,6 +159,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   beatRunning: { backgroundColor: Colors.accent.main },
+  onAccent: { color: Colors.accent.on },
   bpm: { fontFamily: FontFamily.soraSemiBold, fontSize: 34, color: Colors.text.primary },
   bpmLabel: {
     fontFamily: FontFamily.dmSansMedium,

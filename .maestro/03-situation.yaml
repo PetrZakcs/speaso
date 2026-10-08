@@ -1,0 +1,43 @@
+# Free situation end-to-end; Premium situation leads to the paywall.
+appId: host.exp.Exponent
+---
+- runFlow: subflows/fresh-user.yaml
+- tapOn: "Cvičení, .*"   # tab bar item ("Cvičení, tab, 2 of 5")
+- scrollUntilVisible:
+    element: "Telefonát.*"
+- tapOn: "Telefonát.*"
+
+- assertVisible: "Objednat se k lékaři"
+- tapOn: "Začít"
+- repeat:
+    times: 3
+    commands:
+      - tapOn: "Další →"
+- tapOn: "Nacvičit věty →"
+- assertVisible: "Věta 1/6.*"
+- assertVisible: "Nahraj se"
+- repeat:
+    times: 5
+    commands:
+      - tapOn: "Další →"
+- tapOn: "Výzva →"
+- assertVisible: "Tvoje výzva"
+- tapOn: "Dokončit ✓"
+- tapOn: "Přeskočit"
+- assertVisible: "Výborně!"
+- tapOn: "Hotovo →"
+
+# Premium situation → paywall
+- scrollUntilVisible:
+    element: "Pracovní porada.*"
+- tapOn: "Pracovní porada.*"
+- assertVisible: "Speasy Premium"
+- assertVisible: "Tahle situace je součástí Premium."
+- scrollUntilVisible:
+    element: "Obnovit nákupy"
+- takeScreenshot: 03-paywall
+- scrollUntilVisible:
+    element: "Zavřít"
+    direction: UP
+- tapOn: "Zavřít"
+- assertVisible: "Reálné situace"

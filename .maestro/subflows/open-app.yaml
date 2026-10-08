@@ -1,0 +1,33 @@
+# Opens the project in Expo Go on the simulator (Metro must run on :8081).
+# Expo Go itself (not Speasy) asks for notifications on a fresh install and
+# shows a one-time developer menu intro — dismiss both if present.
+appId: host.exp.Exponent
+---
+# Always start from a cold app so every flow begins in the same state.
+- stopApp
+- launchApp
+- openLink: exp://127.0.0.1:8081
+- extendedWaitUntil:
+    visible: "Povolit|Allow|Continue|speasy|Cvičení"
+    timeout: 90000
+- tapOn:
+    text: "Povolit|Allow"
+    optional: true
+- tapOn:
+    text: "Continue"
+    optional: true
+# …which then opens the developer menu sheet; close it.
+- runFlow:
+    when:
+      visible: "Toggle performance monitor"
+    commands:
+      - swipe:
+          start: 50%, 45%
+          end: 50%, 98%
+          duration: 300
+- runFlow:
+    when:
+      visible: "Toggle performance monitor"
+    commands:
+      - tapOn:
+          point: 90%, 48%

@@ -1,0 +1,49 @@
+# Home recommendation → steps → finish → rate → done → streak on home → journal in progress.
+appId: host.exp.Exponent
+---
+- runFlow: subflows/fresh-user.yaml
+- tapOn: "Začít"
+
+- assertVisible: "Bránicové dýchání"
+- tapOn: "Začít"
+- repeat:
+    times: 5
+    commands:
+      - tapOn: "Další →"
+- tapOn: "Dokončit ✓"
+
+- assertVisible: "Jak se ti mluvilo?"
+- waitForAnimationToEnd
+- tapOn:
+    text: "Docela dobře"
+- assertVisible:
+    text: "Uložit"
+    enabled: true
+- tapOn: "Poznámka.*"
+- inputText: "Dobre to slo"
+- tapOn: "Uložit"
+
+- assertVisible: "Výborně!"
+- takeScreenshot: 02-done
+- tapOn: "Hotovo →"
+
+- assertVisible: "1 den v řadě"
+- assertVisible: "Doporučujeme teď"
+
+# Panic opens and closes
+- tapOn:
+    text: "Panic"
+- assertVisible: "Dýchej se mnou"
+- assertVisible: "Nádech|Výdrž|Výdech"
+- tapOn:
+    text: "Zavřít dýchání"
+
+# Progress shows the rated session in the journal
+- tapOn: "Pokrok.*"
+- assertVisible: "Aktuální série"
+- assertVisible: "1 den"
+- scrollUntilVisible:
+    element: "Deník"
+- assertVisible: "4/5"
+- assertVisible: "Dobre to slo"
+- takeScreenshot: 02-progress
