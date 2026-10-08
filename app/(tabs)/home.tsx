@@ -12,7 +12,7 @@ import { addressName } from '../../lib/names';
 import { dailyPlan, doneOn, type PlanItem } from '../../lib/plan';
 import { fromDateKey } from '../../lib/dates';
 import {
-  FREE_WEEKLY_LIMIT, currentStreak, sessionsThisWeek, weekActivity,
+  FREE_WEEKLY_LIMIT, currentStreak, extraSessionsThisWeek, weekActivity,
 } from '../../lib/streak';
 import { useToday } from '../../lib/useToday';
 import { useStartExercise, useStartSituation } from '../../lib/useStartExercise';
@@ -55,7 +55,7 @@ export default function HomeScreen() {
   const done = useMemo(() => doneOn(sessions, today), [sessions, today]);
   const doneCount = plan.filter((i) => done.has(i.activityId)).length;
   const allDone = doneCount === plan.length;
-  const left = Math.max(0, FREE_WEEKLY_LIMIT - sessionsThisWeek(sessions, today));
+  const left = Math.max(0, FREE_WEEKLY_LIMIT - extraSessionsThisWeek(sessions, today));
 
   const start = (item: PlanItem) =>
     item.kind === 'exercise' ? startExercise(item.activityId) : startSituation(item.situation);
@@ -133,8 +133,10 @@ export default function HomeScreen() {
               <Text style={styles.doneText}>{t('home.plan_done')}</Text>
             </View>
           )}
-          {!isPremium && !allDone && (
-            <Text style={styles.limit}>{tn('home.left_this_week', left)}</Text>
+          {!isPremium && (
+            <Text style={styles.limit}>
+              {t('home.plan_free')} {tn('home.left_this_week', left)}
+            </Text>
           )}
         </View>
 

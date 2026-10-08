@@ -60,6 +60,15 @@ describe('store', () => {
     expect(migrated.recordings).toEqual([]);
   });
 
+  it("marks sessions that belong to today's plan", () => {
+    useStore.setState((s) => ({ user: { ...s.user, dailyMinutes: 15, situations: ['phone'] } }));
+    const planId = useStore.getState().recordSession('situation:phone', 300);
+    const extraId = useStore.getState().recordSession('reading', 300);
+    const byId = (id: string) => useStore.getState().sessions.find((x) => x.id === id)!;
+    expect(byId(planId).inPlan).toBe(true);
+    expect(byId(extraId).inPlan).toBe(false);
+  });
+
   it('rates a session by id', () => {
     const id = useStore.getState().recordSession('metronome', 300);
     useStore.getState().rateSession(id, 4, '  went ok  ');

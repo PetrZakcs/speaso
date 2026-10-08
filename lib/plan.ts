@@ -45,6 +45,16 @@ export function dailyPlan(
   return items.slice(0, count);
 }
 
+export function isInPlan(
+  activityId: string,
+  date: DateKey,
+  dailyMinutes: number,
+  hardSituations: string[],
+  isPremium: boolean,
+): boolean {
+  return dailyPlan(date, dailyMinutes, hardSituations, isPremium).some((i) => i.activityId === activityId);
+}
+
 /** Activity ids completed on `date`. */
 export function doneOn(sessions: Session[], date: DateKey): Set<string> {
   return new Set(sessions.filter((s) => s.date === date).map((s) => s.exerciseId));

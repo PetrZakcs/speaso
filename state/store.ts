@@ -8,6 +8,7 @@ import {
   EMPTY_STREAK, registerActivity, type Rating, type Session, type StreakData,
 } from '../lib/streak';
 import { deleteRecordingFile } from '../lib/recordings';
+import { isInPlan } from '../lib/plan';
 
 export type AgeGroup = 'child' | 'teen' | 'adult' | 'senior';
 export type TherapyStatus = 'never' | 'past' | 'current' | 'self';
@@ -135,12 +136,14 @@ export const useStore = create<AppState>()(
       recordSession: (exerciseId, durationSec) => {
         const now = new Date();
         const today = toDateKey(now);
+        const { user, subscription } = get();
         const session: Session = {
           id: newId(now),
           exerciseId,
           date: today,
           durationSec: Math.round(durationSec),
           completedAt: now.toISOString(),
+          inPlan: isInPlan(exerciseId, today, user.dailyMinutes, user.situations, subscription.isPremium),
         };
         set((s) => ({
           sessions: [...s.sessions, session].slice(-MAX_SESSIONS),

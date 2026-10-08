@@ -1,7 +1,7 @@
 import { addDays, mondayOf, toDateKey, weekDates, weekdayIndex } from '../lib/dates';
 import {
   EMPTY_STREAK, FREE_WEEKLY_LIMIT, canStartExercise, currentStreak, registerActivity,
-  sessionsThisWeek, weekActivity, weekMinutes, type Session,
+  extraSessionsThisWeek, sessionsThisWeek, weekActivity, weekMinutes, type Session,
 } from '../lib/streak';
 
 const session = (date: string, durationSec = 300): Session => ({
@@ -101,6 +101,15 @@ describe('weekly usage', () => {
     const full = Array.from({ length: FREE_WEEKLY_LIMIT }, () => session(today));
     expect(canStartExercise(full, today, false)).toBe(false);
     expect(canStartExercise(full, today, true)).toBe(true);
+  });
+
+  it("never blocks today's plan, and plan sessions don't count towards the limit", () => {
+    const full = Array.from({ length: FREE_WEEKLY_LIMIT }, () => session(today));
+    expect(canStartExercise(full, today, false, true)).toBe(true);
+
+    const planOnly = Array.from({ length: 10 }, () => ({ ...session(today), inPlan: true }));
+    expect(extraSessionsThisWeek(planOnly, today)).toBe(0);
+    expect(canStartExercise(planOnly, today, false)).toBe(true);
   });
 
   it('maps activity and minutes onto Mon…Sun', () => {

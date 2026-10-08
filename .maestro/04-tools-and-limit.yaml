@@ -1,4 +1,4 @@
-# Practice tools render and work; 5 free sessions a week, the 6th opens the paywall.
+# Practice tools work; 5 extra sessions a week are free, the 6th opens the paywall; the daily plan stays free.
 appId: host.exp.Exponent
 ---
 - runFlow: subflows/fresh-user.yaml
@@ -41,20 +41,31 @@ appId: host.exp.Exponent
 - tapOn: "Přeskočit"
 - tapOn: "Hotovo →"
 
-# 3–5 — three more free sessions
+# 3–5 — three more extra sessions (reading/metronome are never in a 15-min plan)
 - runFlow:
     file: subflows/run-exercise.yaml
-    env: { NAME: "Měkký start hlásek", STEPS: 6, PRACTICE: "no" }
+    env: { NAME: "Plynulé čtení", STEPS: 6, PRACTICE: "yes" }
 - runFlow:
     file: subflows/run-exercise.yaml
-    env: { NAME: "Bránicové dýchání", STEPS: 6, PRACTICE: "no" }
+    env: { NAME: "Metronomická řeč", STEPS: 5, PRACTICE: "yes" }
 - runFlow:
     file: subflows/run-exercise.yaml
-    env: { NAME: "Bránicové dýchání", STEPS: 6, PRACTICE: "no" }
+    env: { NAME: "Plynulé čtení", STEPS: 6, PRACTICE: "yes" }
 
-# 6th → weekly limit paywall
+# 6th extra → weekly limit paywall
 - tapOn: "Cvičení, .*"
-- tapOn: "Měkký start hlásek.*"
+- tapOn: "Metronomická řeč.*"
 - assertVisible: "Speasy Premium"
-- assertVisible: "Tento týden máš za sebou 5 cvičení.*"
+- assertVisible: "Tento týden máš za sebou 5 cvičení navíc.*"
 - takeScreenshot: 04-limit-paywall
+- scrollUntilVisible:
+    element: "Zavřít"
+    direction: UP
+- tapOn: "Zavřít"
+
+# …but today's plan is always free
+- tapOn: "Domů.*"
+- assertVisible: "Plán na dnes je vždy zdarma.*"
+- tapOn: "Bránicové dýchání.*|Měkký start hlásek.*"
+- assertVisible: "Začít"
+- assertNotVisible: "Speasy Premium"

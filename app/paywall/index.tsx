@@ -14,7 +14,7 @@ import IconButton from '../../components/IconButton';
 import {
   getCurrentOffering, getTrialEligibility, purchase, restorePurchases,
 } from '../../lib/purchases';
-import { FREE_WEEKLY_LIMIT, sessionsThisWeek } from '../../lib/streak';
+import { FREE_WEEKLY_LIMIT, extraSessionsThisWeek } from '../../lib/streak';
 import { toDateKey } from '../../lib/dates';
 import { PRIVACY_URL, TERMS_URL } from '../../lib/links';
 import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow } from '../../theme/tokens';
@@ -24,6 +24,7 @@ type LoadState = 'loading' | 'ready' | 'unavailable';
 
 const COMPARISON_ROWS = [
   { key: 'panic', free: '✓', premium: '✓' },
+  { key: 'plan', free: '✓', premium: '✓' },
   { key: 'weekly', free: String(FREE_WEEKLY_LIMIT), premium: '∞' },
   { key: 'situations', free: String(FREE_SITUATIONS), premium: String(SITUATIONS.length) },
   { key: 'recordings', free: String(FREE_RECORDINGS_LIMIT), premium: '∞' },
@@ -123,7 +124,7 @@ export default function PaywallScreen() {
 
   const contextText =
     context === 'limit'
-      ? t('premium.context_limit', { n: sessionsThisWeek(useStore.getState().sessions, toDateKey()) })
+      ? t('premium.context_limit', { n: extraSessionsThisWeek(useStore.getState().sessions, toDateKey()) })
       : context
         ? t(`premium.context_${context}`, { n: FREE_RECORDINGS_LIMIT })
         : null;

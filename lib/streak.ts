@@ -19,6 +19,8 @@ export interface Session {
   /** Self-assessment after the session: how speaking felt (1 hard … 5 easy). */
   rating?: Rating;
   note?: string;
+  /** Part of that day's plan — plan activities are always free. */
+  inPlan?: boolean;
 }
 
 export const FREE_WEEKLY_LIMIT = 5;
@@ -69,8 +71,23 @@ export function sessionsThisWeek(sessions: Session[], today: DateKey): number {
   return sessions.filter((s) => s.date >= monday && s.date <= today).length;
 }
 
-export function canStartExercise(sessions: Session[], today: DateKey, isPremium: boolean): boolean {
-  return isPremium || sessionsThisWeek(sessions, today) < FREE_WEEKLY_LIMIT;
+/** Sessions this week outside the daily plan — the only ones the free limit counts. */
+export function extraSessionsThisWeek(sessions: Session[], today: DateKey): number {
+  const monday = mondayOf(today);
+  return sessions.filter((s) => !s.inPlan && s.date >= monday && s.date <= today).length;
+}
+
+/**
+ * Free users: today's plan is always open; anything beyond it is limited to
+ * FREE_WEEKLY_LIMIT sessions a week. Premium has no limit.
+ */
+export function canStartExercise(
+  sessions: Session[],
+  today: DateKey,
+  isPremium: boolean,
+  inTodaysPlan = false,
+): boolean {
+  return isPremium || inTodaysPlan || extraSessionsThisWeek(sessions, today) < FREE_WEEKLY_LIMIT;
 }
 
 /** Average self-rating of sessions between two dates (inclusive), or null if none were rated. */

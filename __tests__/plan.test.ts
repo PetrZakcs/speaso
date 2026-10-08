@@ -1,4 +1,4 @@
-import { dailyPlan, doneOn } from '../lib/plan';
+import { dailyPlan, doneOn, isInPlan } from '../lib/plan';
 import type { Session } from '../lib/streak';
 
 const ids = (date: string, minutes: number, hard: string[] = [], premium = false) =>
@@ -28,6 +28,15 @@ describe('dailyPlan', () => {
     const free = ids('2026-10-08', 15, ['meeting'])[1];
     expect(['situation:phone', 'situation:shop']).toContain(free);
     expect(ids('2026-10-08', 15, ['meeting'], true)[1]).toBe('situation:meeting');
+  });
+});
+
+describe('isInPlan', () => {
+  it('matches exactly the activities of that day', () => {
+    const plan = ids('2026-10-08', 15, ['phone']);
+    expect(isInPlan(plan[0], '2026-10-08', 15, ['phone'], false)).toBe(true);
+    expect(isInPlan('situation:phone', '2026-10-08', 15, ['phone'], false)).toBe(true);
+    expect(isInPlan('reading', '2026-10-08', 15, ['phone'], false)).toBe(false);
   });
 });
 

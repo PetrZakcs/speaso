@@ -1,20 +1,14 @@
 import { useCallback } from 'react';
 import { router } from 'expo-router';
 import { useStore } from '../state/store';
-import { canStartExercise } from './streak';
-import { toDateKey } from './dates';
+import { canStartActivity } from './access';
 import type { ExerciseId } from '../content/exercises';
 import type { Situation } from '../content/situations';
-
-function weeklyLimitReached() {
-  const { sessions, subscription } = useStore.getState();
-  return !canStartExercise(sessions, toDateKey(), subscription.isPremium);
-}
 
 /** Opens an exercise, or the paywall when the free weekly limit is used up. */
 export function useStartExercise() {
   return useCallback((id: ExerciseId) => {
-    if (weeklyLimitReached()) {
+    if (!canStartActivity(id)) {
       router.push({ pathname: '/paywall', params: { context: 'limit' } });
       return;
     }
@@ -29,7 +23,7 @@ export function useStartSituation() {
       router.push({ pathname: '/paywall', params: { context: 'situation' } });
       return;
     }
-    if (weeklyLimitReached()) {
+    if (!canStartActivity(`situation:${situation.id}`)) {
       router.push({ pathname: '/paywall', params: { context: 'limit' } });
       return;
     }

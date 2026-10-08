@@ -13,6 +13,11 @@ appId: host.exp.Exponent
 - tapOn:
     text: "Povolit|Allow"
     optional: true
+# The intro can appear a few seconds after the app (slower over a tunnel).
+- extendedWaitUntil:
+    visible: "Continue"
+    timeout: 60000
+    optional: true
 - tapOn:
     text: "Continue"
     optional: true

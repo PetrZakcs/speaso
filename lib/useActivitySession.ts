@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useStore } from '../state/store';
-import { canStartExercise, currentStreak, type Rating } from './streak';
+import { currentStreak, type Rating } from './streak';
+import { canStartActivity } from './access';
 import { toDateKey } from './dates';
 import { secondsSince } from '../components/session/SessionParts';
 
@@ -17,9 +18,8 @@ export function useActivitySession(activityId: string, requiresPremium = false) 
   // Evaluated once on open: finishing the 5th free session must not kick
   // the user out mid-session, but deep links can't bypass the gates either.
   const [gate] = useState<'ok' | 'limit' | 'premium'>(() => {
-    const { sessions, subscription } = useStore.getState();
-    if (requiresPremium && !subscription.isPremium) return 'premium';
-    return canStartExercise(sessions, toDateKey(), subscription.isPremium) ? 'ok' : 'limit';
+    if (requiresPremium && !useStore.getState().subscription.isPremium) return 'premium';
+    return canStartActivity(activityId) ? 'ok' : 'limit';
   });
   const [stage, setStage] = useState<Stage>('intro');
   const [startedAt, setStartedAt] = useState<number | null>(null);
