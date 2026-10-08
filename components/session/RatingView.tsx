@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Keyboa
 import { useTranslation } from '../../i18n/useTranslation';
 import PillButton from '../PillButton';
 import type { Rating } from '../../lib/streak';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow } from '../../theme/tokens';
 
 /** "How did speaking feel?" — 1–5 plus an optional private note. */
 export default function RatingView({ onDone }: { onDone: (rating?: Rating, note?: string) => void }) {
@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
     height: 56,
     borderRadius: 28,
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -95,6 +96,7 @@ const styles = StyleSheet.create({
   note: {
     minHeight: 96,
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
     borderRadius: Radius.cardSmall,
     padding: 14,
     fontFamily: FontFamily.dmSansRegular,

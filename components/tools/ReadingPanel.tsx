@@ -4,7 +4,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useStore } from '../../state/store';
 import { textsFor } from '../../content/texts';
-import { Colors, FontFamily, FontSize, Radius } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Shadow } from '../../theme/tokens';
 
 /** A text from the library to read aloud, with difficulty and "another text". */
 export default function ReadingPanel({ initialLevel = 1 }: { initialLevel?: 1 | 2 | 3 }) {
@@ -60,6 +60,7 @@ export default function ReadingPanel({ initialLevel = 1 }: { initialLevel?: 1 | 
 const styles = StyleSheet.create({
   card: {
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
     borderRadius: Radius.card,
     padding: 18,
     gap: 12,
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
   },
   levelActive: { backgroundColor: Colors.accent.main },
   levelText: { fontFamily: FontFamily.dmSansBold, fontSize: FontSize.bodySmall, color: Colors.text.secondary },
-  levelTextActive: { color: Colors.bg.base },
+  levelTextActive: { color: Colors.accent.on },
   another: { flexDirection: 'row', alignItems: 'center', gap: 4, padding: 4 },
   anotherText: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.bodySmall, color: Colors.accent.main },
   title: { fontFamily: FontFamily.soraSemiBold, fontSize: FontSize.cardTitle, color: Colors.text.primary },

@@ -1,4 +1,4 @@
-# Fresh install → onboarding → home with a first recommendation.
+# Fresh install → onboarding → home with today's plan.
 appId: host.exp.Exponent
 ---
 - clearState
@@ -30,8 +30,11 @@ appId: host.exp.Exponent
     optional: true
 
 - extendedWaitUntil:
-    visible: "Začni tady"
+    visible: "Tvůj plán na dnes"
     timeout: 15000
 - assertVisible: "Dobrý.*, Petře|Dobré ráno, Petře|Dobrý večer, Petře"
-- assertVisible: "Bránicové dýchání"
+# 15 min/day → warm-up + the situation picked as hard
+- assertVisible: "0 z 2"
+- assertVisible: "Bránicové dýchání.*|Měkký start hlásek.*"
+- assertVisible: "Telefonát.*"
 - takeScreenshot: 01-home-first-run

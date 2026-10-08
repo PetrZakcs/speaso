@@ -57,6 +57,7 @@ export default function SituationPlayer() {
       {stage === 'intro' && (
         <IntroView
           icon={situation.icon}
+          tint={situation.tint}
           title={c.title}
           sub={c.sub}
           chips={[

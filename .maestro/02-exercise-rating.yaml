@@ -1,10 +1,10 @@
-# Home recommendation → steps → finish → rate → done → streak on home → journal in progress.
+# Today's plan → warm-up steps → finish → rate → done → streak on home → journal in progress.
 appId: host.exp.Exponent
 ---
 - runFlow: subflows/fresh-user.yaml
-- tapOn: "Začít"
-
-- assertVisible: "Bránicové dýchání"
+# first plan item = today's warm-up
+- tapOn: "Bránicové dýchání.*|Měkký start hlásek.*"
+- assertVisible: "Bránicové dýchání|Měkký start hlásek"
 - tapOn: "Začít"
 - repeat:
     times: 5
@@ -28,7 +28,8 @@ appId: host.exp.Exponent
 - tapOn: "Hotovo →"
 
 - assertVisible: "1 den v řadě"
-- assertVisible: "Doporučujeme teď"
+- assertVisible: "1 z 2"
+- assertVisible: ".*, hotovo"
 
 # Panic opens and closes
 - tapOn:

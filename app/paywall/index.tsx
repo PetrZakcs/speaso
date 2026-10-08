@@ -17,7 +17,7 @@ import {
 import { FREE_WEEKLY_LIMIT, sessionsThisWeek } from '../../lib/streak';
 import { toDateKey } from '../../lib/dates';
 import { PRIVACY_URL, TERMS_URL } from '../../lib/links';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow } from '../../theme/tokens';
 
 type Context = 'limit' | 'stats' | 'situation' | 'recordings' | 'pdf' | undefined;
 type LoadState = 'loading' | 'ready' | 'unavailable';
@@ -326,6 +326,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
     borderRadius: Radius.card,
     borderWidth: 1.5,
     borderColor: Colors.hairline,

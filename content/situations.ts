@@ -1,4 +1,5 @@
 import type { SupportedLang } from '../lib/locale';
+import type { TintName } from '../theme/tokens';
 
 /**
  * Guided real-life scenarios: prepare → rehearse phrases out loud
@@ -19,6 +20,7 @@ export interface Situation {
   id: SituationId;
   /** Ionicons name. */
   icon: string;
+  tint: TintName;
   difficulty: 'easy' | 'medium' | 'hard';
   premium: boolean;
   minutes: number;
@@ -29,6 +31,7 @@ export const SITUATIONS: Situation[] = [
   {
     id: 'shop',
     icon: 'bag-handle-outline',
+    tint: 'sage',
     difficulty: 'easy',
     premium: false,
     minutes: 6,
@@ -74,6 +77,7 @@ export const SITUATIONS: Situation[] = [
   {
     id: 'phone',
     icon: 'call-outline',
+    tint: 'peach',
     difficulty: 'medium',
     premium: false,
     minutes: 8,
@@ -121,6 +125,7 @@ export const SITUATIONS: Situation[] = [
   {
     id: 'meeting',
     icon: 'people-outline',
+    tint: 'sky',
     difficulty: 'hard',
     premium: true,
     minutes: 8,
@@ -166,6 +171,7 @@ export const SITUATIONS: Situation[] = [
   {
     id: 'presentation',
     icon: 'easel-outline',
+    tint: 'lavender',
     difficulty: 'hard',
     premium: true,
     minutes: 10,
@@ -213,6 +219,7 @@ export const SITUATIONS: Situation[] = [
   {
     id: 'interview',
     icon: 'briefcase-outline',
+    tint: 'butter',
     difficulty: 'hard',
     premium: true,
     minutes: 10,

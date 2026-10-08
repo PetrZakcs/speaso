@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Colors, HitSlop } from '../theme/tokens';
+import { Colors, HitSlop, Shadow } from '../theme/tokens';
 
 interface Props {
   icon: React.ComponentProps<typeof Ionicons>['name'];
@@ -29,6 +29,7 @@ export default function IconButton({ icon, onPress, accessibilityLabel, size = 3
 const styles = StyleSheet.create({
   btn: {
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
     alignItems: 'center',
     justifyContent: 'center',
   },

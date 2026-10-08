@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Colors, FontFamily, FontSize, Radius } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Shadow } from '../../theme/tokens';
 
 /** A selectable row: title, optional detail, and a check when selected. */
 export default function ChoiceRow({
@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: Radius.cardSmall,
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
     borderWidth: 1.5,
     borderColor: 'transparent',
   },

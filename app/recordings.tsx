@@ -10,7 +10,7 @@ import { recordingUri } from '../lib/recordings';
 import { activityTitle, formatDate } from '../lib/activities';
 import IconButton from '../components/IconButton';
 import { formatTime } from '../components/session/SessionParts';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow } from '../theme/tokens';
 
 export default function RecordingsScreen() {
   const { t, lang } = useTranslation();
@@ -154,6 +154,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
     borderRadius: Radius.cardSmall,
     padding: 12,
   },

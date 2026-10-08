@@ -1,4 +1,4 @@
-# Wipes app data and completes onboarding as "Petr" (phone call is hard).
+# Wipes app data and completes onboarding as "Petr" (phone call is hard, 15 min/day → 2-item plan).
 appId: host.exp.Exponent
 ---
 - clearState
@@ -18,5 +18,5 @@ appId: host.exp.Exponent
     text: "Povolit|Allow"
     optional: true
 - extendedWaitUntil:
-    visible: "Začni tady"
+    visible: "Tvůj plán na dnes"
     timeout: 15000

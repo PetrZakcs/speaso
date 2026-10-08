@@ -52,6 +52,7 @@ export default function ExercisePlayer() {
       {stage === 'intro' && (
         <IntroView
           icon={exercise.icon}
+          tint={exercise.tint}
           title={title}
           sub={t(`exercises.${exercise.id}_sub`)}
           chips={[`${exercise.minutes} ${t('common.min_short')}`, tn('exercises.steps_count', steps.length)]}

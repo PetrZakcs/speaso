@@ -13,7 +13,7 @@ import { activityTitle, formatDate } from '../../lib/activities';
 import { exportReport } from '../../lib/report';
 import PremiumTag from '../../components/PremiumTag';
 import { useToday } from '../../lib/useToday';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow } from '../../theme/tokens';
 
 const CHART_HEIGHT = 80;
 
@@ -233,6 +233,7 @@ const styles = StyleSheet.create({
   },
   streakHero: {
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
     borderRadius: Radius.card,
     padding: 20,
     gap: 4,
@@ -345,6 +346,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 14,
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
     borderRadius: Radius.card,
     padding: 16,
   },

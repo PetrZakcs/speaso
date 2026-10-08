@@ -59,19 +59,27 @@ describe('streak', () => {
     expect(s.record).toBe(3);
   });
 
-  it('resets after a missed day but keeps the record', () => {
+  it('forgives one missed day', () => {
     let s = registerActivity(EMPTY_STREAK, '2026-09-27');
     s = registerActivity(s, '2026-09-28');
     s = registerActivity(s, '2026-09-30'); // skipped the 29th
+    expect(s.current).toBe(3);
+  });
+
+  it('resets after two missed days but keeps the record', () => {
+    let s = registerActivity(EMPTY_STREAK, '2026-09-26');
+    s = registerActivity(s, '2026-09-27');
+    s = registerActivity(s, '2026-09-30'); // skipped the 28th and 29th
     expect(s.current).toBe(1);
     expect(s.record).toBe(2);
   });
 
-  it('shows the streak until the end of the next day, then 0', () => {
+  it('shows the streak through one rest day, then 0', () => {
     const s = registerActivity(registerActivity(EMPTY_STREAK, '2026-09-28'), '2026-09-29');
     expect(currentStreak(s, '2026-09-29')).toBe(2);
-    expect(currentStreak(s, '2026-09-30')).toBe(2); // not practised yet today
-    expect(currentStreak(s, '2026-10-01')).toBe(0);
+    expect(currentStreak(s, '2026-09-30')).toBe(2);
+    expect(currentStreak(s, '2026-10-01')).toBe(2); // one rest day
+    expect(currentStreak(s, '2026-10-02')).toBe(0);
   });
 });
 

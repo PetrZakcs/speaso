@@ -7,7 +7,7 @@ import { enableReminder, formatTime } from '../../lib/reminders';
 import OnboardingShell from '../../components/OnboardingShell';
 import ChoiceRow from '../../components/onboarding/ChoiceRow';
 import PillButton from '../../components/PillButton';
-import { Colors, FontFamily, FontSize, Radius } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Shadow } from '../../theme/tokens';
 
 const MINUTES = [5, 15, 30] as const;
 
@@ -60,7 +60,7 @@ export default function RoutineStep() {
           value={remind}
           onValueChange={setRemind}
           trackColor={{ false: Colors.surface.card2, true: Colors.accent.main }}
-          thumbColor={Colors.text.primary}
+          thumbColor="#FFFFFF"
           accessibilityLabel={t('onboarding.routine_reminder', { time: formatTime(reminder.hour, reminder.minute) })}
         />
       </View>
@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: Radius.cardSmall,
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
   },
   reminderTitle: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.body, color: Colors.text.primary },
   reminderDetail: {

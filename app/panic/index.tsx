@@ -10,7 +10,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useStore } from '../../state/store';
 import IconButton from '../../components/IconButton';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow } from '../../theme/tokens';
 
 const BALL_SIZE = 148;
 
@@ -189,13 +189,13 @@ const styles = StyleSheet.create({
   phaseCount: {
     fontFamily: FontFamily.soraSemiBold,
     fontSize: 38,
-    color: Colors.text.primary,
+    color: Colors.accent.on,
     letterSpacing: -1,
   },
   phaseLabel: {
     fontFamily: FontFamily.dmSansMedium,
     fontSize: FontSize.bodySmall,
-    color: 'rgba(240,246,255,0.75)',
+    color: Colors.accent.on,
   },
   roundDots: {
     flexDirection: 'row',
@@ -213,6 +213,7 @@ const styles = StyleSheet.create({
   affirmCard: {
     marginHorizontal: Spacing.screenH,
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
     borderRadius: Radius.card,
     padding: 18,
     gap: 12,

@@ -10,7 +10,7 @@ import { initials } from '../../lib/names';
 import { manageSubscription, restorePurchases } from '../../lib/purchases';
 import { PRIVACY_URL, TERMS_URL } from '../../lib/links';
 import { REMINDER_TIMES, disableReminder, enableReminder, formatTime } from '../../lib/reminders';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow } from '../../theme/tokens';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -125,7 +125,7 @@ export default function ProfileScreen() {
                 value={reminder.enabled}
                 onValueChange={toggleReminder}
                 trackColor={{ false: Colors.surface.card2, true: Colors.accent.main }}
-                thumbColor={Colors.text.primary}
+                thumbColor="#FFFFFF"
                 accessibilityLabel={t('reminders.daily')}
               />
             </View>
@@ -207,6 +207,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 16,
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
     borderRadius: Radius.card,
     padding: 18,
   },
@@ -239,6 +240,7 @@ const styles = StyleSheet.create({
   },
   sectionCard: {
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
     borderRadius: Radius.card,
     overflow: 'hidden',
   },

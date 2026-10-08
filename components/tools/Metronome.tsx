@@ -6,7 +6,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { createAudioPlayer, type AudioPlayer } from 'expo-audio';
 import { useTranslation } from '../../i18n/useTranslation';
-import { Colors, FontFamily, FontSize, Radius } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Shadow } from '../../theme/tokens';
 
 const CLICK = require('../../assets/sounds/click.wav');
 const MIN_BPM = 40;
@@ -134,6 +134,7 @@ export default function Metronome() {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
     borderRadius: Radius.card,
     padding: 18,
     gap: 14,

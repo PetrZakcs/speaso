@@ -81,7 +81,16 @@
     "streak_start":      { "cs": "Série začne prvním cvičením", "en": "Your streak starts with one session" },
     "panic_title":       { "cs": "Zasekl/a ses?", "en": "Stuck right now?" },
     "panic_caption":     { "cs": "Minuta klidného dýchání. Vždy zdarma.", "en": "A minute of calm breathing. Always free." },
-    "all_exercises":     { "cs": "Cvičení", "en": "Exercises" }
+    "all_exercises":     { "cs": "Cvičení", "en": "Exercises" },
+    "all_exercises_link":{ "cs": "Všechna cvičení a situace", "en": "All exercises and situations" },
+    "plan_title":        { "cs": "Tvůj plán na dnes", "en": "Your plan for today" },
+    "plan_progress":     { "cs": "{done} z {total}", "en": "{done} of {total}" },
+    "plan_item_done":    { "cs": "hotovo", "en": "done" },
+    "plan_done":         { "cs": "Na dnes máš hotovo. Skvělá práce — uvidíme se zítra.", "en": "You're done for today. Great work — see you tomorrow." },
+    "role_warmup":       { "cs": "Rozcvička", "en": "Warm-up" },
+    "role_situation":    { "cs": "Situace", "en": "Situation" },
+    "role_practice":     { "cs": "Trénink", "en": "Practice" },
+    "streak_grace":      { "cs": "Jeden vynechaný den sérii nezruší.", "en": "Missing a single day won't break your streak." }
   },
 
   "panic": {
@@ -200,7 +209,7 @@
     "done_title":        { "cs": "Výborně!", "en": "Well done!" },
     "done_sub":          { "cs": "Cvičení dokončeno", "en": "Exercise complete" },
     "done_streak":       { "cs": "Série", "en": "Streak" },
-    "done_minutes":      { "cs": "Minut", "en": "Minutes" },
+    "done_minutes":      { "cs": "min", "en": "min" },
     "done_cta":          { "cs": "Hotovo →", "en": "Done →" },
     "not_found":         { "cs": "Cvičení nebylo nalezeno.", "en": "Exercise not found." }
   },

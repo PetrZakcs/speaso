@@ -9,12 +9,13 @@ import { useStartExercise, useStartSituation } from '../../lib/useStartExercise'
 import { useIsPremium } from '../../state/store';
 import ActivityIcon from '../../components/ActivityIcon';
 import PremiumTag from '../../components/PremiumTag';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow, type TintName } from '../../theme/tokens';
 
 function Row({
-  icon, title, sub, meta, locked, onPress, first, a11y,
+  icon, tint, title, sub, meta, locked, onPress, first, a11y,
 }: {
   icon: string;
+  tint: TintName;
   title: string;
   sub: string;
   meta: string;
@@ -31,7 +32,7 @@ function Row({
       accessibilityRole="button"
       accessibilityLabel={a11y}
     >
-      <ActivityIcon name={icon} muted={locked} />
+      <ActivityIcon name={icon} tint={tint} muted={locked} />
       <View style={{ flex: 1 }}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.sub}>{sub}</Text>
@@ -61,6 +62,7 @@ export default function ExercisesScreen() {
                 key={ex.id}
                 first={i === 0}
                 icon={ex.icon}
+                tint={ex.tint}
                 title={t(`exercises.${ex.id}`)}
                 sub={t(`exercises.${ex.id}_sub`)}
                 meta={meta}
@@ -85,6 +87,7 @@ export default function ExercisesScreen() {
                 key={sit.id}
                 first={i === 0}
                 icon={sit.icon}
+                tint={sit.tint}
                 title={c.title}
                 sub={c.sub}
                 meta={meta}
@@ -110,7 +113,7 @@ const styles = StyleSheet.create({
     letterSpacing: -0.6,
     marginBottom: 4,
   },
-  group: { backgroundColor: Colors.surface.card, borderRadius: Radius.card, paddingHorizontal: 16 },
+  group: { backgroundColor: Colors.surface.card, borderRadius: Radius.card, paddingHorizontal: 16, ...Shadow.card },
   row: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 14 },
   rowBorder: { borderTopWidth: 1, borderTopColor: Colors.hairline },
   title: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.body, color: Colors.text.primary },

@@ -1,41 +1,63 @@
 /**
- * Calm, warm dark theme with a single accent. Panic keeps its own color so it
- * is always recognisable; Premium is marked with a muted amber, never a crown.
+ * Light, warm pastel theme (inspired by wellbeing apps like VOS): cream
+ * background, white cards with soft shadows, one sage accent for actions and
+ * pastel tints per activity type. Panic keeps its own coral.
  */
 export const Colors = {
   bg: {
-    base: '#111315',
-    elevated: '#171A1D',
+    base: '#F7F3EE',
+    elevated: '#FFFFFF',
   },
   surface: {
-    card: '#1C2024',
-    card2: '#252A2F',
+    card: '#FFFFFF',
+    card2: '#F1ECE5',
   },
   text: {
-    primary: '#F3F0EA',
-    secondary: 'rgba(243,240,234,0.66)',
-    tertiary: 'rgba(243,240,234,0.42)',
+    primary: '#1F2430',
+    secondary: 'rgba(31,36,48,0.64)',
+    tertiary: 'rgba(31,36,48,0.42)',
   },
   accent: {
-    main: '#7CCFB6',
-    soft: 'rgba(124,207,182,0.14)',
+    main: '#3F7F6C',
+    soft: '#E2EFE9',
     /** Text and icons placed on top of the accent color. */
-    on: '#0F1F1A',
+    on: '#FFFFFF',
   },
   danger: {
-    panic: '#FF6A5C',
-    soft: 'rgba(255,106,92,0.14)',
+    panic: '#E0604F',
+    soft: '#FBE4DF',
   },
   premium: {
-    main: '#E3B871',
-    soft: 'rgba(227,184,113,0.14)',
+    main: '#A8771F',
+    soft: '#F7ECD6',
   },
-  hairline: 'rgba(243,240,234,0.08)',
+  hairline: 'rgba(31,36,48,0.08)',
+} as const;
+
+/** Pastel tile background + matching ink, one per activity family. */
+export const Tints = {
+  sage: { bg: '#E2EFE9', fg: '#3F7F6C' },
+  lavender: { bg: '#ECE7F8', fg: '#6E59B5' },
+  peach: { bg: '#FCE8DC', fg: '#B9643B' },
+  sky: { bg: '#E1EDF9', fg: '#3F72AA' },
+  butter: { bg: '#FAF0D2', fg: '#9A7623' },
+} as const;
+export type TintName = keyof typeof Tints;
+
+/** Soft card elevation for the light theme. */
+export const Shadow = {
+  card: {
+    shadowColor: '#5B4A36',
+    shadowOpacity: 0.07,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
+  },
 } as const;
 
 export const Radius = {
-  card: 18,
-  cardSmall: 14,
+  card: 22,
+  cardSmall: 16,
   chip: 12,
   pill: 999,
   sheet: 30,

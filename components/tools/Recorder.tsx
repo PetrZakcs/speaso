@@ -8,7 +8,7 @@ import {
 import { useTranslation } from '../../i18n/useTranslation';
 import { useStore } from '../../state/store';
 import { persistRecording, recordingUri } from '../../lib/recordings';
-import { Colors, FontFamily, FontSize, Radius } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Shadow } from '../../theme/tokens';
 
 const MAX_SECONDS = 300;
 
@@ -162,6 +162,7 @@ export default function Recorder({ exerciseId }: { exerciseId: string }) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
     borderRadius: Radius.card,
     padding: 16,
     gap: 8,

@@ -25,19 +25,26 @@ export const FREE_WEEKLY_LIMIT = 5;
 
 export const EMPTY_STREAK: StreakData = { current: 0, record: 0, lastActiveDate: null };
 
+/**
+ * Grace rule: one missed day doesn't break a streak (a streak counts active
+ * days; a single rest day between them is forgiven). Two missed days do.
+ */
+const GRACE_DAYS = 1;
+
+function withinGrace(lastActive: DateKey | null, today: DateKey) {
+  return !!lastActive && lastActive >= addDays(today, -(1 + GRACE_DAYS));
+}
+
 /** Counts a day as active. Multiple sessions on the same day don't add up. */
 export function registerActivity(streak: StreakData, today: DateKey): StreakData {
   if (streak.lastActiveDate === today) return streak;
-  const continues = streak.lastActiveDate === addDays(today, -1);
-  const current = continues ? streak.current + 1 : 1;
+  const current = withinGrace(streak.lastActiveDate, today) ? streak.current + 1 : 1;
   return { current, record: Math.max(streak.record, current), lastActiveDate: today };
 }
 
-/** The streak as it stands today — drops to 0 once a whole day was missed. */
+/** The streak as it stands today — drops to 0 once more than the grace day was missed. */
 export function currentStreak(streak: StreakData, today: DateKey): number {
-  const { lastActiveDate } = streak;
-  if (lastActiveDate === today || lastActiveDate === addDays(today, -1)) return streak.current;
-  return 0;
+  return withinGrace(streak.lastActiveDate, today) ? streak.current : 0;
 }
 
 /** [Mon…Sun] of the current week — true where at least one session happened. */

@@ -6,7 +6,7 @@ import { useStore } from '../../state/store';
 import { addressName } from '../../lib/names';
 import OnboardingShell from '../../components/OnboardingShell';
 import PillButton from '../../components/PillButton';
-import { Colors, FontFamily, FontSize, Radius } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Shadow } from '../../theme/tokens';
 
 export default function NameStep() {
   const { t, lang } = useTranslation();
@@ -54,6 +54,7 @@ export default function NameStep() {
 const styles = StyleSheet.create({
   input: {
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
     borderRadius: Radius.cardSmall,
     paddingHorizontal: 18,
     paddingVertical: 16,

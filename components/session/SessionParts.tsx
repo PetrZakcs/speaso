@@ -6,7 +6,7 @@ import { useTranslation } from '../../i18n/useTranslation';
 import IconButton from '../IconButton';
 import PillButton from '../PillButton';
 import ActivityIcon from '../ActivityIcon';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow, type TintName } from '../../theme/tokens';
 
 export function formatTime(totalSec: number) {
   const m = Math.floor(totalSec / 60);
@@ -58,9 +58,10 @@ export function SessionHeader({
 }
 
 export function IntroView({
-  icon, title, sub, chips, onStart,
+  icon, tint, title, sub, chips, onStart,
 }: {
   icon: string;
+  tint?: TintName;
   title: string;
   sub: string;
   chips: string[];
@@ -69,7 +70,7 @@ export function IntroView({
   const { t } = useTranslation();
   return (
     <View style={styles.startCenter}>
-      <ActivityIcon name={icon} size={72} />
+      <ActivityIcon name={icon} tint={tint} size={88} />
       <Text style={styles.startTitle} accessibilityRole="header">{title}</Text>
       <Text style={styles.startSub}>{sub}</Text>
       <View style={styles.metaRow}>
@@ -272,6 +273,7 @@ const styles = StyleSheet.create({
   metaRow: { flexDirection: 'row', gap: 10, flexWrap: 'wrap', justifyContent: 'center' },
   metaChip: {
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
     borderRadius: Radius.pill,
     paddingHorizontal: 14,
     paddingVertical: 8,
@@ -294,6 +296,7 @@ const styles = StyleSheet.create({
   stepDotDone: { backgroundColor: Colors.accent.main },
   stepCard: {
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
     borderRadius: Radius.card,
     padding: 28,
     justifyContent: 'center',
@@ -317,6 +320,7 @@ const styles = StyleSheet.create({
     height: 54,
     borderRadius: Radius.pill,
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -369,6 +373,7 @@ const styles = StyleSheet.create({
   doneStats: {
     flexDirection: 'row',
     backgroundColor: Colors.surface.card,
+    ...Shadow.card,
     borderRadius: Radius.card,
     padding: 20,
     gap: 20,
