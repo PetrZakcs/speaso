@@ -124,7 +124,7 @@ export default function ProfileScreen() {
               <Switch
                 value={reminder.enabled}
                 onValueChange={toggleReminder}
-                trackColor={{ false: Colors.surface.card2, true: Colors.accent.main }}
+                trackColor={{ false: Colors.text.tertiary, true: Colors.accent.main }}
                 thumbColor="#FFFFFF"
                 accessibilityLabel={t('reminders.daily')}
               />

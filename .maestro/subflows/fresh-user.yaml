@@ -1,6 +1,6 @@
 # Wipes app data and completes onboarding as "Petr" (phone call is hard,
 # 15 min/day → 2-item plan), skipping the breathing win and the offer.
-appId: host.exp.Exponent
+appId: ${APP_ID}
 ---
 - clearState
 - runFlow: open-app.yaml

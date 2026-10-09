@@ -1,10 +1,11 @@
 # Practice tools work; 5 extra sessions a week are free, the 6th opens the paywall; the daily plan stays free.
-appId: host.exp.Exponent
+appId: ${APP_ID}
 ---
 - runFlow: subflows/fresh-user.yaml
 
 # 1 — reading: text library + recorder
-- tapOn: "Cvičení, .*"
+- tapOn:
+    id: "tab-exercises"
 - tapOn: "Plynulé čtení.*"
 - tapOn: "Začít"
 - repeat:
@@ -22,7 +23,8 @@ appId: host.exp.Exponent
 - tapOn: "Hotovo →"
 
 # 2 — metronome: start, change tempo, stop
-- tapOn: "Cvičení, .*"
+- tapOn:
+    id: "tab-exercises"
 - tapOn: "Metronomická řeč.*"
 - tapOn: "Začít"
 - repeat:
@@ -53,7 +55,8 @@ appId: host.exp.Exponent
     env: { NAME: "Plynulé čtení", STEPS: 6, PRACTICE: "yes" }
 
 # 6th extra → weekly limit paywall
-- tapOn: "Cvičení, .*"
+- tapOn:
+    id: "tab-exercises"
 - tapOn: "Metronomická řeč.*"
 - assertVisible: "Speasy Premium"
 - assertVisible: "Tento týden máš za sebou 5 cvičení navíc.*"
@@ -64,7 +67,8 @@ appId: host.exp.Exponent
 - tapOn: "Zavřít"
 
 # …but today's plan is always free
-- tapOn: "Domů.*"
+- tapOn:
+    id: "tab-home"
 - assertVisible: "Plán na dnes je vždy zdarma.*"
 - tapOn: "Bránicové dýchání.*|Měkký start hlásek.*"
 - assertVisible: "Začít"

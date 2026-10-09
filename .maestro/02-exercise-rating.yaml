@@ -1,5 +1,5 @@
 # Today's plan → warm-up steps → finish → rate → done → streak on home → journal in progress.
-appId: host.exp.Exponent
+appId: ${APP_ID}
 ---
 - runFlow: subflows/fresh-user.yaml
 # first plan item = today's warm-up
@@ -33,14 +33,15 @@ appId: host.exp.Exponent
 
 # Panic opens and closes
 - tapOn:
-    text: "Panic"
+    id: "tab-panic"
 - assertVisible: "Dýchej se mnou"
 - assertVisible: "Nádech|Výdrž|Výdech"
 - tapOn:
     text: "Zavřít dýchání"
 
 # Progress shows the rated session in the journal
-- tapOn: "Pokrok.*"
+- tapOn:
+    id: "tab-progress"
 - assertVisible: "Aktuální série"
 - assertVisible: "1 den"
 - scrollUntilVisible:

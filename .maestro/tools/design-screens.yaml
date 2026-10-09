@@ -1,6 +1,6 @@
 # Design review: fresh user through the onboarding funnel → main screens.
 # Run: maestro test .maestro/tools/design-screens.yaml  (screenshots land in ~/.maestro/tests/<run>/)
-appId: host.exp.Exponent
+appId: ${APP_ID}
 ---
 - clearState
 - runFlow: ../subflows/open-app.yaml

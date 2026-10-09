@@ -1,8 +1,9 @@
 # Runs one exercise from the Exercises tab: steps → (practice) → finish → skip rating → done.
 # Params: NAME (row title), STEPS (number of steps), PRACTICE ("yes" if it has a practice stage)
-appId: host.exp.Exponent
+appId: ${APP_ID}
 ---
-- tapOn: "Cvičení, .*"
+- tapOn:
+    id: "tab-exercises"
 - tapOn: "${NAME}.*"
 - tapOn: "Začít"
 - repeat:

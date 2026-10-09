@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { useTranslation } from '../../i18n/useTranslation';
 import PillButton from '../PillButton';
 import type { Rating } from '../../lib/streak';
@@ -13,7 +13,7 @@ export default function RatingView({ onDone }: { onDone: (rating?: Rating, note?
   const [note, setNote] = useState('');
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
       <ScrollView contentContainerStyle={styles.wrap} keyboardShouldPersistTaps="handled">
         <Text style={styles.title} accessibilityRole="header">{t('rating.title')}</Text>
         <Text style={styles.sub}>{t('rating.sub')}</Text>

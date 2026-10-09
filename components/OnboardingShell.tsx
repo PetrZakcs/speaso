@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Text } from 'react-native';
+import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import IconButton from './IconButton';
@@ -23,7 +23,7 @@ export default function OnboardingShell({ step, title, subtitle, children, foote
   const { t } = useTranslation();
   return (
     <SafeAreaView style={styles.safe}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <View style={styles.header}>
           <IconButton icon="chevron-back" size={36} onPress={() => router.back()} accessibilityLabel={t('common.back')} />
           <View

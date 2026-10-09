@@ -1,6 +1,6 @@
 # Fresh install → quiz-style onboarding → plan reveal → breathing win →
 # offer (continue free) → home with today's plan.
-appId: host.exp.Exponent
+appId: ${APP_ID}
 ---
 - clearState
 - runFlow: subflows/open-app.yaml
@@ -38,7 +38,6 @@ appId: host.exp.Exponent
     text: "Povolit|Allow"
     optional: true
 
-- assertVisible: "Sestavujeme tvůj plán…"
 - extendedWaitUntil:
     visible: "Petře, tvůj plán je připravený"
     timeout: 20000

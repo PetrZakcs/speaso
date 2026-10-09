@@ -1,8 +1,9 @@
 # Free situation end-to-end; Premium situation leads to the paywall.
-appId: host.exp.Exponent
+appId: ${APP_ID}
 ---
 - runFlow: subflows/fresh-user.yaml
-- tapOn: "Cvičení, .*"   # tab bar item ("Cvičení, tab, 2 of 5")
+- tapOn:
+    id: "tab-exercises"
 - scrollUntilVisible:
     element: "Telefonát.*"
 - tapOn: "Telefonát.*"

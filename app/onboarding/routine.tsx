@@ -58,7 +58,7 @@ export default function RoutineStep() {
         <Switch
           value={remind}
           onValueChange={setRemind}
-          trackColor={{ false: Colors.surface.card2, true: Colors.accent.main }}
+          trackColor={{ false: Colors.text.tertiary, true: Colors.accent.main }}
           thumbColor="#FFFFFF"
           accessibilityLabel={t('onboarding.routine_reminder', { time: formatTime(reminder.hour, reminder.minute) })}
         />

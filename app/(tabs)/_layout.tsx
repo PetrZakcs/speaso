@@ -23,6 +23,7 @@ function PanicTabButton({ label }: { label: string }) {
       activeOpacity={0.85}
       accessibilityRole="button"
       accessibilityLabel={label}
+      testID="tab-panic"
     >
       <View style={styles.panicCircle}>
         <Ionicons name="pulse" size={24} color={Colors.text.primary} />
@@ -53,11 +54,11 @@ export default function TabLayout() {
     >
       <Tabs.Screen
         name="home"
-        options={{ title: t('tabbar.home'), tabBarIcon: tabIcon('home', 'home-outline') }}
+        options={{ title: t('tabbar.home'), tabBarIcon: tabIcon('home', 'home-outline'), tabBarButtonTestID: 'tab-home' }}
       />
       <Tabs.Screen
         name="exercises"
-        options={{ title: t('tabbar.exercises'), tabBarIcon: tabIcon('mic', 'mic-outline') }}
+        options={{ title: t('tabbar.exercises'), tabBarIcon: tabIcon('mic', 'mic-outline'), tabBarButtonTestID: 'tab-exercises' }}
       />
       <Tabs.Screen
         name="panic-tab"
@@ -68,11 +69,11 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="progress"
-        options={{ title: t('tabbar.progress'), tabBarIcon: tabIcon('stats-chart', 'stats-chart-outline') }}
+        options={{ title: t('tabbar.progress'), tabBarIcon: tabIcon('stats-chart', 'stats-chart-outline'), tabBarButtonTestID: 'tab-progress' }}
       />
       <Tabs.Screen
         name="profile"
-        options={{ title: t('tabbar.profile'), tabBarIcon: tabIcon('person', 'person-outline') }}
+        options={{ title: t('tabbar.profile'), tabBarIcon: tabIcon('person', 'person-outline'), tabBarButtonTestID: 'tab-profile' }}
       />
     </Tabs>
   );

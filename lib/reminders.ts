@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
-import * as Notifications from 'expo-notifications';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { translate } from '../i18n';
 import type { SupportedLang } from './locale';
 import { useStore, useShallow } from '../state/store';
@@ -17,14 +17,47 @@ const TRIAL_ID = 'trial-reminder';
 /** How long before the trial ends we remind the user. */
 export const TRIAL_REMINDER_DAYS = 2;
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowBanner: true,
-    shouldShowList: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
+type NotificationsModule = typeof import('expo-notifications');
+let loaded: NotificationsModule | null | undefined;
+
+/** Expo Go on Android no longer ships expo-notifications (SDK 53+). */
+const UNSUPPORTED_RUNTIME =
+  Platform.OS === 'android' && Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
+
+/**
+ * expo-notifications, loaded lazily: in Expo Go on Android merely importing
+ * it throws asynchronously, which crashed the whole app at startup. There it
+ * is never loaded and reminders are simply off; development and store builds
+ * are unaffected.
+ */
+function notifications(): NotificationsModule | null {
+  if (loaded === undefined) {
+    if (UNSUPPORTED_RUNTIME) {
+      loaded = null;
+      return loaded;
+    }
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      loaded = require('expo-notifications') as NotificationsModule;
+      loaded.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldShowBanner: true,
+          shouldShowList: true,
+          shouldPlaySound: false,
+          shouldSetBadge: false,
+        }),
+      });
+    } catch (e) {
+      console.warn('[reminders] notifications unavailable in this runtime:', e);
+      loaded = null;
+    }
+  }
+  return loaded;
+}
+
+export function notificationsSupported() {
+  return notifications() !== null;
+}
 
 export const REMINDER_TIMES = [
   { hour: 8, minute: 0 },
@@ -39,6 +72,8 @@ export function formatTime(hour: number, minute: number) {
 
 /** Asks for permission if needed. Returns whether notifications are allowed. */
 export async function ensureNotificationPermission(): Promise<boolean> {
+  const Notifications = notifications();
+  if (!Notifications) return false;
   const current = await Notifications.getPermissionsAsync();
   if (current.granted) return true;
   if (!current.canAskAgain) return false;
@@ -47,6 +82,8 @@ export async function ensureNotificationPermission(): Promise<boolean> {
 }
 
 async function ensureChannel(lang: SupportedLang) {
+  const Notifications = notifications();
+  if (!Notifications) return;
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync(CHANNEL_ID, {
       name: translate(lang, 'reminders.channel'),
@@ -56,6 +93,8 @@ async function ensureChannel(lang: SupportedLang) {
 }
 
 async function cancelDailyReminders() {
+  const Notifications = notifications();
+  if (!Notifications) return;
   const scheduled = await Notifications.getAllScheduledNotificationsAsync();
   await Promise.all(
     scheduled
@@ -70,6 +109,8 @@ async function cancelDailyReminders() {
  * Doesn't prompt for permission — call ensureNotificationPermission() first.
  */
 export async function scheduleDailyReminders(dates: Date[], lang: SupportedLang) {
+  const Notifications = notifications();
+  if (!Notifications) return;
   await ensureChannel(lang);
   await cancelDailyReminders();
   for (const date of dates) {
@@ -89,6 +130,8 @@ export async function scheduleDailyReminders(dates: Date[], lang: SupportedLang)
  * promises it, so it is scheduled whenever a trial is active and allowed.
  */
 export async function scheduleTrialReminder(expiresAt: string, lang: SupportedLang) {
+  const Notifications = notifications();
+  if (!Notifications) return;
   const when = new Date(expiresAt).getTime() - TRIAL_REMINDER_DAYS * 24 * 60 * 60 * 1000;
   await Notifications.cancelScheduledNotificationAsync(TRIAL_ID).catch(() => {});
   if (when <= Date.now() || !(await notificationsAllowed())) return;
@@ -104,6 +147,8 @@ export async function scheduleTrialReminder(expiresAt: string, lang: SupportedLa
 }
 
 export async function cancelTrialReminder() {
+  const Notifications = notifications();
+  if (!Notifications) return;
   await Notifications.cancelScheduledNotificationAsync(TRIAL_ID).catch(() => {});
 }
 
@@ -112,6 +157,8 @@ export async function cancelReminders() {
 }
 
 export async function notificationsAllowed(): Promise<boolean> {
+  const Notifications = notifications();
+  if (!Notifications) return false;
   return (await Notifications.getPermissionsAsync()).granted;
 }
 
