@@ -16,7 +16,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#F7F3EE",
+        "backgroundColor": "#3F7F6C",
         "foregroundImage": "./assets/adaptive-icon.png"
       },
       "package": "com.speasy.app"
@@ -47,7 +47,7 @@
         "expo-notifications",
         {
           "icon": "./assets/notification-icon.png",
-          "color": "#2563EB"
+          "color": "#3F7F6C"
         }
       ],
       [
