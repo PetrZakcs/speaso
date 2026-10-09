@@ -10,7 +10,7 @@ import { recordingUri } from '../lib/recordings';
 import { activityTitle, formatDate } from '../lib/activities';
 import IconButton from '../components/IconButton';
 import { formatTime } from '../components/session/SessionParts';
-import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow } from '../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow, Tints } from '../theme/tokens';
 
 export default function RecordingsScreen() {
   const { t, lang } = useTranslation();
@@ -23,6 +23,11 @@ export default function RecordingsScreen() {
   const status = useAudioPlayerStatus(player);
   const [currentId, setCurrentId] = useState<string | null>(null);
   const sorted = [...recordings].reverse();
+
+  // First vs. latest take of the most recently recorded exercise.
+  const latest = sorted[0];
+  const sameExercise = latest ? recordings.filter((r) => r.exerciseId === latest.exerciseId) : [];
+  const compare = sameExercise.length >= 2 ? { first: sameExercise[0], last: sameExercise[sameExercise.length - 1] } : null;
 
   const toggle = (rec: Recording) => {
     if (currentId === rec.id) {
@@ -81,6 +86,34 @@ export default function RecordingsScreen() {
         keyExtractor={(r) => r.id}
         contentContainerStyle={styles.list}
         ListEmptyComponent={<Text style={styles.empty}>{t('recordings.empty')}</Text>}
+        ListHeaderComponent={
+          compare ? (
+            <View style={styles.compare}>
+              <Text style={styles.compareTitle}>{t('recordings.compare_title')}</Text>
+              <Text style={styles.compareSub}>
+                {t('recordings.compare_sub', { exercise: activityTitle(compare.last.exerciseId, lang) })}
+              </Text>
+              {([['first', compare.first], ['last', compare.last]] as const).map(([which, rec]) => {
+                const playing = currentId === rec.id && status.playing;
+                return (
+                  <TouchableOpacity
+                    key={which}
+                    onPress={() => toggle(rec)}
+                    style={styles.compareRow}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${t(`recordings.compare_${which}`)}, ${formatDate(rec.createdAt, lang)}`}
+                  >
+                    <View style={[styles.playBtn, playing && styles.playBtnActive]}>
+                      <Ionicons name={playing ? 'pause' : 'play'} size={16} color={playing ? Colors.accent.on : Colors.text.primary} />
+                    </View>
+                    <Text style={styles.compareLabel}>{t(`recordings.compare_${which}`)}</Text>
+                    <Text style={styles.rowSub}>{formatDate(rec.createdAt, lang)}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          ) : null
+        }
         renderItem={({ item }) => {
           const active = currentId === item.id;
           const playing = active && status.playing;
@@ -92,7 +125,7 @@ export default function RecordingsScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={playing ? t('recorder.pause') : t('recorder.play')}
               >
-                <Ionicons name={playing ? 'pause' : 'play'} size={18} color={Colors.text.primary} />
+                <Ionicons name={playing ? 'pause' : 'play'} size={18} color={playing ? Colors.accent.on : Colors.text.primary} />
               </TouchableOpacity>
               <View style={{ flex: 1 }}>
                 <Text style={styles.rowTitle}>{activityTitle(item.exerciseId, lang)}</Text>
@@ -170,4 +203,15 @@ const styles = StyleSheet.create({
   rowTitle: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.bodySmall, color: Colors.text.primary },
   rowSub: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.meta, color: Colors.text.tertiary, marginTop: 2 },
   deleteBtn: { padding: 8 },
+  compare: {
+    backgroundColor: Tints.lavender.bg,
+    borderRadius: Radius.card,
+    padding: 16,
+    gap: 8,
+    marginBottom: 6,
+  },
+  compareTitle: { fontFamily: FontFamily.soraSemiBold, fontSize: 17, color: Colors.text.primary },
+  compareSub: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.bodySmall, lineHeight: 19, color: Colors.text.secondary, marginBottom: 4 },
+  compareRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  compareLabel: { flex: 1, fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.body, color: Colors.text.primary },
 });

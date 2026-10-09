@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { toDateKey } from '../lib/dates';
+import { toDateKey, type DateKey } from '../lib/dates';
 import { detectDeviceLanguage, type SupportedLang } from '../lib/locale';
 import {
   EMPTY_STREAK, registerActivity, type Rating, type Session, type StreakData,
@@ -15,6 +15,7 @@ export type TherapyStatus = 'never' | 'past' | 'current' | 'self';
 export type { SupportedLang };
 
 const MAX_SESSIONS = 2000;
+const MAX_CHECKINS = 730;
 /** Free users keep their most recent recordings only. */
 export const FREE_RECORDINGS_LIMIT = 3;
 
@@ -49,6 +50,12 @@ export interface Recording {
   durationSec: number;
 }
 
+/** Daily "how is speaking today?" check-in (one per day, last one wins). */
+export interface CheckIn {
+  date: DateKey;
+  mood: Rating;
+}
+
 export interface ReminderSettings {
   enabled: boolean;
   hour: number;
@@ -66,6 +73,7 @@ interface AppState {
   sessions: Session[];
   panicUses: number;
   recordings: Recording[];
+  checkIns: CheckIn[];
 
   setOnboardingDone: (v: boolean) => void;
   setLanguage: (lang: SupportedLang) => void;
@@ -78,6 +86,7 @@ interface AppState {
   addRecording: (recording: Omit<Recording, 'id' | 'createdAt'>) => void;
   removeRecording: (id: string) => void;
   setReminder: (reminder: ReminderSettings) => void;
+  setCheckIn: (mood: Rating) => void;
 }
 
 const DEFAULT_REMINDER: ReminderSettings = { enabled: false, hour: 18, minute: 0 };
@@ -127,6 +136,7 @@ export const useStore = create<AppState>()(
       sessions: [],
       panicUses: 0,
       recordings: [],
+      checkIns: [],
 
       setOnboardingDone: (v) => set({ onboardingDone: v }),
       setLanguage: (language) => set({ language }),
@@ -180,10 +190,17 @@ export const useStore = create<AppState>()(
       },
 
       setReminder: (reminder) => set({ reminder }),
+
+      setCheckIn: (mood) =>
+        set((s) => {
+          const date = toDateKey();
+          const rest = s.checkIns.filter((c) => c.date !== date);
+          return { checkIns: [...rest, { date, mood }].slice(-MAX_CHECKINS) };
+        }),
     }),
     {
       name: 'speasy-storage',
-      version: 2,
+      version: 3,
       storage: createJSONStorage(() => AsyncStorage),
       onRehydrateStorage: () => (_state, error) => {
         if (error) console.warn('[store] rehydration failed, starting with defaults:', error);
@@ -218,6 +235,10 @@ export const useStore = create<AppState>()(
             recordings: [],
             reminder: DEFAULT_REMINDER,
           };
+        }
+        if (version <= 2) {
+          // v3: daily check-ins.
+          old = { ...old, checkIns: old.checkIns ?? [] };
         }
         return old;
       },

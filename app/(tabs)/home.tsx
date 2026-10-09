@@ -8,6 +8,7 @@ import { useStore, useShallow } from '../../state/store';
 import ProgressBar from '../../components/ProgressBar';
 import WeekDots from '../../components/WeekDots';
 import ActivityIcon from '../../components/ActivityIcon';
+import CheckInCard from '../../components/CheckInCard';
 import { addressName } from '../../lib/names';
 import { dailyPlan, doneOn, type PlanItem } from '../../lib/plan';
 import { fromDateKey } from '../../lib/dates';
@@ -80,6 +81,8 @@ export default function HomeScreen() {
             <Text style={styles.streakNum}>{streakDays}</Text>
           </View>
         </View>
+
+        <CheckInCard today={today} />
 
         {/* Today's plan */}
         <View style={styles.planCard}>

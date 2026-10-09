@@ -76,6 +76,7 @@ describe('ratings and report', () => {
         sessions: [session('2026-09-29', 3, '<script>alert(1)</script> & "x"')],
         streak: 2,
         panicUses: 1,
+        checkInAvg: 3.5,
       },
       'cs',
     );
@@ -84,5 +85,6 @@ describe('ratings and report', () => {
     expect(html).toContain('&lt;b&gt;Petr&lt;/b&gt;');
     expect(html).toContain('Plynulé čtení');
     expect(html).toContain('3/5');
+    expect(html).toContain('Průměrný denní check-in: 3.5/5');
   });
 });

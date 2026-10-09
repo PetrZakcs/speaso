@@ -319,11 +319,25 @@
     "save":              { "cs": "Uložit", "en": "Save" }
   },
 
+  "checkin": {
+    "question":          { "cs": "Jak se ti dnes mluví?", "en": "How is speaking today?" },
+    "today":             { "cs": "Dnes se ti mluví {mood}", "en": "Speaking today: {mood}" },
+    "change":            { "cs": "Změnit", "en": "Change" },
+    "chart_title":       { "cs": "Jak se ti mluví · 14 dní", "en": "How speaking feels · 14 days" },
+    "chart_avg":         { "cs": "průměr {n}", "en": "average {n}" },
+    "chart_from":        { "cs": "před 2 týdny", "en": "2 weeks ago" },
+    "chart_empty":       { "cs": "Každý den na domovské obrazovce odpověz, jak se ti mluví. Tady uvidíš, jak se to mění.", "en": "Answer how speaking feels on the home screen each day. You'll see the trend here." }
+  },
+
   "recordings": {
     "title":             { "cs": "Moje nahrávky", "en": "My recordings" },
     "count":             { "cs": { "one": "# nahrávka", "few": "# nahrávky", "other": "# nahrávek" }, "en": { "one": "# recording", "other": "# recordings" } },
     "empty":             { "cs": "Zatím tu nic není. Nahrát se můžeš u cvičení Plynulé čtení nebo v situacích.", "en": "Nothing here yet. You can record yourself in Fluent reading or in situations." },
     "free_limit":        { "cs": "Free verze uchovává poslední {n} nahrávky.", "en": "The free plan keeps your last {n} recordings." },
+    "compare_title":     { "cs": "Slyšíš rozdíl?", "en": "Can you hear the difference?" },
+    "compare_sub":       { "cs": "Porovnej svou první a poslední nahrávku ze cvičení {exercise}.", "en": "Compare your first and latest recording from {exercise}." },
+    "compare_first":     { "cs": "První nahrávka", "en": "First recording" },
+    "compare_last":      { "cs": "Poslední nahrávka", "en": "Latest recording" },
     "delete":            { "cs": "Smazat", "en": "Delete" },
     "delete_title":      { "cs": "Smazat nahrávku?", "en": "Delete recording?" },
     "delete_body":       { "cs": "Nahrávka se nenávratně smaže z telefonu.", "en": "The recording will be permanently deleted from your phone." }
@@ -353,6 +367,7 @@
     "avg_rating":        { "cs": "průměrné hodnocení", "en": "average rating" },
     "streak":            { "cs": "Aktuální série", "en": "Current streak" },
     "panic":             { "cs": "Použití Panic", "en": "Panic uses" },
+    "checkin_avg":       { "cs": "Průměrný denní check-in", "en": "Average daily check-in" },
     "by_activity":       { "cs": "Podle aktivity", "en": "By activity" },
     "activity":          { "cs": "Aktivita", "en": "Activity" },
     "count":             { "cs": "Počet", "en": "Count" },

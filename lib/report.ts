@@ -25,6 +25,8 @@ export interface ReportData {
   sessions: Session[];
   streak: number;
   panicUses: number;
+  /** Average daily check-in (1–5) in the period, if any. */
+  checkInAvg?: number | null;
 }
 
 /** Pure HTML builder — exported for tests. */
@@ -85,7 +87,9 @@ export function buildReportHtml(data: ReportData, lang: SupportedLang): string {
       <div class="stat"><b>${avgRating}</b>${esc(t('report.avg_rating'))}</div>
     </div>
     <p class="muted">${esc(t('report.streak'))}: ${esc(translatePlural(lang, 'progress.streak_value', data.streak))} ·
-      ${esc(t('report.panic'))}: ${data.panicUses}</p>
+      ${esc(t('report.panic'))}: ${data.panicUses}${
+        data.checkInAvg ? ` · ${esc(t('report.checkin_avg'))}: ${data.checkInAvg.toFixed(1)}/5` : ''
+      }</p>
 
     <h2>${esc(t('report.by_activity'))}</h2>
     ${activityRows
@@ -104,7 +108,7 @@ export function buildReportHtml(data: ReportData, lang: SupportedLang): string {
 
 /** Builds the last-30-days report as a PDF and opens the system share sheet. */
 export async function exportReport(lang: SupportedLang) {
-  const { user, sessions, streak, panicUses } = useStore.getState();
+  const { user, sessions, streak, panicUses, checkIns } = useStore.getState();
   const today = toDateKey();
   const from = addDays(today, -(REPORT_DAYS - 1));
   const data: ReportData = {
@@ -114,6 +118,10 @@ export async function exportReport(lang: SupportedLang) {
     sessions: sessions.filter((s) => s.date >= from && s.date <= today),
     streak: currentStreak(streak, today),
     panicUses,
+    checkInAvg: (() => {
+      const inRange = checkIns.filter((c) => c.date >= from && c.date <= today);
+      return inRange.length ? inRange.reduce((sum, c) => sum + c.mood, 0) / inRange.length : null;
+    })(),
   };
   const { uri } = await Print.printToFileAsync({ html: buildReportHtml(data, lang) });
   if (!(await Sharing.isAvailableAsync())) throw new Error('SHARING_UNAVAILABLE');

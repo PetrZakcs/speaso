@@ -6,6 +6,7 @@ import { router } from 'expo-router';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useStore, useShallow } from '../../state/store';
 import Card from '../../components/Card';
+import MoodChart from '../../components/MoodChart';
 import WeekDots from '../../components/WeekDots';
 import { averageRating, currentStreak, weekActivity, weekMinutes } from '../../lib/streak';
 import { addDays, mondayOf, weekdayIndex } from '../../lib/dates';
@@ -62,7 +63,8 @@ export default function ProgressScreen() {
   const { t, tn, lang } = useTranslation();
   const today = useToday();
   const [exporting, setExporting] = useState(false);
-  const { isPremium, streak, sessions, panicUses, recordingsCount } = useStore(useShallow((s) => ({
+  const { isPremium, streak, sessions, panicUses, recordingsCount, checkIns } = useStore(useShallow((s) => ({
+    checkIns: s.checkIns,
     isPremium: s.subscription.isPremium,
     streak: s.streak,
     sessions: s.sessions,
@@ -109,6 +111,8 @@ export default function ProgressScreen() {
           <Text style={styles.streakVal}>{tn('progress.streak_value', streakDays)}</Text>
           <Text style={styles.streakLabel}>{t('progress.streak_record', { n: streak.record })}</Text>
         </View>
+
+        <MoodChart checkIns={checkIns} today={today} />
 
         {/* Stats */}
         <View style={styles.statsRow}>

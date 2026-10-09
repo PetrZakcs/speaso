@@ -69,6 +69,19 @@ describe('store', () => {
     expect(byId(extraId).inPlan).toBe(false);
   });
 
+  it('keeps one check-in per day — the last answer wins', () => {
+    useStore.getState().setCheckIn(2);
+    useStore.getState().setCheckIn(4);
+    const today = useStore.getState().checkIns.filter((c) => c.date === toDateKey());
+    expect(today).toEqual([{ date: toDateKey(), mood: 4 }]);
+  });
+
+  it('migrates v2 to v3 with empty check-ins', () => {
+    const migrate = useStore.persist.getOptions().migrate!;
+    const migrated = migrate({ onboardingDone: true, sessions: [], recordings: [] }, 2) as any;
+    expect(migrated.checkIns).toEqual([]);
+  });
+
   it('rates a session by id', () => {
     const id = useStore.getState().recordSession('metronome', 300);
     useStore.getState().rateSession(id, 4, '  went ok  ');
