@@ -1,4 +1,5 @@
-# Fresh install → onboarding → home with today's plan.
+# Fresh install → quiz-style onboarding → plan reveal → breathing win →
+# offer (continue free) → home with today's plan.
 appId: host.exp.Exponent
 ---
 - clearState
@@ -13,28 +14,54 @@ appId: host.exp.Exponent
 - assertVisible: "Budeme tě oslovovat: Petře"
 - tapOn: "Pokračovat"
 
+- assertVisible: "Kdy se ti mluví nejhůř?"
+- tapOn: "Telefonát.*"
+- tapOn: "Prezentace.*"
+- tapOn: "Pokračovat"
+
+- assertVisible: "Nejsi v tom sám."
+- assertVisible: ".*telefonát, prezentace.*"
+- tapOn: "Pokračovat"
+
+- assertVisible: "Co by ti nejvíc pomohlo?"
+- tapOn: "Víc jistoty.*"
+- tapOn: "Pokračovat"
+
 - assertVisible: "Pro koho Speasy nastavujeme?"
 - tapOn: "Pro sebe.*"
 - tapOn: "Pokračovat"
 
-- assertVisible: "Kdy se ti mluví nejhůř?"
-- tapOn: "Telefonát.*"
-- tapOn: "Pokračovat"
-
 - assertVisible: "Kolik času denně?"
 - tapOn: "15 minut.*"
-- tapOn: "Hotovo"
-# Reminder is on by default → the system asks for notification permission.
+- tapOn: "Sestavit můj plán"
 - tapOn:
     text: "Povolit|Allow"
     optional: true
+
+- assertVisible: "Sestavujeme tvůj plán…"
+- extendedWaitUntil:
+    visible: "Petře, tvůj plán je připravený"
+    timeout: 20000
+- assertVisible: "Víc jistoty"
+- assertVisible: "Telefonát.*|Prezentace.*"
+- takeScreenshot: 01-plan-reveal
+- tapOn: "Vyzkoušet hned · 40 sekund"
+
+- assertVisible: "Zkus to se mnou"
+- extendedWaitUntil:
+    visible: "První krok máš za sebou"
+    timeout: 60000
+- tapOn: "Pokračovat"
+
+- assertVisible: "Odemkni celý plán"
+- assertVisible: "Buduj jistotu každý den.*"
+- takeScreenshot: 01-offer
+- scrollUntilVisible:
+    element: "Pokračovat zdarma"
+- tapOn: "Pokračovat zdarma"
 
 - extendedWaitUntil:
     visible: "Tvůj plán na dnes"
     timeout: 15000
 - assertVisible: "Dobrý.*, Petře|Dobré ráno, Petře|Dobrý večer, Petře"
-# 15 min/day → warm-up + the situation picked as hard
 - assertVisible: "0 z 2"
-- assertVisible: "Bránicové dýchání.*|Měkký start hlásek.*"
-- assertVisible: "Telefonát.*"
-- takeScreenshot: 01-home-first-run

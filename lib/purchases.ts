@@ -5,6 +5,7 @@ import type {
   PurchasesPackage,
 } from 'react-native-purchases';
 import { useStore } from '../state/store';
+import { cancelTrialReminder, scheduleTrialReminder } from './reminders';
 
 /** Entitlement identifier configured in the RevenueCat dashboard. */
 export const ENTITLEMENT_ID = 'premium';
@@ -44,11 +45,14 @@ function requireRC(): RCModule {
 /** Mirrors the entitlement into the store — the only writer of `subscription`. */
 function applyCustomerInfo(info: CustomerInfo) {
   const ent = info.entitlements.active[ENTITLEMENT_ID];
-  useStore.getState().setSubscription({
-    isPremium: !!ent,
-    isTrial: ent?.periodType === 'TRIAL',
-    expiresAt: ent?.expirationDate ?? null,
-  });
+  const isTrial = ent?.periodType === 'TRIAL';
+  const expiresAt = ent?.expirationDate ?? null;
+  useStore.getState().setSubscription({ isPremium: !!ent, isTrial, expiresAt });
+  // The paywall promises a reminder before the trial ends — keep that promise.
+  const task = isTrial && expiresAt
+    ? scheduleTrialReminder(expiresAt, useStore.getState().language)
+    : cancelTrialReminder();
+  task.catch((e) => console.warn('[RC] trial reminder failed:', e));
 }
 
 /** Configures RevenueCat and keeps the store in sync with the entitlement. */

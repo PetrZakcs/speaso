@@ -22,7 +22,7 @@ export default function SituationsStep() {
 
   return (
     <OnboardingShell
-      step={3}
+      step={2}
       title={t('onboarding.situations_title')}
       subtitle={t('onboarding.situations_sub')}
       footer={
@@ -30,7 +30,7 @@ export default function SituationsStep() {
           label={selected.length ? t('common.continue') : t('common.skip')}
           onPress={() => {
             setUser({ situations: selected });
-            router.push('/onboarding/routine');
+            router.push('/onboarding/insight');
           }}
         />
       }

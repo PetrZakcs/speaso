@@ -18,7 +18,7 @@ export default function NameStep() {
 
   const next = () => {
     setUser({ name: trimmed });
-    router.push('/onboarding/who');
+    router.push('/onboarding/situations');
   };
 
   return (

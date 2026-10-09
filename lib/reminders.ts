@@ -6,6 +6,10 @@ import type { SupportedLang } from './locale';
 import { useStore, useShallow } from '../state/store';
 
 const CHANNEL_ID = 'reminders';
+const DAILY_ID = 'daily-reminder';
+const TRIAL_ID = 'trial-reminder';
+/** How long before the trial ends we remind the user. */
+export const TRIAL_REMINDER_DAYS = 2;
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -36,19 +40,25 @@ export async function ensureNotificationPermission(): Promise<boolean> {
   return requested.granted;
 }
 
-/**
- * Replaces any scheduled reminder with one daily reminder at hour:minute.
- * Doesn't prompt for permission — call ensureNotificationPermission() first.
- */
-export async function scheduleDailyReminder(hour: number, minute: number, lang: SupportedLang) {
+async function ensureChannel(lang: SupportedLang) {
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync(CHANNEL_ID, {
       name: translate(lang, 'reminders.channel'),
       importance: Notifications.AndroidImportance.DEFAULT,
     });
   }
-  await Notifications.cancelAllScheduledNotificationsAsync();
+}
+
+/**
+ * Replaces the daily reminder with one at hour:minute (other notifications,
+ * like the trial reminder, are left alone).
+ * Doesn't prompt for permission — call ensureNotificationPermission() first.
+ */
+export async function scheduleDailyReminder(hour: number, minute: number, lang: SupportedLang) {
+  await ensureChannel(lang);
+  await Notifications.cancelScheduledNotificationAsync(DAILY_ID).catch(() => {});
   await Notifications.scheduleNotificationAsync({
+    identifier: DAILY_ID,
     content: {
       title: translate(lang, 'reminders.title'),
       body: translate(lang, 'reminders.body'),
@@ -62,8 +72,31 @@ export async function scheduleDailyReminder(hour: number, minute: number, lang: 
   });
 }
 
+/**
+ * One-off reminder TRIAL_REMINDER_DAYS before a free trial ends — the paywall
+ * promises it, so it is scheduled whenever a trial is active and allowed.
+ */
+export async function scheduleTrialReminder(expiresAt: string, lang: SupportedLang) {
+  const when = new Date(expiresAt).getTime() - TRIAL_REMINDER_DAYS * 24 * 60 * 60 * 1000;
+  await Notifications.cancelScheduledNotificationAsync(TRIAL_ID).catch(() => {});
+  if (when <= Date.now() || !(await notificationsAllowed())) return;
+  await ensureChannel(lang);
+  await Notifications.scheduleNotificationAsync({
+    identifier: TRIAL_ID,
+    content: {
+      title: translate(lang, 'reminders.trial_title'),
+      body: translate(lang, 'reminders.trial_body', { n: TRIAL_REMINDER_DAYS }),
+    },
+    trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: when, channelId: CHANNEL_ID },
+  });
+}
+
+export async function cancelTrialReminder() {
+  await Notifications.cancelScheduledNotificationAsync(TRIAL_ID).catch(() => {});
+}
+
 export async function cancelReminders() {
-  await Notifications.cancelAllScheduledNotificationsAsync();
+  await Notifications.cancelScheduledNotificationAsync(DAILY_ID).catch(() => {});
 }
 
 export async function notificationsAllowed(): Promise<boolean> {

@@ -21,7 +21,7 @@ export default function WhoStep() {
 
   return (
     <OnboardingShell
-      step={2}
+      step={4}
       title={t('onboarding.who_title')}
       subtitle={t('onboarding.who_sub')}
       footer={
@@ -30,7 +30,7 @@ export default function WhoStep() {
           disabled={!selected}
           onPress={() => {
             setUser({ ageGroup: selected });
-            router.push('/onboarding/situations');
+            router.push('/onboarding/routine');
           }}
         />
       }

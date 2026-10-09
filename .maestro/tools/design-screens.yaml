@@ -1,4 +1,4 @@
-# Design review: fresh user → screenshots of the main screens.
+# Design review: fresh user through the onboarding funnel → main screens.
 # Run: maestro test .maestro/tools/design-screens.yaml  (screenshots land in ~/.maestro/tests/<run>/)
 appId: host.exp.Exponent
 ---
@@ -10,48 +10,42 @@ appId: host.exp.Exponent
 - takeScreenshot: s01-welcome
 - tapOn: "Začít"
 - inputText: "Petr"
-- takeScreenshot: s02-name
-- tapOn: "Pokračovat"
-- tapOn: "Pro sebe.*"
-- takeScreenshot: s03-who
 - tapOn: "Pokračovat"
 - tapOn: "Telefonát.*"
 - tapOn: "Prezentace.*"
-- takeScreenshot: s04-situations
+- takeScreenshot: s02-situations
+- tapOn: "Pokračovat"
+- takeScreenshot: s03-insight
+- tapOn: "Pokračovat"
+- tapOn: "Víc jistoty.*"
+- takeScreenshot: s04-goal
+- tapOn: "Pokračovat"
+- tapOn: "Pro sebe.*"
 - tapOn: "Pokračovat"
 - tapOn: "30 minut.*"
 - takeScreenshot: s05-routine
-- tapOn: "Hotovo"
+- tapOn: "Sestavit můj plán"
 - tapOn:
     text: "Povolit|Allow"
     optional: true
+- takeScreenshot: s06-building
 - extendedWaitUntil:
-    visible: "Tvůj plán na dnes"
-    timeout: 15000
-- takeScreenshot: s06-home
-# do the first plan item to see a checked row
-- tapOn: "Bránicové dýchání.*|Měkký start hlásek.*"
-- takeScreenshot: s07-intro
-- tapOn: "Začít"
-- takeScreenshot: s08-step
-- repeat:
-    times: 5
-    commands:
-      - tapOn: "Další →"
-- tapOn: "Dokončit ✓"
-- waitForAnimationToEnd
-- tapOn: "Docela dobře"
-- takeScreenshot: s09-rating
-- tapOn: "Uložit"
-- takeScreenshot: s10-done
-- tapOn: "Hotovo →"
-- takeScreenshot: s11-home-progress
-- tapOn: "Cvičení, .*"
-- takeScreenshot: s12-exercises
-- tapOn: "Pokrok.*"
-- takeScreenshot: s13-progress
-- tapOn: "Profil.*"
-- takeScreenshot: s14-profile
-- tapOn: "Panic"
-- waitForAnimationToEnd
-- takeScreenshot: s15-panic
+    visible: ".*tvůj plán je připravený"
+    timeout: 20000
+- takeScreenshot: s07-plan
+- tapOn: "Vyzkoušet hned · 40 sekund"
+- takeScreenshot: s08-win
+- extendedWaitUntil:
+    visible: "První krok máš za sebou"
+    timeout: 60000
+- takeScreenshot: s09-win-done
+- tapOn: "Pokračovat"
+- extendedWaitUntil:
+    visible: "Odemkni celý plán"
+    timeout: 20000
+- takeScreenshot: s10-offer
+- scrollUntilVisible:
+    element: "Pokračovat zdarma"
+- takeScreenshot: s11-offer-bottom
+- tapOn: "Pokračovat zdarma"
+- takeScreenshot: s12-home

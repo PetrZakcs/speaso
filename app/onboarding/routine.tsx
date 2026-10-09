@@ -16,7 +16,6 @@ export default function RoutineStep() {
   const user = useStore((s) => s.user);
   const reminder = useStore((s) => s.reminder);
   const setUser = useStore((s) => s.setUser);
-  const setOnboardingDone = useStore((s) => s.setOnboardingDone);
   const [minutes, setMinutes] = useState<5 | 15 | 30>(user.dailyMinutes);
   const [remind, setRemind] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -26,13 +25,13 @@ export default function RoutineStep() {
     setUser({ dailyMinutes: minutes });
     // The system permission prompt appears right after the user opted in.
     if (remind) await enableReminder(reminder.hour, reminder.minute).catch(() => false);
-    setOnboardingDone(true);
-    router.replace('/(tabs)/home');
+    setBusy(false);
+    router.push('/onboarding/building');
   };
 
   return (
     <OnboardingShell
-      step={4}
+      step={5}
       title={t('onboarding.routine_title')}
       subtitle={t('onboarding.routine_sub')}
       footer={<PillButton label={t('onboarding.routine_cta')} onPress={finish} loading={busy} />}

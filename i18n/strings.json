@@ -61,7 +61,52 @@
     "routine_30":        { "cs": "Když chceš opravdu zabrat", "en": "When you really want to push" },
     "routine_reminder":  { "cs": "Připomenout mi v {time}", "en": "Remind me at {time}" },
     "routine_reminder_detail": { "cs": "Čas změníš kdykoli v profilu.", "en": "You can change the time in your profile." },
-    "routine_cta":       { "cs": "Hotovo", "en": "Done" }
+    "routine_cta":       { "cs": "Sestavit můj plán", "en": "Build my plan" },
+
+    "insight_title":     { "cs": "Nejsi v tom sám.", "en": "You're not alone." },
+    "insight_body":      { "cs": "Koktá zhruba jeden ze sta dospělých. Zasekávání nesouvisí s inteligencí ani se slabou vůlí — a dá se s ním pracovat, krok za krokem.", "en": "Roughly one in a hundred adults stutters. It has nothing to do with intelligence or willpower — and it's something you can work with, step by step." },
+    "insight_situations":{ "cs": "Situace, které jsi vybral/a ({situations}), si budeš nejdřív nacvičovat v bezpečí aplikace, než do nich půjdeš naostro.", "en": "You'll rehearse the situations you picked ({situations}) safely in the app first, before facing them for real." },
+    "insight_generic":   { "cs": "Krátké pravidelné cvičení a nácvik konkrétních situací pomáhají mluvit klidněji a s větší jistotou.", "en": "Short regular practice and rehearsing specific situations help you speak more calmly and confidently." },
+
+    "goal_title":        { "cs": "Co by ti nejvíc pomohlo?", "en": "What would help you most?" },
+    "goal_sub":          { "cs": "Podle toho ti poskládáme plán.", "en": "We'll shape your plan around it." },
+    "goal_calm":         { "cs": "Mluvit klidněji", "en": "Speak more calmly" },
+    "goal_calm_detail":  { "cs": "Méně napětí a záseků v běžné řeči", "en": "Less tension and fewer blocks day to day" },
+    "goal_confidence":   { "cs": "Víc jistoty", "en": "More confidence" },
+    "goal_confidence_detail": { "cs": "Nebát se ozvat a říct, co chci", "en": "Not being afraid to speak up" },
+    "goal_situations":   { "cs": "Zvládnout konkrétní situace", "en": "Handle specific situations" },
+    "goal_situations_detail": { "cs": "Telefon, porada, pohovor…", "en": "Calls, meetings, interviews…" },
+    "goal_accept":       { "cs": "Míň stresu z koktání", "en": "Less stress about stuttering" },
+    "goal_accept_detail":{ "cs": "Přijmout ho a žít s ním v klidu", "en": "Accept it and live with it calmly" },
+
+    "building_title":    { "cs": "Sestavujeme tvůj plán…", "en": "Building your plan…" },
+    "building_warmups":  { "cs": "Vybíráme rozcvičky na dech a hlas", "en": "Choosing breath and voice warm-ups" },
+    "building_situations": { "cs": "Přidáváme situace k nácviku: {situations}", "en": "Adding situations to rehearse: {situations}" },
+    "building_situations_any": { "cs": "Přidáváme situace k nácviku", "en": "Adding situations to rehearse" },
+    "building_minutes":  { "cs": "Ladíme plán na {n} minut denně", "en": "Fitting the plan into {n} minutes a day" },
+    "building_texts":    { "cs": "Připravujeme texty ke čtení", "en": "Preparing reading texts" },
+    "building_texts_child": { "cs": "Připravujeme texty pro děti", "en": "Preparing texts for children" },
+    "building_reminder": { "cs": "Nastavujeme připomínku na {time}", "en": "Setting your reminder for {time}" },
+
+    "plan_kicker":       { "cs": "Hotovo", "en": "Done" },
+    "plan_title":        { "cs": "Tvůj plán je připravený", "en": "Your plan is ready" },
+    "plan_title_name":   { "cs": "{name}, tvůj plán je připravený", "en": "{name}, your plan is ready" },
+    "plan_today":        { "cs": "Na dnes", "en": "For today" },
+    "plan_fact_daily":   { "cs": "Každý den nový plán na {n} minut", "en": "A fresh {n}-minute plan every day" },
+    "plan_fact_reminder":{ "cs": "Připomeneme se v {time}", "en": "We'll remind you at {time}" },
+    "plan_cta":          { "cs": "Vyzkoušet hned · 40 sekund", "en": "Try it now · 40 seconds" },
+
+    "win_title":         { "cs": "Zkus to se mnou", "en": "Try it with me" },
+    "win_sub":           { "cs": "{n} klidné nádechy. Nic víc.", "en": "{n} calm breaths. That's all." },
+    "win_done_title":    { "cs": "První krok máš za sebou", "en": "You've taken the first step" },
+    "win_done_sub":      { "cs": "Přesně takhle to bude fungovat — po malých krocích, každý den.", "en": "That's how it works — small steps, every day." },
+
+    "offer_title":       { "cs": "Odemkni celý plán", "en": "Unlock your full plan" },
+    "offer_tagline_calm":       { "cs": "Trénuj klidnou řeč bez limitů — se všemi situacemi a přehledem pro logopeda.", "en": "Practise calm speech without limits — every situation and a report for your therapist." },
+    "offer_tagline_confidence": { "cs": "Buduj jistotu každý den — bez limitů, se všemi situacemi.", "en": "Build confidence every day — no limits, every situation." },
+    "offer_tagline_situations": { "cs": "Nacvič si všechny situace — telefon, poradu, prezentaci i pohovor.", "en": "Rehearse every situation — calls, meetings, presentations and interviews." },
+    "offer_tagline_accept":     { "cs": "Mluv s menším stresem — bez limitů a s přehledem tvého pokroku.", "en": "Speak with less stress — no limits, with an overview of your progress." },
+    "offer_continue_free": { "cs": "Pokračovat zdarma", "en": "Continue for free" }
   },
 
   "home": {
@@ -291,6 +336,8 @@
     "title":             { "cs": "Čas na chvilku cvičení", "en": "Time for a little practice" },
     "body":              { "cs": "Pár minut denně dělá rozdíl. Jdeme na to?", "en": "A few minutes a day makes a difference. Shall we?" },
     "denied_title":      { "cs": "Oznámení jsou vypnutá", "en": "Notifications are off" },
+    "trial_title":       { "cs": "Zkušební doba brzy končí", "en": "Your trial ends soon" },
+    "trial_body":        { "cs": "Za {n} dny začne placené předplatné. Zrušit ho můžeš v nastavení svého účtu v obchodě.", "en": "Your paid subscription starts in {n} days. You can cancel it in your store account settings." },
     "denied_body":       { "cs": "Pro připomínky povol Speasy oznámení v nastavení telefonu.", "en": "To get reminders, allow notifications for Speasy in your phone settings." }
   },
 
@@ -382,6 +429,11 @@
     "pending":           { "cs": "Platba čeká na potvrzení. Premium se odemkne, jakmile projde.", "en": "Your payment is pending. Premium unlocks as soon as it goes through." },
     "retry":             { "cs": "Zkusit znovu", "en": "Try again" },
     "stay_free":         { "cs": "Zůstat na free", "en": "Stay on free" },
+    "tl_today":          { "cs": "Dnes", "en": "Today" },
+    "tl_today_what":     { "cs": "Odemkneš všechno zdarma", "en": "Everything unlocks for free" },
+    "tl_in_days":        { "cs": { "one": "Za # den", "few": "Za # dny", "other": "Za # dní" }, "en": { "one": "In # day", "other": "In # days" } },
+    "tl_reminder_what":  { "cs": "Pošleme ti připomínku, že zkušební doba končí", "en": "We'll remind you that your trial is ending" },
+    "tl_charge_what":    { "cs": "Začne předplatné {price}. Do té doby ho můžeš kdykoli zrušit.", "en": "Your subscription starts at {price}. Cancel any time before that." },
     "already_premium":   { "cs": "Premium máš aktivní. Díky!", "en": "Your Premium is active. Thank you!" },
 
     "post_title":        { "cs": "Vítej v Premium, {name}", "en": "Welcome to Premium, {name}" },

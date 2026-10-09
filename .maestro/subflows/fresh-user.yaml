@@ -1,4 +1,5 @@
-# Wipes app data and completes onboarding as "Petr" (phone call is hard, 15 min/day → 2-item plan).
+# Wipes app data and completes onboarding as "Petr" (phone call is hard,
+# 15 min/day → 2-item plan), skipping the breathing win and the offer.
 appId: host.exp.Exponent
 ---
 - clearState
@@ -9,14 +10,27 @@ appId: host.exp.Exponent
 - tapOn: "Začít"
 - inputText: "Petr"
 - tapOn: "Pokračovat"
-- tapOn: "Pro sebe.*"
-- tapOn: "Pokračovat"
 - tapOn: "Telefonát.*"
 - tapOn: "Pokračovat"
-- tapOn: "Hotovo"
+- tapOn: "Pokračovat"          # insight
+- tapOn: "Víc jistoty.*"
+- tapOn: "Pokračovat"
+- tapOn: "Pro sebe.*"
+- tapOn: "Pokračovat"
+- tapOn: "Sestavit můj plán"
 - tapOn:
     text: "Povolit|Allow"
     optional: true
+- extendedWaitUntil:
+    visible: ".*tvůj plán je připravený"
+    timeout: 20000
+- tapOn: "Přeskočit"
+- extendedWaitUntil:
+    visible: "Odemkni celý plán"
+    timeout: 20000
+- scrollUntilVisible:
+    element: "Pokračovat zdarma"
+- tapOn: "Pokračovat zdarma"
 - extendedWaitUntil:
     visible: "Tvůj plán na dnes"
     timeout: 15000

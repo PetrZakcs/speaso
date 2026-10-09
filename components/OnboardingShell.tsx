@@ -6,7 +6,7 @@ import IconButton from './IconButton';
 import { useTranslation } from '../i18n/useTranslation';
 import { Colors, FontFamily, FontSize, Spacing } from '../theme/tokens';
 
-export const ONBOARDING_STEPS = 4;
+export const ONBOARDING_STEPS = 5;
 
 interface Props {
   /** 1-based step after the welcome screen. */

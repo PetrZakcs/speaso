@@ -2,82 +2,36 @@ import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, {
-  cancelAnimation, useSharedValue, useAnimatedStyle, withRepeat, withSequence,
-  withTiming, Easing,
+  cancelAnimation, useSharedValue, useAnimatedStyle, withRepeat, withSequence, withTiming,
 } from 'react-native-reanimated';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useStore } from '../../state/store';
 import IconButton from '../../components/IconButton';
+import BreathingBall from '../../components/BreathingBall';
 import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow } from '../../theme/tokens';
-
-const BALL_SIZE = 148;
-
-type Phase = 'inhale' | 'hold' | 'exhale';
-
-const PHASES: { phase: Phase; seconds: number; scale: number }[] = [
-  { phase: 'inhale', seconds: 4, scale: 1.12 },
-  { phase: 'hold', seconds: 4, scale: 1.12 },
-  { phase: 'exhale', seconds: 6, scale: 0.8 },
-];
-const CYCLE_SECONDS = PHASES.reduce((sum, p) => sum + p.seconds, 0);
-
-/** Where in the 4-4-6 cycle we are, derived purely from elapsed time. */
-function breathState(elapsedSec: number) {
-  const round = Math.floor(elapsedSec / CYCLE_SECONDS);
-  let pos = elapsedSec % CYCLE_SECONDS;
-  for (let i = 0; i < PHASES.length; i++) {
-    if (pos < PHASES[i].seconds) {
-      return { round, phaseIdx: i, remaining: Math.ceil(PHASES[i].seconds - pos) };
-    }
-    pos -= PHASES[i].seconds;
-  }
-  return { round, phaseIdx: 0, remaining: PHASES[0].seconds };
-}
 
 export default function PanicScreen() {
   const { t, tList } = useTranslation();
   const incrementPanicUses = useStore((s) => s.incrementPanicUses);
   const affirmations = tList('panic.affirmations');
   const [affirmIdx, setAffirmIdx] = useState(0);
-  const [startedAt] = useState(() => Date.now());
-  const [now, setNow] = useState(startedAt);
   const counted = useRef(false);
-
-  const breathScale = useSharedValue(0.8);
   const glowOpacity = useSharedValue(0.5);
-
-  const { round, phaseIdx, remaining } = breathState((now - startedAt) / 1000);
-  const current = PHASES[phaseIdx];
 
   useEffect(() => {
     if (!counted.current) {
       counted.current = true;
       incrementPanicUses();
     }
-    const id = setInterval(() => setNow(Date.now()), 250);
     glowOpacity.set(withRepeat(
       withSequence(withTiming(0.95, { duration: 4000 }), withTiming(0.5, { duration: 3000 })),
       -1,
     ));
-    return () => {
-      clearInterval(id);
-      cancelAnimation(glowOpacity);
-      cancelAnimation(breathScale);
-    };
-  }, [incrementPanicUses, glowOpacity, breathScale]);
+    return () => cancelAnimation(glowOpacity);
+  }, [incrementPanicUses, glowOpacity]);
 
-  // Each phase (of each round) animates the ball to its target over the phase length.
-  useEffect(() => {
-    const p = PHASES[phaseIdx];
-    breathScale.set(withTiming(p.scale, {
-      duration: p.seconds * 1000,
-      easing: Easing.inOut(Easing.ease),
-    }));
-  }, [phaseIdx, round, breathScale]);
-
-  const ballStyle = useAnimatedStyle(() => ({ transform: [{ scale: breathScale.value }] }));
   const glowStyle = useAnimatedStyle(() => ({ opacity: glowOpacity.value * 0.25 }));
 
   return (
@@ -95,23 +49,7 @@ export default function PanicScreen() {
         <Text style={styles.sub}>{t('panic.sub')}</Text>
       </View>
 
-      <View style={styles.ballWrap}>
-        <Animated.View
-          style={[styles.ball, ballStyle]}
-          accessible
-          accessibilityLiveRegion="polite"
-          accessibilityLabel={t(`panic.phase_${current.phase}`)}
-        >
-          <Text style={styles.phaseCount}>{remaining}</Text>
-          <Text style={styles.phaseLabel}>{t(`panic.phase_${current.phase}`)}</Text>
-        </Animated.View>
-      </View>
-
-      <View style={styles.roundDots}>
-        {[0, 1, 2].map((i) => (
-          <View key={i} style={[styles.roundDot, i <= round % 3 && styles.roundDotActive]} />
-        ))}
-      </View>
+      <BreathingBall />
 
       {affirmations.length > 0 && (
         <View style={styles.affirmCard}>
@@ -167,49 +105,6 @@ const styles = StyleSheet.create({
     color: Colors.text.secondary,
     textAlign: 'center',
   },
-  ballWrap: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 32,
-  },
-  ball: {
-    width: BALL_SIZE,
-    height: BALL_SIZE,
-    borderRadius: BALL_SIZE / 2,
-    backgroundColor: Colors.accent.main,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: Colors.accent.main,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 32,
-    elevation: 12,
-    gap: 4,
-  },
-  phaseCount: {
-    fontFamily: FontFamily.soraSemiBold,
-    fontSize: 38,
-    color: Colors.accent.on,
-    letterSpacing: -1,
-  },
-  phaseLabel: {
-    fontFamily: FontFamily.dmSansMedium,
-    fontSize: FontSize.bodySmall,
-    color: Colors.accent.on,
-  },
-  roundDots: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 8,
-    marginBottom: 24,
-  },
-  roundDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: Colors.surface.card2,
-  },
-  roundDotActive: { backgroundColor: Colors.accent.main },
   affirmCard: {
     marginHorizontal: Spacing.screenH,
     backgroundColor: Colors.surface.card,
