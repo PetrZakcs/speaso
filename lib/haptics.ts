@@ -1,0 +1,41 @@
+import { Platform } from 'react-native';
+import * as Haptics from 'expo-haptics';
+
+/**
+ * Small, consistent haptic vocabulary. Android uses performAndroidHapticsAsync
+ * (recommended over the Vibrator-based fallbacks). Failures are ignored —
+ * haptics are a nicety, never a requirement.
+ */
+const ignore = () => {};
+
+/** Choosing an option (rating, onboarding choices). */
+export function hapticSelect() {
+  (Platform.OS === 'android'
+    ? Haptics.performAndroidHapticsAsync(Haptics.AndroidHaptics.Segment_Tick)
+    : Haptics.selectionAsync()
+  ).catch(ignore);
+}
+
+/** A soft rhythmic tick (metronome beat, breathing phase change). */
+export function hapticTick() {
+  (Platform.OS === 'android'
+    ? Haptics.performAndroidHapticsAsync(Haptics.AndroidHaptics.Clock_Tick)
+    : Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft)
+  ).catch(ignore);
+}
+
+/** Starting / stopping something (recording). */
+export function hapticPress() {
+  (Platform.OS === 'android'
+    ? Haptics.performAndroidHapticsAsync(Haptics.AndroidHaptics.Context_Click)
+    : Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+  ).catch(ignore);
+}
+
+/** Something finished well (exercise done, first win). */
+export function hapticSuccess() {
+  (Platform.OS === 'android'
+    ? Haptics.performAndroidHapticsAsync(Haptics.AndroidHaptics.Confirm)
+    : Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+  ).catch(ignore);
+}

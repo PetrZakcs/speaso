@@ -7,6 +7,7 @@ import Animated, {
 import { createAudioPlayer, type AudioPlayer } from 'expo-audio';
 import { useTranslation } from '../../i18n/useTranslation';
 import { Colors, FontFamily, FontSize, Radius, Shadow } from '../../theme/tokens';
+import { hapticTick } from '../../lib/haptics';
 
 const CLICK = require('../../assets/sounds/click.wav');
 const MIN_BPM = 40;
@@ -47,6 +48,7 @@ export default function Metronome() {
     let timer: ReturnType<typeof setTimeout>;
 
     const tick = () => {
+      hapticTick();
       pulse.set(withSequence(withTiming(1.18, { duration: 60 }), withTiming(1, { duration: 220 })));
       if (soundRef.current) {
         const p = players.current[beat % players.current.length];

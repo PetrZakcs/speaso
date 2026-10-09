@@ -4,6 +4,7 @@ import { useTranslation } from '../../i18n/useTranslation';
 import PillButton from '../PillButton';
 import type { Rating } from '../../lib/streak';
 import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow } from '../../theme/tokens';
+import { hapticSelect } from '../../lib/haptics';
 
 /** "How did speaking feel?" — 1–5 plus an optional private note. */
 export default function RatingView({ onDone }: { onDone: (rating?: Rating, note?: string) => void }) {
@@ -21,7 +22,10 @@ export default function RatingView({ onDone }: { onDone: (rating?: Rating, note?
           {([1, 2, 3, 4, 5] as Rating[]).map((r) => (
             <TouchableOpacity
               key={r}
-              onPress={() => setRating(r)}
+              onPress={() => {
+                hapticSelect();
+                setRating(r);
+              }}
               style={[styles.face, rating === r && styles.faceActive]}
               accessibilityRole="radio"
               accessibilityState={{ checked: rating === r }}

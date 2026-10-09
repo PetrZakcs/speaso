@@ -7,6 +7,7 @@ import IconButton from '../IconButton';
 import PillButton from '../PillButton';
 import ActivityIcon from '../ActivityIcon';
 import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow, type TintName } from '../../theme/tokens';
+import { hapticSuccess } from '../../lib/haptics';
 
 export function formatTime(totalSec: number) {
   const m = Math.floor(totalSec / 60);
@@ -192,6 +193,9 @@ export function DoneView({
   onClose: () => void;
 }) {
   const { t } = useTranslation();
+  useEffect(() => {
+    hapticSuccess();
+  }, []);
   return (
     <View style={styles.doneCenter}>
       <View style={styles.doneMark}>

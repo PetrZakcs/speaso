@@ -7,6 +7,7 @@ import { useTranslation } from '../../i18n/useTranslation';
 import BreathingBall from '../../components/BreathingBall';
 import PillButton from '../../components/PillButton';
 import { Colors, FontFamily, FontSize, Spacing } from '../../theme/tokens';
+import { hapticSuccess } from '../../lib/haptics';
 
 const ROUNDS = 3;
 
@@ -31,7 +32,13 @@ export default function FirstWin() {
           <View style={styles.main}>
             <Text style={styles.title} accessibilityRole="header">{t('onboarding.win_title')}</Text>
             <Text style={styles.sub}>{t('onboarding.win_sub', { n: ROUNDS })}</Text>
-            <BreathingBall rounds={ROUNDS} onComplete={() => setDone(true)} />
+            <BreathingBall
+              rounds={ROUNDS}
+              onComplete={() => {
+                hapticSuccess();
+                setDone(true);
+              }}
+            />
           </View>
         </>
       ) : (

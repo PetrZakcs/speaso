@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Colors, FontFamily, FontSize, Radius, Shadow } from '../../theme/tokens';
+import { hapticSelect } from '../../lib/haptics';
 
 /** A selectable row: title, optional detail, and a check when selected. */
 export default function ChoiceRow({
@@ -15,7 +16,10 @@ export default function ChoiceRow({
 }) {
   return (
     <TouchableOpacity
-      onPress={onPress}
+      onPress={() => {
+        hapticSelect();
+        onPress();
+      }}
       activeOpacity={0.75}
       style={[styles.row, selected && styles.rowSelected]}
       accessibilityRole={multi ? 'checkbox' : 'radio'}

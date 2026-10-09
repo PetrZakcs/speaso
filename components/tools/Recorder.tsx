@@ -9,6 +9,7 @@ import { useTranslation } from '../../i18n/useTranslation';
 import { useStore } from '../../state/store';
 import { persistRecording, recordingUri } from '../../lib/recordings';
 import { Colors, FontFamily, FontSize, Radius, Shadow } from '../../theme/tokens';
+import { hapticPress } from '../../lib/haptics';
 
 const MAX_SECONDS = 300;
 
@@ -70,6 +71,7 @@ export default function Recorder({ exerciseId }: { exerciseId: string }) {
         return;
       }
       player.pause();
+      hapticPress();
       await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
       await recorder.prepareToRecordAsync();
       recorder.record({ forDuration: MAX_SECONDS });
@@ -84,6 +86,7 @@ export default function Recorder({ exerciseId }: { exerciseId: string }) {
   const stop = async () => {
     if (stopping.current) return;
     stopping.current = true;
+    hapticPress();
     setBusy(true);
     try {
       const durationSec = recState.durationMillis / 1000;

@@ -463,6 +463,7 @@
     "privacy":           { "cs": "Zásady soukromí", "en": "Privacy policy" },
     "terms":             { "cs": "Podmínky použití", "en": "Terms of use" },
     "disclaimer":        { "cs": "Speasy není zdravotnický prostředek a nenahrazuje péči logopeda.", "en": "Speasy is not a medical device and does not replace a speech therapist." },
+    "dev_onboarding":    { "cs": "Projít onboarding znovu", "en": "Run onboarding again" },
     "footer_tagline":    { "cs": "Vytvořeno pro lidi, kteří koktají", "en": "Made for people who stutter" }
   },
 

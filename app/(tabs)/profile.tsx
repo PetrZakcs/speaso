@@ -186,6 +186,23 @@ export default function ProfileScreen() {
           </View>
         </View>
 
+        {/* Development builds only — lets testers walk through onboarding again. */}
+        {__DEV__ && (
+          <View style={styles.section}>
+            <Text style={styles.sectionLabel}>Dev</Text>
+            <View style={styles.sectionCard}>
+              <SettingRow
+                icon="refresh-circle-outline"
+                label={t('settings.dev_onboarding')}
+                onPress={() => {
+                  useStore.getState().setOnboardingDone(false);
+                  router.replace('/onboarding/welcome');
+                }}
+              />
+            </View>
+          </View>
+        )}
+
         <Text style={styles.disclaimer}>{t('settings.disclaimer')}</Text>
         <Text style={styles.footer}>{t('settings.footer_tagline')}</Text>
       </ScrollView>

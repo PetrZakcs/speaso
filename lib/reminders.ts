@@ -4,9 +4,15 @@ import * as Notifications from 'expo-notifications';
 import { translate } from '../i18n';
 import type { SupportedLang } from './locale';
 import { useStore, useShallow } from '../state/store';
+import { dailyPlan, doneOn } from './plan';
+import { reminderDates } from './reminderSchedule';
+import { toDateKey } from './dates';
+import { useToday } from './useToday';
 
 const CHANNEL_ID = 'reminders';
-const DAILY_ID = 'daily-reminder';
+/** Legacy id of the old repeating reminder (cleaned up on sync). */
+const LEGACY_DAILY_ID = 'daily-reminder';
+const DAILY_PREFIX = 'daily-';
 const TRIAL_ID = 'trial-reminder';
 /** How long before the trial ends we remind the user. */
 export const TRIAL_REMINDER_DAYS = 2;
@@ -49,27 +55,33 @@ async function ensureChannel(lang: SupportedLang) {
   }
 }
 
+async function cancelDailyReminders() {
+  const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+  await Promise.all(
+    scheduled
+      .filter((n) => n.identifier.startsWith(DAILY_PREFIX) || n.identifier === LEGACY_DAILY_ID)
+      .map((n) => Notifications.cancelScheduledNotificationAsync(n.identifier)),
+  );
+}
+
 /**
- * Replaces the daily reminder with one at hour:minute (other notifications,
- * like the trial reminder, are left alone).
+ * Replaces the daily reminders with one-off notifications on the given
+ * dates (see reminderDates — today is skipped once the plan is done).
  * Doesn't prompt for permission — call ensureNotificationPermission() first.
  */
-export async function scheduleDailyReminder(hour: number, minute: number, lang: SupportedLang) {
+export async function scheduleDailyReminders(dates: Date[], lang: SupportedLang) {
   await ensureChannel(lang);
-  await Notifications.cancelScheduledNotificationAsync(DAILY_ID).catch(() => {});
-  await Notifications.scheduleNotificationAsync({
-    identifier: DAILY_ID,
-    content: {
-      title: translate(lang, 'reminders.title'),
-      body: translate(lang, 'reminders.body'),
-    },
-    trigger: {
-      type: Notifications.SchedulableTriggerInputTypes.DAILY,
-      hour,
-      minute,
-      channelId: CHANNEL_ID,
-    },
-  });
+  await cancelDailyReminders();
+  for (const date of dates) {
+    await Notifications.scheduleNotificationAsync({
+      identifier: `${DAILY_PREFIX}${toDateKey(date)}`,
+      content: {
+        title: translate(lang, 'reminders.title'),
+        body: translate(lang, 'reminders.body'),
+      },
+      trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date, channelId: CHANNEL_ID },
+    });
+  }
 }
 
 /**
@@ -96,7 +108,7 @@ export async function cancelTrialReminder() {
 }
 
 export async function cancelReminders() {
-  await Notifications.cancelScheduledNotificationAsync(DAILY_ID).catch(() => {});
+  await cancelDailyReminders();
 }
 
 export async function notificationsAllowed(): Promise<boolean> {
@@ -117,16 +129,23 @@ export function disableReminder() {
 }
 
 /**
- * Keeps the OS schedule in sync with the stored setting — reschedules when
- * the time or the language changes. Mounted once in the root layout.
+ * Keeps the OS schedule in sync: the next 7 days at the chosen time, minus
+ * today once the plan is done. Re-runs when the time, language, plan state
+ * or the day changes. Mounted once in the root layout.
  */
 export function useReminderSync(active: boolean) {
-  const { enabled, hour, minute, language } = useStore(useShallow((s) => ({
-    enabled: s.reminder.enabled,
-    hour: s.reminder.hour,
-    minute: s.reminder.minute,
-    language: s.language,
-  })));
+  const today = useToday();
+  const { enabled, hour, minute, language, planDoneToday } = useStore(useShallow((s) => {
+    const plan = dailyPlan(today, s.user.dailyMinutes, s.user.situations, s.subscription.isPremium);
+    const done = doneOn(s.sessions, today);
+    return {
+      enabled: s.reminder.enabled,
+      hour: s.reminder.hour,
+      minute: s.reminder.minute,
+      language: s.language,
+      planDoneToday: plan.every((i) => done.has(i.activityId)),
+    };
+  }));
 
   useEffect(() => {
     // Before rehydration the store holds defaults — don't cancel a real schedule.
@@ -137,8 +156,10 @@ export function useReminderSync(active: boolean) {
         return;
       }
       // Permission revoked in system settings: keep the preference, skip scheduling.
-      if (await notificationsAllowed()) await scheduleDailyReminder(hour, minute, language);
+      if (await notificationsAllowed()) {
+        await scheduleDailyReminders(reminderDates(new Date(), hour, minute, planDoneToday), language);
+      }
     };
     sync().catch((e) => console.warn('[reminders] sync failed:', e));
-  }, [active, enabled, hour, minute, language]);
+  }, [active, enabled, hour, minute, language, planDoneToday, today]);
 }
