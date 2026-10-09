@@ -450,6 +450,7 @@
   "settings": {
     "title":             { "cs": "Profil", "en": "Profile" },
     "plan_premium":      { "cs": "Premium", "en": "Premium" },
+    "plan_beta":         { "cs": "Beta · všechno odemčeno", "en": "Beta · everything unlocked" },
     "plan_trial":        { "cs": "Premium · zkušební období", "en": "Premium · trial" },
     "plan_free":         { "cs": "Free · Upgradovat →", "en": "Free · Upgrade →" },
     "default_name":      { "cs": "Uživatel Speasy", "en": "Speasy user" },

@@ -5,6 +5,7 @@ import type {
   PurchasesPackage,
 } from 'react-native-purchases';
 import { useStore } from '../state/store';
+import { BETA_ALL_ACCESS } from './beta';
 import { cancelTrialReminder, scheduleTrialReminder } from './reminders';
 
 /** Entitlement identifier configured in the RevenueCat dashboard. */
@@ -58,6 +59,11 @@ function applyCustomerInfo(info: CustomerInfo) {
 /** Configures RevenueCat and keeps the store in sync with the entitlement. */
 export function initPurchases() {
   if (configured) return;
+  if (BETA_ALL_ACCESS) {
+    // Closed beta: everything unlocked, no store involved.
+    useStore.getState().setSubscription({ isPremium: true, isTrial: false, expiresAt: null });
+    return;
+  }
   const Purchases = getRC();
   const key = apiKey();
   if (!Purchases || !key) {

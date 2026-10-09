@@ -73,6 +73,9 @@
     "locales": {
       "cs": "./locales/cs.json",
       "en": "./locales/en.json"
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     }
   }
 }

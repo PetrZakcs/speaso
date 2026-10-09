@@ -7,6 +7,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useStore, useShallow } from '../../state/store';
 import { initials } from '../../lib/names';
+import { BETA_ALL_ACCESS } from '../../lib/beta';
 import { manageSubscription, restorePurchases } from '../../lib/purchases';
 import { PRIVACY_URL, TERMS_URL } from '../../lib/links';
 import { REMINDER_TIMES, disableReminder, enableReminder, formatTime } from '../../lib/reminders';
@@ -91,7 +92,9 @@ export default function ProfileScreen() {
             <Text style={styles.profileName}>{name || t('settings.default_name')}</Text>
             {subscription.isPremium ? (
               <Text style={[styles.planLabel, { color: Colors.premium.main }]}>
-                {t(subscription.isTrial ? 'settings.plan_trial' : 'settings.plan_premium')}
+                {BETA_ALL_ACCESS
+                  ? t('settings.plan_beta')
+                  : t(subscription.isTrial ? 'settings.plan_trial' : 'settings.plan_premium')}
               </Text>
             ) : (
               <TouchableOpacity onPress={() => router.push('/paywall')} accessibilityRole="button">
