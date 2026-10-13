@@ -1,4 +1,9 @@
 {
-  "CFBundleDisplayName": "Speasy",
-  "NSMicrophoneUsageDescription": "Speasy uses the microphone so you can record your practice and listen back. Recordings stay on your phone."
+  "ios": {
+    "CFBundleDisplayName": "Speasy",
+    "NSMicrophoneUsageDescription": "Speasy uses the microphone so you can record your practice and listen back. Recordings stay on your phone."
+  },
+  "android": {
+    "app_name": "Speasy"
+  }
 }

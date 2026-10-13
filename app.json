@@ -12,6 +12,9 @@
       "bundleIdentifier": "com.speasy.app",
       "config": {
         "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true
       }
     },
     "android": {
