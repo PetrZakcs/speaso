@@ -92,6 +92,10 @@
     "owner": "petrprog",
     "updates": {
       "url": "https://u.expo.dev/05647762-26a4-4024-b2cb-b33800d832ca"
-    }
+    },
+    "platforms": [
+      "ios",
+      "android"
+    ]
   }
 }
