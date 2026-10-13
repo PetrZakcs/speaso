@@ -62,5 +62,6 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: "Tvůj plán na dnes"
     timeout: 15000
-- assertVisible: "Dobrý.*, Petře|Dobré ráno, Petře|Dobrý večer, Petře"
+- assertVisible: "Dobrý.*,|Dobré ráno,"
+- assertVisible: "Petře"
 - assertVisible: "0 z 2"

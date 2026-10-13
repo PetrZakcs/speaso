@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: Calm.bgTo },
   safe: { flex: 1, paddingHorizontal: Spacing.screenH },
   close: {
-    alignSelf: 'flex-end',
+    alignSelf: 'flex-start',
     width: 40,
     height: 40,
     borderRadius: 20,

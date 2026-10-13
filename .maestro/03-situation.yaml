@@ -6,6 +6,7 @@ appId: ${APP_ID}
     id: "tab-exercises"
 - scrollUntilVisible:
     element: "Telefonát.*"
+    centerElement: true
 - tapOn: "Telefonát.*"
 
 - assertVisible: "Objednat se k lékaři"
@@ -31,6 +32,7 @@ appId: ${APP_ID}
 # Premium situation → paywall
 - scrollUntilVisible:
     element: "Pracovní porada.*"
+    centerElement: true
 - tapOn: "Pracovní porada.*"
 - assertVisible: "Speasy Premium"
 - assertVisible: "Tahle situace je součástí Premium."

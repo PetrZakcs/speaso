@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
+import React, { useRef, useState } from 'react';
+import {
+  View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform,
+} from 'react-native';
 import { useTranslation } from '../../i18n/useTranslation';
 import PillButton from '../PillButton';
 import type { Rating } from '../../lib/streak';
@@ -11,10 +13,18 @@ export default function RatingView({ onDone }: { onDone: (rating?: Rating, note?
   const { t } = useTranslation();
   const [rating, setRating] = useState<Rating | null>(null);
   const [note, setNote] = useState('');
+  const scrollRef = useRef<ScrollView>(null);
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-      <ScrollView contentContainerStyle={styles.wrap} keyboardShouldPersistTaps="handled">
+    // iOS: the scroll view insets itself above the keyboard; Android (edge-to-edge) needs padding.
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? undefined : 'padding'}>
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={styles.wrap}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="interactive"
+        automaticallyAdjustKeyboardInsets
+      >
         <Text style={styles.title} accessibilityRole="header">{t('rating.title')}</Text>
         <Text style={styles.sub}>{t('rating.sub')}</Text>
 
@@ -50,6 +60,10 @@ export default function RatingView({ onDone }: { onDone: (rating?: Rating, note?
           multiline
           maxLength={500}
           textAlignVertical="top"
+          // Return closes the keyboard so the save button is reachable again.
+          returnKeyType="done"
+          submitBehavior="blurAndSubmit"
+          onFocus={() => setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 300)}
         />
         <Text style={styles.privacy}>{t('rating.privacy')}</Text>
 

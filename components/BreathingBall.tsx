@@ -4,10 +4,12 @@ import Animated, {
   cancelAnimation, useSharedValue, useAnimatedStyle, withTiming, Easing,
 } from 'react-native-reanimated';
 import { useTranslation } from '../i18n/useTranslation';
-import { Colors, FontFamily, FontSize } from '../theme/tokens';
+import { Calm, Colors, FontFamily, FontSize } from '../theme/tokens';
 import { hapticTick } from '../lib/haptics';
 
 const BALL_SIZE = 148;
+/** Concentric halo rings, as a multiple of the ball size. */
+const RINGS = [1.9, 1.55, 1.25];
 
 type Phase = 'inhale' | 'hold' | 'exhale';
 
@@ -38,9 +40,12 @@ export function breathState(elapsedSec: number) {
 export default function BreathingBall({
   rounds,
   onComplete,
+  tone = 'light',
 }: {
   rounds?: number;
   onComplete?: () => void;
+  /** 'calm' for the dark green immersive screens. */
+  tone?: 'light' | 'calm';
 }) {
   const { t } = useTranslation();
   const [startedAt] = useState(() => Date.now());
@@ -78,26 +83,47 @@ export default function BreathingBall({
   }, [phaseIdx, round, breathScale, finished]);
 
   const ballStyle = useAnimatedStyle(() => ({ transform: [{ scale: breathScale.value }] }));
+  // Halos breathe a bit further than the ball, so the rings visibly open and close.
+  const ringStyle = useAnimatedStyle(() => ({ transform: [{ scale: 0.7 + breathScale.value * 0.35 }] }));
+  const calm = tone === 'calm';
+  const ringColor = calm ? Calm.accent : Colors.accent.main;
   const dots = rounds ?? 3;
 
   return (
     <View style={styles.wrap}>
       <View style={styles.ballWrap}>
+        {RINGS.map((k, i) => (
+          <Animated.View
+            key={k}
+            pointerEvents="none"
+            style={[
+              styles.ring,
+              {
+                width: BALL_SIZE * k,
+                height: BALL_SIZE * k,
+                borderRadius: (BALL_SIZE * k) / 2,
+                backgroundColor: ringColor,
+                opacity: (calm ? 0.06 : 0.07) * (i + 1),
+              },
+              ringStyle,
+            ]}
+          />
+        ))}
         <Animated.View
-          style={[styles.ball, ballStyle]}
+          style={[styles.ball, calm && styles.ballCalm, ballStyle]}
           accessible
           accessibilityLiveRegion="polite"
           accessibilityLabel={t(`panic.phase_${current.phase}`)}
         >
-          <Text style={styles.phaseCount}>{remaining}</Text>
-          <Text style={styles.phaseLabel}>{t(`panic.phase_${current.phase}`)}</Text>
+          <Text style={[styles.phaseCount, calm && styles.onCalm]}>{remaining}</Text>
+          <Text style={[styles.phaseLabel, calm && styles.onCalm]}>{t(`panic.phase_${current.phase}`)}</Text>
         </Animated.View>
       </View>
       <View style={styles.roundDots}>
         {Array.from({ length: dots }, (_, i) => (
           <View
             key={i}
-            style={[styles.roundDot, (rounds ? i < Math.min(round + 1, rounds) : i <= round % dots) && styles.roundDotActive]}
+            style={[styles.roundDot, calm && styles.roundDotCalm, (rounds ? i < Math.min(round + 1, rounds) : i <= round % dots) && (calm ? styles.roundDotActiveCalm : styles.roundDotActive)]}
           />
         ))}
       </View>
@@ -107,7 +133,13 @@ export default function BreathingBall({
 
 const styles = StyleSheet.create({
   wrap: { alignItems: 'center' },
-  ballWrap: { alignItems: 'center', justifyContent: 'center', marginVertical: 32 },
+  ballWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: BALL_SIZE * RINGS[0],
+    marginVertical: 12,
+  },
+  ring: { position: 'absolute' },
   ball: {
     width: BALL_SIZE,
     height: BALL_SIZE,
@@ -122,9 +154,13 @@ const styles = StyleSheet.create({
     elevation: 12,
     gap: 4,
   },
-  phaseCount: { fontFamily: FontFamily.soraSemiBold, fontSize: 38, color: Colors.accent.on, letterSpacing: -1 },
+  ballCalm: { backgroundColor: Calm.accent, shadowColor: Calm.accent },
+  onCalm: { color: Calm.bgTo },
+  phaseCount: { fontFamily: FontFamily.soraBold, fontSize: 40, color: Colors.accent.on, letterSpacing: -1 },
   phaseLabel: { fontFamily: FontFamily.dmSansMedium, fontSize: FontSize.bodySmall, color: Colors.accent.on },
   roundDots: { flexDirection: 'row', justifyContent: 'center', gap: 8, marginBottom: 24 },
   roundDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: Colors.surface.card2 },
   roundDotActive: { backgroundColor: Colors.accent.main },
+  roundDotCalm: { backgroundColor: Calm.track },
+  roundDotActiveCalm: { backgroundColor: Calm.accent },
 });

@@ -8,13 +8,14 @@ import { useStore, useShallow } from '../../state/store';
 import Card from '../../components/Card';
 import MoodChart from '../../components/MoodChart';
 import WeekDots from '../../components/WeekDots';
+import ProgressRing from '../../components/ProgressRing';
 import { averageRating, currentStreak, weekActivity, weekMinutes } from '../../lib/streak';
 import { addDays, mondayOf, weekdayIndex } from '../../lib/dates';
 import { activityTitle, formatDate } from '../../lib/activities';
 import { exportReport } from '../../lib/report';
 import PremiumTag from '../../components/PremiumTag';
 import { useToday } from '../../lib/useToday';
-import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow, Tints } from '../../theme/tokens';
 
 const CHART_HEIGHT = 80;
 
@@ -107,9 +108,20 @@ export default function ProgressScreen() {
 
         {/* Streak hero */}
         <View style={styles.streakHero}>
-          <Text style={styles.streakLabel}>{t('progress.current_streak')}</Text>
-          <Text style={styles.streakVal}>{tn('progress.streak_value', streakDays)}</Text>
-          <Text style={styles.streakLabel}>{t('progress.streak_record', { n: streak.record })}</Text>
+          <View style={{ flex: 1, gap: 4 }}>
+            <Text style={styles.streakLabel}>{t('progress.current_streak')}</Text>
+            <Text style={styles.streakVal}>{tn('progress.streak_value', streakDays)}</Text>
+            <Text style={styles.streakLabel}>{t('progress.streak_record', { n: streak.record })}</Text>
+          </View>
+          {/* Gauge: how close the current streak is to the record. */}
+          <ProgressRing
+            progress={streak.record ? streakDays / streak.record : 0}
+            size={76}
+            stroke={7}
+            track={Colors.surface.card2}
+          >
+            <Ionicons name="flame" size={26} color={streakDays ? Tints.peach.fg : Colors.text.tertiary} />
+          </ProgressRing>
         </View>
 
         <MoodChart checkIns={checkIns} today={today} />
@@ -240,11 +252,13 @@ const styles = StyleSheet.create({
     ...Shadow.card,
     borderRadius: Radius.card,
     padding: 20,
-    gap: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
   },
   streakVal: {
-    fontFamily: FontFamily.soraSemiBold,
-    fontSize: 28,
+    fontFamily: FontFamily.soraExtraBold,
+    fontSize: 32,
     color: Colors.text.primary,
     letterSpacing: -0.5,
   },
@@ -256,7 +270,7 @@ const styles = StyleSheet.create({
   statsRow: { flexDirection: 'row', gap: 10 },
   statCard: { flex: 1, alignItems: 'center', paddingVertical: 16, paddingHorizontal: 8 },
   statNum: {
-    fontFamily: FontFamily.soraSemiBold,
+    fontFamily: FontFamily.soraBold,
     fontSize: 26,
     color: Colors.text.primary,
   },

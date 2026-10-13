@@ -333,7 +333,6 @@
     "chart_change_up":   { "cs": "o {n} lépe než minulý týden", "en": "{n} better than last week" },
     "chart_change_down": { "cs": "o {n} hůř než minulý týden", "en": "{n} lower than last week" },
     "chart_change_same": { "cs": "stejně jako minulý týden", "en": "same as last week" },
-    "chart_best":        { "cs": "Nejlepší den", "en": "Best day" },
     "chart_title":       { "cs": "Jak se ti mluví · 14 dní", "en": "How speaking feels · 14 days" },
     "chart_avg":         { "cs": "průměr {n}", "en": "average {n}" },
     "chart_from":        { "cs": "před 2 týdny", "en": "2 weeks ago" },

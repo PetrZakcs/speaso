@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useStore } from '../../state/store';
 import { SITUATIONS } from '../../content/situations';
 import OnboardingShell from '../../components/OnboardingShell';
-import ChoiceRow from '../../components/onboarding/ChoiceRow';
+import ChoiceTile, { TileGrid } from '../../components/onboarding/ChoiceTile';
 import PillButton from '../../components/PillButton';
 
 /** Same ids as the guided situations, so home can recommend matching practice. */
@@ -35,18 +34,20 @@ export default function SituationsStep() {
         />
       }
     >
-      <View style={{ gap: 10 }}>
+      <TileGrid>
         {SITUATIONS.map((s) => (
-          <ChoiceRow
+          <ChoiceTile
             key={s.id}
             multi
+            icon={s.icon}
+            tint={s.tint}
             title={s.content[lang].title}
             detail={s.content[lang].sub}
             selected={selected.includes(s.id)}
             onPress={() => toggle(s.id)}
           />
         ))}
-      </View>
+      </TileGrid>
     </OnboardingShell>
   );
 }

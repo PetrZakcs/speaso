@@ -3,8 +3,12 @@ appId: ${APP_ID}
 ---
 - runFlow: subflows/fresh-user.yaml
 # daily check-in
-- tapOn: "Docela dobře"
-- assertVisible: "Dnes se ti mluví docela dobře"
+- tapOn:
+    id: "checkin-open"
+- assertVisible: "Tak napůl"
+- tapOn:
+    id: "checkin-save"
+- assertVisible: "Dnes se ti mluví tak napůl"
 
 # first plan item = today's warm-up
 - tapOn: "Bránicové dýchání.*|Měkký start hlásek.*"
@@ -25,6 +29,7 @@ appId: ${APP_ID}
     enabled: true
 - tapOn: "Poznámka.*"
 - inputText: "Dobre to slo"
+- pressKey: Enter
 - tapOn: "Uložit"
 
 - assertVisible: "Výborně!"
@@ -47,7 +52,7 @@ appId: ${APP_ID}
 - tapOn:
     id: "tab-progress"
 - assertVisible: "Aktuální série"
-- assertVisible: "průměr 4.0"
+- assertVisible: "průměr 3.0.*"
 - assertVisible: "1 den"
 - scrollUntilVisible:
     element: "Deník"

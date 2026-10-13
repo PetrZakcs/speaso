@@ -69,11 +69,11 @@ const styles = StyleSheet.create({
   segmentDone: { backgroundColor: Colors.accent.main },
   content: { paddingHorizontal: Spacing.screenH, paddingTop: 36, paddingBottom: 24 },
   title: {
-    fontFamily: FontFamily.soraSemiBold,
-    fontSize: 28,
+    fontFamily: FontFamily.display,
+    fontSize: 30,
     lineHeight: 36,
     color: Colors.text.primary,
-    letterSpacing: -0.4,
+    letterSpacing: -0.8,
   },
   subtitle: {
     fontFamily: FontFamily.dmSansRegular,
