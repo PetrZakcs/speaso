@@ -5,19 +5,23 @@ import { useStore } from '../../state/store';
 import { SITUATIONS } from '../../content/situations';
 import OnboardingShell from '../../components/OnboardingShell';
 import ChoiceTile, { TileGrid } from '../../components/onboarding/ChoiceTile';
+import TextAnswer from '../../components/onboarding/TextAnswer';
 import PillButton from '../../components/PillButton';
 
 /** Same ids as the guided situations, so home can recommend matching practice. */
 export default function SituationsStep() {
   const { t, lang } = useTranslation();
-  const saved = useStore((s) => s.user.situations);
+  const user = useStore((s) => s.user);
   const setUser = useStore((s) => s.setUser);
   const [selected, setSelected] = useState<string[]>(
-    saved.filter((id) => SITUATIONS.some((s) => s.id === id)),
+    user.situations.filter((id) => SITUATIONS.some((s) => s.id === id)),
   );
+  const [otherOn, setOtherOn] = useState(!!user.situationsOther);
+  const [other, setOther] = useState(user.situationsOther);
 
   const toggle = (id: string) =>
     setSelected((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]));
+  const answered = selected.length > 0 || (otherOn && !!other.trim());
 
   return (
     <OnboardingShell
@@ -26,9 +30,9 @@ export default function SituationsStep() {
       subtitle={t('onboarding.situations_sub')}
       footer={
         <PillButton
-          label={selected.length ? t('common.continue') : t('common.skip')}
+          label={answered ? t('common.continue') : t('common.skip')}
           onPress={() => {
-            setUser({ situations: selected });
+            setUser({ situations: selected, situationsOther: otherOn ? other.trim() : '' });
             router.push('/onboarding/insight');
           }}
         />
@@ -47,7 +51,25 @@ export default function SituationsStep() {
             onPress={() => toggle(s.id)}
           />
         ))}
+        <ChoiceTile
+          multi
+          icon="chatbubble-ellipses-outline"
+          tint="butter"
+          title={t('onboarding.other')}
+          detail={t('onboarding.other_detail')}
+          selected={otherOn}
+          onPress={() => setOtherOn((v) => !v)}
+        />
       </TileGrid>
+      {otherOn && (
+        <TextAnswer
+          value={other}
+          onChange={setOther}
+          placeholder={t('onboarding.other_situations_ph')}
+          autoFocus
+          testID="situations-other"
+        />
+      )}
     </OnboardingShell>
   );
 }

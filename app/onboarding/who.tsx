@@ -21,7 +21,7 @@ export default function WhoStep() {
 
   return (
     <OnboardingShell
-      step={4}
+      step={5}
       title={t('onboarding.who_title')}
       subtitle={t('onboarding.who_sub')}
       footer={

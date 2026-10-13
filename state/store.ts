@@ -28,7 +28,26 @@ interface UserState {
   dailyMinutes: 5 | 15 | 30;
   /** Free-text description from onboarding. Stays on the device. */
   note: string;
+  /** "Something else" answers typed during onboarding. */
+  situationsOther: string;
+  goalOther: string;
+  /** Opt-in to send onboarding answers (anonymously) to the Speasy team. */
+  shareAnswers: boolean;
 }
+
+/** A practice scenario the user wrote themselves. */
+export interface CustomScenario {
+  id: string;
+  title: string;
+  phrases: string[];
+  /** Optional real-world challenge; a generic one is used when empty. */
+  challenge: string;
+  createdAt: string;
+}
+
+/** Free users can practise one own scenario; more need Premium. */
+export const FREE_SCENARIOS_LIMIT = 1;
+export const MAX_SCENARIO_PHRASES = 8;
 
 /**
  * Local cache of the RevenueCat entitlement. Written only by lib/purchases.ts
@@ -74,6 +93,11 @@ interface AppState {
   panicUses: number;
   recordings: Recording[];
   checkIns: CheckIn[];
+  scenarios: CustomScenario[];
+  /** Anonymous random id, only used to de-duplicate submitted answers. */
+  installId: string;
+  /** Onboarding answers are waiting to be sent (offline at the time). */
+  answersPending: boolean;
 
   setOnboardingDone: (v: boolean) => void;
   setLanguage: (lang: SupportedLang) => void;
@@ -87,6 +111,11 @@ interface AppState {
   removeRecording: (id: string) => void;
   setReminder: (reminder: ReminderSettings) => void;
   setCheckIn: (mood: Rating) => void;
+  /** Saves a new scenario and returns its id. */
+  addScenario: (s: Pick<CustomScenario, 'title' | 'phrases' | 'challenge'>) => string;
+  updateScenario: (id: string, s: Pick<CustomScenario, 'title' | 'phrases' | 'challenge'>) => void;
+  removeScenario: (id: string) => void;
+  setAnswersPending: (v: boolean) => void;
 }
 
 const DEFAULT_REMINDER: ReminderSettings = { enabled: false, hour: 18, minute: 0 };
@@ -103,7 +132,19 @@ const initialUser: UserState = {
   therapyStatus: null,
   dailyMinutes: 15,
   note: '',
+  situationsOther: '',
+  goalOther: '',
+  shareAnswers: false,
 };
+
+/** Trims text and drops empty phrases so stored scenarios are always clean. */
+function cleanScenario(s: Pick<CustomScenario, 'title' | 'phrases' | 'challenge'>) {
+  return {
+    title: s.title.trim(),
+    phrases: s.phrases.map((p) => p.trim()).filter(Boolean).slice(0, MAX_SCENARIO_PHRASES),
+    challenge: s.challenge.trim(),
+  };
+}
 
 /*
  * Readiness is tracked separately from zustand's hasHydrated(): that flag
@@ -137,6 +178,9 @@ export const useStore = create<AppState>()(
       panicUses: 0,
       recordings: [],
       checkIns: [],
+      scenarios: [],
+      installId: newId(new Date()),
+      answersPending: false,
 
       setOnboardingDone: (v) => set({ onboardingDone: v }),
       setLanguage: (language) => set({ language }),
@@ -197,10 +241,26 @@ export const useStore = create<AppState>()(
           const rest = s.checkIns.filter((c) => c.date !== date);
           return { checkIns: [...rest, { date, mood }].slice(-MAX_CHECKINS) };
         }),
+
+      addScenario: (input) => {
+        const now = new Date();
+        const scenario: CustomScenario = { ...cleanScenario(input), id: newId(now), createdAt: now.toISOString() };
+        set((s) => ({ scenarios: [...s.scenarios, scenario] }));
+        return scenario.id;
+      },
+
+      updateScenario: (id, input) =>
+        set((s) => ({
+          scenarios: s.scenarios.map((x) => (x.id === id ? { ...x, ...cleanScenario(input) } : x)),
+        })),
+
+      removeScenario: (id) => set((s) => ({ scenarios: s.scenarios.filter((x) => x.id !== id) })),
+
+      setAnswersPending: (answersPending) => set({ answersPending }),
     }),
     {
       name: 'speasy-storage',
-      version: 3,
+      version: 4,
       storage: createJSONStorage(() => AsyncStorage),
       onRehydrateStorage: () => (_state, error) => {
         if (error) console.warn('[store] rehydration failed, starting with defaults:', error);
@@ -239,6 +299,16 @@ export const useStore = create<AppState>()(
         if (version <= 2) {
           // v3: daily check-ins.
           old = { ...old, checkIns: old.checkIns ?? [] };
+        }
+        if (version <= 3) {
+          // v4: own scenarios, typed onboarding answers, opt-in answer sharing.
+          old = {
+            ...old,
+            user: { ...initialUser, ...(old.user ?? {}) },
+            scenarios: old.scenarios ?? [],
+            installId: old.installId ?? newId(new Date()),
+            answersPending: false,
+          };
         }
         return old;
       },

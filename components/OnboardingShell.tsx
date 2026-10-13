@@ -6,7 +6,7 @@ import IconButton from './IconButton';
 import { useTranslation } from '../i18n/useTranslation';
 import { Colors, FontFamily, FontSize, Spacing } from '../theme/tokens';
 
-export const ONBOARDING_STEPS = 5;
+export const ONBOARDING_STEPS = 6;
 
 interface Props {
   /** 1-based step after the welcome screen. */
@@ -19,8 +19,15 @@ interface Props {
 }
 
 /** Shared layout: back button, segmented progress, left-aligned title, pinned footer. */
+/** Lets fields inside the shell bring themselves above the keyboard. */
+export const ShellScrollContext = React.createContext<() => void>(() => {});
+
 export default function OnboardingShell({ step, title, subtitle, children, footer }: Props) {
   const { t } = useTranslation();
+  const scrollRef = React.useRef<ScrollView>(null);
+  const scrollToEnd = React.useCallback(() => {
+    setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 350);
+  }, []);
   return (
     <SafeAreaView style={styles.safe}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
@@ -39,6 +46,7 @@ export default function OnboardingShell({ step, title, subtitle, children, foote
         </View>
 
         <ScrollView
+          ref={scrollRef}
           style={{ flex: 1 }}
           contentContainerStyle={styles.content}
           keyboardShouldPersistTaps="handled"
@@ -46,7 +54,9 @@ export default function OnboardingShell({ step, title, subtitle, children, foote
         >
           <Text style={styles.title} accessibilityRole="header">{title}</Text>
           {!!subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
-          <View style={styles.body}>{children}</View>
+          <ShellScrollContext.Provider value={scrollToEnd}>
+            <View style={styles.body}>{children}</View>
+          </ShellScrollContext.Provider>
         </ScrollView>
 
         <View style={styles.footer}>{footer}</View>
@@ -82,6 +92,6 @@ const styles = StyleSheet.create({
     color: Colors.text.secondary,
     marginTop: 10,
   },
-  body: { marginTop: 28 },
+  body: { marginTop: 28, gap: 16 },
   footer: { paddingHorizontal: Spacing.screenH, paddingBottom: 12, paddingTop: 8, gap: 4 },
 });

@@ -8,6 +8,7 @@ import { useStoreHydrated } from '../state/store';
 import { Colors } from '../theme/tokens';
 import { initPurchases } from '../lib/purchases';
 import { useReminderSync } from '../lib/reminders';
+import { retryPendingAnswers } from '../lib/answers';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -41,6 +42,9 @@ export default function RootLayout() {
     }
   }, [timedOut, hydrated, fontsLoaded, fontError]);
   useReminderSync(hydrated);
+  useEffect(() => {
+    if (hydrated) retryPendingAnswers();
+  }, [hydrated]);
 
   useEffect(() => {
     initPurchases();
@@ -65,6 +69,8 @@ export default function RootLayout() {
             top safe-area inset in react-native-safe-area-context, so headers hit the clock. */}
         <Stack.Screen name="exercise/[id]" options={{ animation: 'slide_from_bottom' }} />
         <Stack.Screen name="situation/[id]" options={{ animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="scenario/[id]" options={{ animation: 'slide_from_bottom' }} />
+        <Stack.Screen name="scenario/edit" options={{ presentation: 'modal' }} />
         <Stack.Screen name="recordings" options={{ presentation: 'modal' }} />
         <Stack.Screen name="checkin" options={{ presentation: 'modal', animation: 'fade' }} />
         <Stack.Screen name="panic" options={{ presentation: 'modal', animation: 'fade' }} />

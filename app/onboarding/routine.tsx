@@ -31,7 +31,7 @@ export default function RoutineStep() {
 
   return (
     <OnboardingShell
-      step={5}
+      step={6}
       title={t('onboarding.routine_title')}
       subtitle={t('onboarding.routine_sub')}
       footer={<PillButton label={t('onboarding.routine_cta')} onPress={finish} loading={busy} />}

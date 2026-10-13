@@ -7,6 +7,7 @@ import { useTranslation } from '../../i18n/useTranslation';
 import { useStore, useShallow } from '../../state/store';
 import { SITUATIONS } from '../../content/situations';
 import { formatTime } from '../../lib/reminders';
+import { submitAnswers } from '../../lib/answers';
 import { Colors, FontFamily, FontSize, Spacing } from '../../theme/tokens';
 
 const STEP_MS = 650;
@@ -17,7 +18,11 @@ const STEP_MS = 650;
  */
 export default function Building() {
   const { t, lang } = useTranslation();
-  const { user, reminder } = useStore(useShallow((s) => ({ user: s.user, reminder: s.reminder })));
+  const { user, reminder, scenario } = useStore(useShallow((s) => ({
+    user: s.user,
+    reminder: s.reminder,
+    scenario: s.scenarios[0],
+  })));
   const [shown, setShown] = useState(0);
 
   const situations = SITUATIONS.filter((s) => user.situations.includes(s.id))
@@ -26,12 +31,18 @@ export default function Building() {
   const steps = [
     t('onboarding.building_warmups'),
     situations ? t('onboarding.building_situations', { situations }) : t('onboarding.building_situations_any'),
+    ...(scenario ? [t('onboarding.building_scenario', { title: scenario.title })] : []),
     t('onboarding.building_minutes', { n: user.dailyMinutes }),
     user.ageGroup === 'child' ? t('onboarding.building_texts_child') : t('onboarding.building_texts'),
     ...(reminder.enabled
       ? [t('onboarding.building_reminder', { time: formatTime(reminder.hour, reminder.minute) })]
       : []),
   ];
+
+  // All answers are in by now; sends only with the user's opt-in.
+  useEffect(() => {
+    submitAnswers();
+  }, []);
 
   useEffect(() => {
     if (shown >= steps.length) {

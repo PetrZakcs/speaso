@@ -4,6 +4,7 @@ import { useStore } from '../state/store';
 import { canStartActivity } from './access';
 import type { ExerciseId } from '../content/exercises';
 import type { Situation } from '../content/situations';
+import { canCreateScenario, isScenarioUnlocked, scenarioActivityId } from './scenarios';
 
 /** Opens an exercise, or the paywall when the free weekly limit is used up. */
 export function useStartExercise() {
@@ -28,5 +29,33 @@ export function useStartSituation() {
       return;
     }
     router.push({ pathname: '/situation/[id]', params: { id: situation.id } });
+  }, []);
+}
+
+/** Opens an own scenario; locked ones and the weekly limit lead to the paywall. */
+export function useStartScenario() {
+  return useCallback((id: string) => {
+    const { scenarios, subscription } = useStore.getState();
+    if (!isScenarioUnlocked(id, scenarios, subscription.isPremium)) {
+      router.push({ pathname: '/paywall', params: { context: 'scenario' } });
+      return;
+    }
+    if (!canStartActivity(scenarioActivityId(id))) {
+      router.push({ pathname: '/paywall', params: { context: 'limit' } });
+      return;
+    }
+    router.push({ pathname: '/scenario/[id]', params: { id } });
+  }, []);
+}
+
+/** Opens the scenario editor, or the paywall once the free scenario is used. */
+export function useCreateScenario() {
+  return useCallback(() => {
+    const { scenarios, subscription } = useStore.getState();
+    if (!canCreateScenario(scenarios, subscription.isPremium)) {
+      router.push({ pathname: '/paywall', params: { context: 'scenario' } });
+      return;
+    }
+    router.push('/scenario/edit');
   }, []);
 }

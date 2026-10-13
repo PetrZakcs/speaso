@@ -19,7 +19,8 @@
     "today":           { "cs": "Dnes", "en": "Today" },
     "weekdays_short":  { "cs": ["Po","Út","St","Čt","Pá","So","Ne"], "en": ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"] },
     "coming_soon":     { "cs": "Připravujeme", "en": "Coming soon" },
-    "ok":              { "cs": "OK", "en": "OK" }
+    "ok":              { "cs": "OK", "en": "OK" },
+    "cancel":          { "cs": "Zrušit", "en": "Cancel" }
   },
 
   "lang_switch": {
@@ -68,6 +69,18 @@
     "insight_situations":{ "cs": "Situace, které jsi vybral/a ({situations}), si budeš nejdřív nacvičovat v bezpečí aplikace, než do nich půjdeš naostro.", "en": "You'll rehearse the situations you picked ({situations}) safely in the app first, before facing them for real." },
     "insight_generic":   { "cs": "Krátké pravidelné cvičení a nácvik konkrétních situací pomáhají mluvit klidněji a s větší jistotou.", "en": "Short regular practice and rehearsing specific situations help you speak more calmly and confidently." },
 
+    "other":             { "cs": "Něco jiného", "en": "Something else" },
+    "other_detail":      { "cs": "Napiš vlastními slovy", "en": "Put it in your own words" },
+    "other_situations_ph": { "cs": "Např. Říct své jméno, objednat si v restauraci…", "en": "E.g. Saying my name, ordering at a restaurant…" },
+    "other_goal_ph":     { "cs": "Co by ti pomohlo?", "en": "What would help you?" },
+    "scenario_title":    { "cs": "Popiš jednu situaci, která tě čeká", "en": "Describe one situation coming up for you" },
+    "scenario_sub":      { "cs": "Z tvé odpovědi hned vytvoříme tvůj první vlastní nácvik. Můžeš ho kdykoli upravit.", "en": "We'll turn your answer into your first own practice right away. You can edit it any time." },
+    "scenario_field":    { "cs": "Jaká situace?", "en": "What situation?" },
+    "scenario_field_ph": { "cs": "Např. Objednat pizzu po telefonu", "en": "E.g. Ordering a pizza by phone" },
+    "scenario_phrase":   { "cs": "Co v ní potřebuješ říct?", "en": "What do you need to say?" },
+    "scenario_phrase_ph":{ "cs": "Např. Dobrý den, rád bych si objednal jednu pizzu.", "en": "E.g. Hi, I'd like to order one pizza, please." },
+    "share_title":       { "cs": "Poslat odpovědi anonymně týmu Speasy", "en": "Send my answers anonymously to the Speasy team" },
+    "share_detail":      { "cs": "Pomůže nám to aplikaci zlepšovat. Bez jména — jen odpovědi z úvodu. Souhlas můžeš kdykoli zrušit v Profilu.", "en": "It helps us improve the app. No name — only your answers from this intro. You can withdraw any time in Profile." },
     "goal_title":        { "cs": "Co by ti nejvíc pomohlo?", "en": "What would help you most?" },
     "goal_sub":          { "cs": "Podle toho ti poskládáme plán.", "en": "We'll shape your plan around it." },
     "goal_calm":         { "cs": "Mluvit klidněji", "en": "Speak more calmly" },
@@ -83,6 +96,7 @@
     "building_warmups":  { "cs": "Vybíráme rozcvičky na dech a hlas", "en": "Choosing breath and voice warm-ups" },
     "building_situations": { "cs": "Přidáváme situace k nácviku: {situations}", "en": "Adding situations to rehearse: {situations}" },
     "building_situations_any": { "cs": "Přidáváme situace k nácviku", "en": "Adding situations to rehearse" },
+    "building_scenario": { "cs": "Tvůj vlastní nácvik: „{title}“", "en": "Your own practice: “{title}”" },
     "building_minutes":  { "cs": "Ladíme plán na {n} minut denně", "en": "Fitting the plan into {n} minutes a day" },
     "building_texts":    { "cs": "Připravujeme texty ke čtení", "en": "Preparing reading texts" },
     "building_texts_child": { "cs": "Připravujeme texty pro děti", "en": "Preparing texts for children" },
@@ -106,6 +120,7 @@
     "offer_tagline_confidence": { "cs": "Buduj jistotu každý den — bez limitů, se všemi situacemi.", "en": "Build confidence every day — no limits, every situation." },
     "offer_tagline_situations": { "cs": "Nacvič si všechny situace — telefon, poradu, prezentaci i pohovor.", "en": "Rehearse every situation — calls, meetings, presentations and interviews." },
     "offer_tagline_accept":     { "cs": "Mluv s menším stresem — bez limitů a s přehledem tvého pokroku.", "en": "Speak with less stress — no limits, with an overview of your progress." },
+    "offer_tagline_scenario": { "cs": "Tvůj nácvik „{title}“ je připravený a ten máš zdarma. S Premium si připravíš každou situaci, která tě čeká — bez limitů.", "en": "Your practice “{title}” is ready and free. With Premium you can prepare for every situation ahead of you — no limits." },
     "offer_continue_free": { "cs": "Pokračovat zdarma", "en": "Continue for free" }
   },
 
@@ -163,6 +178,7 @@
   },
 
   "exercises": {
+    "section_exercises": { "cs": "Základní cvičení", "en": "Core exercises" },
     "title":             { "cs": "Cvičení", "en": "Exercises" },
     "breathing":         { "cs": "Bránicové dýchání", "en": "Diaphragmatic breathing" },
     "breathing_sub":     { "cs": "Základ klidného mluvení", "en": "The basis of calm speaking" },
@@ -339,6 +355,37 @@
     "chart_empty":       { "cs": "Každý den na domovské obrazovce odpověz, jak se ti mluví. Tady uvidíš, jak se to mění.", "en": "Answer how speaking feels on the home screen each day. You'll see the trend here." }
   },
 
+  "scenarios": {
+    "section":           { "cs": "Moje scénáře", "en": "My scenarios" },
+    "section_sub":       { "cs": "Tvoje vlastní situace a věty, které v nich potřebuješ říct.", "en": "Your own situations and the sentences you need to say in them." },
+    "new":               { "cs": "Nový scénář", "en": "New scenario" },
+    "new_sub":           { "cs": "Napiš situaci, která tě čeká", "en": "Write a situation you're facing" },
+    "kicker":            { "cs": "Můj scénář", "en": "My scenario" },
+    "phrases_count":     { "cs": { "one": "# věta", "few": "# věty", "other": "# vět" }, "en": { "one": "# sentence", "other": "# sentences" } },
+    "edit_title_new":    { "cs": "Nový scénář", "en": "New scenario" },
+    "edit_title":        { "cs": "Upravit scénář", "en": "Edit scenario" },
+    "field_title":       { "cs": "O jakou situaci jde?", "en": "What's the situation?" },
+    "field_title_ph":    { "cs": "Např. Objednat pizzu po telefonu", "en": "E.g. Ordering a pizza by phone" },
+    "field_phrases":     { "cs": "Co v ní potřebuješ říct?", "en": "What do you need to say?" },
+    "field_phrases_sub": { "cs": "Napiš věty přesně tak, jak je chceš říct. Budeš je nacvičovat nahlas.", "en": "Write the sentences exactly as you want to say them. You'll practise them out loud." },
+    "phrase_ph":         { "cs": "Věta {n}", "en": "Sentence {n}" },
+    "add_phrase":        { "cs": "Přidat větu", "en": "Add a sentence" },
+    "remove_phrase_a11y":{ "cs": "Odebrat větu {n}", "en": "Remove sentence {n}" },
+    "field_challenge":   { "cs": "Výzva do reálu (nepovinné)", "en": "Real-life challenge (optional)" },
+    "field_challenge_ph":{ "cs": "Např. Tento týden si opravdu objednám po telefonu.", "en": "E.g. This week I'll actually order by phone." },
+    "save":              { "cs": "Uložit scénář", "en": "Save scenario" },
+    "delete":            { "cs": "Smazat scénář", "en": "Delete scenario" },
+    "delete_confirm":    { "cs": "Opravdu smazat tento scénář?", "en": "Delete this scenario?" },
+    "edit":              { "cs": "Upravit", "en": "Edit" },
+    "deleted":           { "cs": "Smazaný scénář", "en": "Deleted scenario" },
+    "intro_sub":         { "cs": "Tvůj vlastní nácvik", "en": "Your own practice" },
+    "prep": {
+      "cs": ["Představ si tu situaci co nejkonkrétněji — kde jsi, kdo tam je.", "Tři klidné nádechy do břicha. Výdech pomalu ústy.", "Začínej měkce a pomalu. Pauza je v pořádku — máš čas."],
+      "en": ["Picture the situation as concretely as you can — where you are, who's there.", "Three calm belly breaths. Breathe out slowly through your mouth.", "Start softly and slowly. Pausing is fine — you have time."]
+    },
+    "challenge_default": { "cs": "Až tahle situace přijde doopravdy, řekni alespoň první větu — pomalu a měkce.", "en": "When this situation really comes, say at least the first sentence — slowly and softly." }
+  },
+
   "recordings": {
     "title":             { "cs": "Moje nahrávky", "en": "My recordings" },
     "count":             { "cs": { "one": "# nahrávka", "few": "# nahrávky", "other": "# nahrávek" }, "en": { "one": "# recording", "other": "# recordings" } },
@@ -417,6 +464,7 @@
     "tagline":           { "cs": "Trénuj bez limitů, se všemi situacemi a přehledem pro logopeda.", "en": "Practise without limits, with every situation and a report for your therapist." },
     "context_limit":     { "cs": "Tento týden máš za sebou {n} cvičení navíc k plánu. Free verze jich má 5 týdně — tvůj denní plán zůstává zdarma.", "en": "You've done {n} extra sessions this week on top of your plan. The free version includes 5 a week — your daily plan stays free." },
     "context_stats":     { "cs": "Podrobné statistiky jsou součástí Premium.", "en": "Detailed statistics are part of Premium." },
+    "context_scenario":  { "cs": "Ve free verzi si nacvičíš jeden vlastní scénář. S Premium si napíšeš libovolně mnoho — přesně na situace, které tě čekají.", "en": "The free version lets you practise one own scenario. With Premium you can write as many as you like — exactly for the situations ahead of you." },
     "context_situation": { "cs": "Tahle situace je součástí Premium.", "en": "This situation is part of Premium." },
     "context_recordings":{ "cs": "Free verze uchovává poslední {n} nahrávky. S Premium si uchováš všechny a uslyšíš svůj pokrok.", "en": "The free plan keeps your last {n} recordings. With Premium you keep them all and can hear your progress." },
     "context_pdf":       { "cs": "PDF přehled pro logopeda je součástí Premium.", "en": "The PDF report for your therapist is part of Premium." },
@@ -438,6 +486,7 @@
     "table_free":        { "cs": "Free", "en": "Free" },
     "feat_panic":        { "cs": "Panic tlačítko", "en": "Panic button" },
     "feat_plan":         { "cs": "Denní plán", "en": "Daily plan" },
+    "feat_scenarios":    { "cs": "Vlastní scénáře", "en": "Own scenarios" },
     "feat_weekly":       { "cs": "Cvičení navíc / týden", "en": "Extra sessions / week" },
     "feat_situations":   { "cs": "Reálné situace", "en": "Real-life situations" },
     "feat_recordings":   { "cs": "Uložené nahrávky", "en": "Saved recordings" },
@@ -473,6 +522,9 @@
   },
 
   "settings": {
+    "section_privacy":   { "cs": "Soukromí", "en": "Privacy" },
+    "share_answers":     { "cs": "Sdílet odpovědi z úvodu", "en": "Share intro answers" },
+    "share_answers_hint":{ "cs": "Anonymně, bez jména — pomáhá nám to zlepšovat Speasy. Pro smazání už odeslaných odpovědí nám napiš.", "en": "Anonymous, no name — it helps us improve Speasy. To delete answers already sent, contact us." },
     "title":             { "cs": "Profil", "en": "Profile" },
     "plan_premium":      { "cs": "Premium", "en": "Premium" },
     "plan_beta":         { "cs": "Beta · všechno odemčeno", "en": "Beta · everything unlocked" },

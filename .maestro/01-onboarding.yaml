@@ -27,6 +27,17 @@ appId: ${APP_ID}
 - tapOn: "Víc jistoty.*"
 - tapOn: "Pokračovat"
 
+- assertVisible: "Popiš jednu situaci, která tě čeká"
+- tapOn:
+    id: "onboarding-scenario-title"
+- inputText: "Objednat pizzu"
+- pressKey: Enter
+- tapOn:
+    id: "onboarding-scenario-phrase"
+- inputText: "Dobry den, chtel bych pizzu"
+- pressKey: Enter
+- tapOn: "Pokračovat"
+
 - assertVisible: "Pro koho Speasy nastavujeme?"
 - tapOn: "Pro sebe.*"
 - tapOn: "Pokračovat"
@@ -53,7 +64,7 @@ appId: ${APP_ID}
 - tapOn: "Pokračovat"
 
 - assertVisible: "Odemkni celý plán"
-- assertVisible: "Buduj jistotu každý den.*"
+- assertVisible: "Tvůj nácvik „Objednat pizzu“ je připravený.*"
 - takeScreenshot: 01-offer
 - scrollUntilVisible:
     element: "Pokračovat zdarma"
@@ -65,3 +76,8 @@ appId: ${APP_ID}
 - assertVisible: "Dobrý.*,|Dobré ráno,"
 - assertVisible: "Petře"
 - assertVisible: "0 z 2"
+
+# The onboarding answer became the first own scenario
+- tapOn:
+    id: "tab-exercises"
+- assertVisible: "Objednat pizzu.*"

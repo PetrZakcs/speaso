@@ -5,6 +5,7 @@ import { useTranslation } from '../../i18n/useTranslation';
 import { useStore } from '../../state/store';
 import OnboardingShell from '../../components/OnboardingShell';
 import ChoiceTile, { TileGrid } from '../../components/onboarding/ChoiceTile';
+import TextAnswer from '../../components/onboarding/TextAnswer';
 import PillButton from '../../components/PillButton';
 import { GOALS, asGoal, type Goal } from '../../lib/goals';
 import type { TintName } from '../../theme/tokens';
@@ -18,9 +19,14 @@ const GOAL_LOOK: Record<Goal, { icon: string; tint: TintName }> = {
 
 export default function GoalStep() {
   const { t } = useTranslation();
-  const saved = useStore((s) => s.user.goal);
+  const user = useStore((s) => s.user);
   const setUser = useStore((s) => s.setUser);
-  const [selected, setSelected] = useState<string | null>(asGoal(saved));
+  // 'other' = typed answer; it isn't a plan goal, so `goal` stays null for it.
+  const [selected, setSelected] = useState<Goal | 'other' | null>(
+    asGoal(user.goal) ?? (user.goalOther ? 'other' : null),
+  );
+  const [other, setOther] = useState(user.goalOther);
+  const ready = selected === 'other' ? !!other.trim() : !!selected;
 
   return (
     <OnboardingShell
@@ -30,10 +36,12 @@ export default function GoalStep() {
       footer={
         <PillButton
           label={t('common.continue')}
-          disabled={!selected}
+          disabled={!ready}
           onPress={() => {
-            setUser({ goal: selected });
-            router.push('/onboarding/who');
+            setUser(selected === 'other'
+              ? { goal: null, goalOther: other.trim() }
+              : { goal: selected, goalOther: '' });
+            router.push('/onboarding/scenario');
           }}
         />
       }
@@ -51,8 +59,19 @@ export default function GoalStep() {
               onPress={() => setSelected(g)}
             />
           ))}
+          <ChoiceTile
+            icon="chatbubble-ellipses-outline"
+            tint="lavender"
+            title={t('onboarding.other')}
+            detail={t('onboarding.other_detail')}
+            selected={selected === 'other'}
+            onPress={() => setSelected('other')}
+          />
         </TileGrid>
       </View>
+      {selected === 'other' && (
+        <TextAnswer value={other} onChange={setOther} placeholder={t('onboarding.other_goal_ph')} autoFocus />
+      )}
     </OnboardingShell>
   );
 }

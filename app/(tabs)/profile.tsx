@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import Constants from 'expo-constants';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { submitAnswers } from '../../lib/answers';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useStore, useShallow } from '../../state/store';
 import { initials } from '../../lib/names';
@@ -42,13 +43,17 @@ function SettingRow({
 export default function ProfileScreen() {
   const { t } = useTranslation();
   const [restoring, setRestoring] = useState(false);
-  const { name, subscription, language, setLanguage, reminder, setReminder } = useStore(useShallow((s) => ({
+  const {
+    name, subscription, language, setLanguage, reminder, setReminder, shareAnswers, setUser,
+  } = useStore(useShallow((s) => ({
     name: s.user.name,
     subscription: s.subscription,
     language: s.language,
     setLanguage: s.setLanguage,
     reminder: s.reminder,
     setReminder: s.setReminder,
+    shareAnswers: s.user.shareAnswers,
+    setUser: s.setUser,
   })));
 
   const toggleReminder = async (on: boolean) => {
@@ -158,6 +163,29 @@ export default function ProfileScreen() {
           </View>
         </View>
 
+        {/* Privacy: opt-in sharing of onboarding answers */}
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>{t('settings.section_privacy')}</Text>
+          <View style={styles.sectionCard}>
+            <View style={styles.row}>
+              <Ionicons name="paper-plane-outline" size={18} color={Colors.text.secondary} style={styles.rowIcon} />
+              <Text style={styles.rowLabel}>{t('settings.share_answers')}</Text>
+              <Switch
+                value={shareAnswers}
+                onValueChange={(on) => {
+                  setUser({ shareAnswers: on });
+                  if (on) submitAnswers();
+                  else useStore.getState().setAnswersPending(false);
+                }}
+                trackColor={{ false: Colors.text.tertiary, true: Colors.accent.main }}
+                thumbColor="#FFFFFF"
+                accessibilityLabel={t('settings.share_answers')}
+              />
+            </View>
+          </View>
+          <Text style={styles.sectionHint}>{t('settings.share_answers_hint')}</Text>
+        </View>
+
         {/* Subscription */}
         <View style={styles.section}>
           <Text style={styles.sectionLabel}>{t('settings.section_subscription')}</Text>
@@ -252,6 +280,14 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   section: { gap: 8 },
+  sectionHint: {
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: FontSize.meta,
+    lineHeight: 16,
+    color: Colors.text.tertiary,
+    marginTop: 8,
+    paddingHorizontal: 4,
+  },
   sectionLabel: {
     fontFamily: FontFamily.dmSansMedium,
     fontSize: FontSize.bodySmall,

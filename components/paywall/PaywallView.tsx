@@ -5,7 +5,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { PurchasesOffering, PurchasesPackage } from 'react-native-purchases';
 import { useTranslation } from '../../i18n/useTranslation';
-import { FREE_RECORDINGS_LIMIT, useStore, useIsPremium } from '../../state/store';
+import { FREE_RECORDINGS_LIMIT, FREE_SCENARIOS_LIMIT, useStore, useIsPremium } from '../../state/store';
 import { FREE_SITUATIONS, SITUATIONS } from '../../content/situations';
 import PillButton from '../../components/PillButton';
 import Card from '../../components/Card';
@@ -20,12 +20,14 @@ import { TRIAL_REMINDER_DAYS } from '../../lib/reminders';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow } from '../../theme/tokens';
 
-export type PaywallContext = 'limit' | 'stats' | 'situation' | 'recordings' | 'pdf' | 'onboarding' | undefined;
+export type PaywallContext =
+  | 'limit' | 'stats' | 'situation' | 'scenario' | 'recordings' | 'pdf' | 'onboarding' | undefined;
 type LoadState = 'loading' | 'ready' | 'unavailable';
 
 const COMPARISON_ROWS = [
   { key: 'panic', free: '✓', premium: '✓' },
   { key: 'plan', free: '✓', premium: '✓' },
+  { key: 'scenarios', free: String(FREE_SCENARIOS_LIMIT), premium: '∞' },
   { key: 'weekly', free: String(FREE_WEEKLY_LIMIT), premium: '∞' },
   { key: 'situations', free: String(FREE_SITUATIONS), premium: String(SITUATIONS.length) },
   { key: 'recordings', free: String(FREE_RECORDINGS_LIMIT), premium: '∞' },

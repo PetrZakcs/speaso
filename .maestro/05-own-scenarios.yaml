@@ -1,0 +1,41 @@
+# Own scenarios: the first is free and plays like a situation; a second one leads to the paywall.
+appId: ${APP_ID}
+---
+- runFlow: subflows/fresh-user.yaml
+- tapOn:
+    id: "tab-exercises"
+- assertVisible: "Moje scénáře"
+- tapOn:
+    id: "scenario-new"
+
+- assertVisible: "Nový scénář"
+- tapOn:
+    id: "scenario-title"
+- inputText: "Rict jmeno na porade"
+- tapOn:
+    id: "scenario-phrase-0"
+- inputText: "Dobry den, jsem Petr"
+- pressKey: Enter
+- tapOn: "Uložit scénář"
+
+- assertVisible: "Tvůj vlastní nácvik"
+- tapOn: "Začít"
+- repeat:
+    times: 2
+    commands:
+      - tapOn: "Další →"
+- tapOn: "Nacvičit věty →"
+- assertVisible: "Dobry den, jsem Petr"
+- tapOn: "Výzva →"
+- assertVisible: "Až tahle situace přijde doopravdy.*"
+- tapOn: "Dokončit ✓"
+- tapOn: "Přeskočit"
+- assertVisible: "Výborně!"
+- tapOn: "Hotovo →"
+
+# Second scenario needs Premium
+- assertVisible: "Rict jmeno na porade.*"
+- tapOn:
+    id: "scenario-new"
+- assertVisible: "Ve free verzi si nacvičíš jeden vlastní scénář.*"
+- takeScreenshot: 05-scenario-paywall

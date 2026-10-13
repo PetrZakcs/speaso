@@ -15,6 +15,7 @@ appId: ${APP_ID}
 - tapOn: "Pokračovat"          # insight
 - tapOn: "Víc jistoty.*"
 - tapOn: "Pokračovat"
+- tapOn: "Přeskočit"           # own scenario
 - tapOn: "Pro sebe.*"
 - tapOn: "Pokračovat"
 - tapOn: "Sestavit můj plán"

@@ -12,6 +12,7 @@ import PaywallView from '../../components/paywall/PaywallView';
 export default function Offer() {
   const { t } = useTranslation();
   const goal = asGoal(useStore((s) => s.user.goal));
+  const scenario = useStore((s) => s.scenarios[0]);
   const isPremium = useStore((s) => s.subscription.isPremium);
   const setOnboardingDone = useStore((s) => s.setOnboardingDone);
 
@@ -30,7 +31,10 @@ export default function Offer() {
     <PaywallView
       context="onboarding"
       title={t('onboarding.offer_title')}
-      tagline={goal ? t(`onboarding.offer_tagline_${goal}`) : t('premium.tagline')}
+      // The user's own scenario is the most personal hook; fall back to the goal.
+      tagline={scenario
+        ? t('onboarding.offer_tagline_scenario', { title: scenario.title })
+        : goal ? t(`onboarding.offer_tagline_${goal}`) : t('premium.tagline')}
       closeLabel={t('onboarding.offer_continue_free')}
       onClose={finish}
       onUnlocked={finish}
