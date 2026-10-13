@@ -1,33 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { router } from 'expo-router';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from '../i18n/useTranslation';
-import { useStore, useShallow } from '../state/store';
-import { hapticSelect } from '../lib/haptics';
-import type { Rating } from '../lib/streak';
+import { useStore } from '../state/store';
 import type { DateKey } from '../lib/dates';
-import { Colors, FontFamily, FontSize, Radius, Shadow, Tints } from '../theme/tokens';
+import { MOOD_GRADIENT } from './calm/MoodSlider';
+import { Calm, Colors, FontFamily, FontSize, Radius, Shadow } from '../theme/tokens';
 
-const SCALE: Rating[] = [1, 2, 3, 4, 5];
-
-/** "How is speaking today?" — one tap a day; collapses once answered. */
+/** "How is speaking today?" — opens the full-screen check-in; collapses once answered. */
 export default function CheckInCard({ today }: { today: DateKey }) {
   const { t } = useTranslation();
-  const { checkIn, setCheckIn } = useStore(useShallow((s) => ({
-    checkIn: s.checkIns.find((c) => c.date === today),
-    setCheckIn: s.setCheckIn,
-  })));
-  const [editing, setEditing] = useState(false);
+  const checkIn = useStore((s) => s.checkIns.find((c) => c.date === today));
+  const open = () => router.push('/checkin');
 
-  if (checkIn && !editing) {
+  if (checkIn) {
     return (
-      <View style={[styles.card, styles.compact]}>
-        <View style={styles.moodBadge}>
+      <View style={[styles.compact, Shadow.card]}>
+        <View style={[styles.moodBadge, { backgroundColor: MOOD_GRADIENT[checkIn.mood - 1] }]}>
           <Text style={styles.moodBadgeText}>{checkIn.mood}</Text>
         </View>
         <Text style={styles.compactText}>
           {t('checkin.today', { mood: t(`rating.level_${checkIn.mood}`).toLowerCase() })}
         </Text>
-        <TouchableOpacity onPress={() => setEditing(true)} accessibilityRole="button" hitSlop={10}>
+        <TouchableOpacity onPress={open} accessibilityRole="button" hitSlop={10}>
           <Text style={styles.change}>{t('checkin.change')}</Text>
         </TouchableOpacity>
       </View>
@@ -35,70 +32,62 @@ export default function CheckInCard({ today }: { today: DateKey }) {
   }
 
   return (
-    <View style={styles.card}>
-      <Text style={styles.title}>{t('checkin.question')}</Text>
-      <View style={styles.scale} accessibilityRole="radiogroup">
-        {SCALE.map((m) => {
-          const active = checkIn?.mood === m;
-          return (
-            <TouchableOpacity
-              key={m}
-              onPress={() => {
-                hapticSelect();
-                setCheckIn(m);
-                setEditing(false);
-              }}
-              style={[styles.dot, active && styles.dotActive]}
-              accessibilityRole="radio"
-              accessibilityState={{ checked: active }}
-              accessibilityLabel={t(`rating.level_${m}`)}
-            >
-              <Text style={[styles.dotText, active && styles.dotTextActive]}>{m}</Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-      <View style={styles.ends}>
-        <Text style={styles.endText}>{t('rating.level_1')}</Text>
-        <Text style={styles.endText}>{t('rating.level_5')}</Text>
-      </View>
-    </View>
+    <TouchableOpacity onPress={open} activeOpacity={0.85} accessibilityRole="button" testID="checkin-open">
+      <LinearGradient
+        colors={[Calm.bgFrom, '#2C5641']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.prompt}
+      >
+        <View style={{ flex: 1, gap: 4 }}>
+          <Text style={styles.kicker}>{t('checkin.kicker')}</Text>
+          <Text style={styles.title}>{t('checkin.question')}</Text>
+          <Text style={styles.sub}>{t('checkin.prompt_sub')}</Text>
+        </View>
+        <View style={styles.go}>
+          <Ionicons name="arrow-forward" size={20} color={Calm.bgFrom} />
+        </View>
+      </LinearGradient>
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: Colors.surface.card,
+  prompt: {
     borderRadius: Radius.card,
-    padding: 18,
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  kicker: {
+    fontFamily: FontFamily.dmSansBold,
+    fontSize: FontSize.micro + 1,
+    letterSpacing: 1.1,
+    textTransform: 'uppercase',
+    color: Calm.accent,
+  },
+  title: { fontFamily: FontFamily.soraBold, fontSize: 19, color: Calm.text, letterSpacing: -0.3 },
+  sub: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.bodySmall, color: Calm.muted },
+  go: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: Calm.text,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  compact: {
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 12,
-    ...Shadow.card,
+    padding: 14,
+    paddingHorizontal: 18,
+    borderRadius: Radius.card,
+    backgroundColor: Colors.surface.card,
   },
-  title: { fontFamily: FontFamily.soraSemiBold, fontSize: 17, color: Colors.text.primary },
-  scale: { flexDirection: 'row', justifyContent: 'space-between' },
-  dot: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: Tints.lavender.bg,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dotActive: { backgroundColor: Tints.lavender.fg },
-  dotText: { fontFamily: FontFamily.soraSemiBold, fontSize: 18, color: Tints.lavender.fg },
-  dotTextActive: { color: '#FFFFFF' },
-  ends: { flexDirection: 'row', justifyContent: 'space-between', marginTop: -4 },
-  endText: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.meta, color: Colors.text.tertiary },
-  compact: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 14 },
-  moodBadge: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: Tints.lavender.bg,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  moodBadgeText: { fontFamily: FontFamily.soraSemiBold, fontSize: FontSize.body, color: Tints.lavender.fg },
+  moodBadge: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
+  moodBadgeText: { fontFamily: FontFamily.soraBold, fontSize: FontSize.body, color: '#14241C' },
   compactText: { flex: 1, fontFamily: FontFamily.dmSansMedium, fontSize: FontSize.body, color: Colors.text.primary },
   change: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.bodySmall, color: Colors.accent.main },
 });

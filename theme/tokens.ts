@@ -1,25 +1,27 @@
 /**
- * Light, warm pastel theme (inspired by wellbeing apps like VOS): cream
- * background, white cards with soft shadows, one sage accent for actions and
- * pastel tints per activity type. Panic keeps its own coral.
+ * VOS-inspired: one brand green, airy mint backgrounds, white cards; colour
+ * comes mostly from activity tiles/illustrations. Immersive moments
+ * (check-in, breathing, panic) use the dark "calm" palette.
  */
 export const Colors = {
   bg: {
-    base: '#F7F3EE',
+    base: '#F2F7F4',
     elevated: '#FFFFFF',
   },
   surface: {
     card: '#FFFFFF',
-    card2: '#F1ECE5',
+    card2: '#E8F1EC',
+    /** Pale mint for plan cards and highlighted blocks. */
+    mint: '#E4F2EA',
   },
   text: {
-    primary: '#1F2430',
-    secondary: 'rgba(31,36,48,0.64)',
-    tertiary: 'rgba(31,36,48,0.42)',
+    primary: '#14241C',
+    secondary: 'rgba(20,36,28,0.62)',
+    tertiary: 'rgba(20,36,28,0.40)',
   },
   accent: {
-    main: '#3F7F6C',
-    soft: '#E2EFE9',
+    main: '#2E7D57',
+    soft: '#DCEFE4',
     /** Text and icons placed on top of the accent color. */
     on: '#FFFFFF',
   },
@@ -31,7 +33,18 @@ export const Colors = {
     main: '#A8771F',
     soft: '#F7ECD6',
   },
-  hairline: 'rgba(31,36,48,0.08)',
+  hairline: 'rgba(20,36,28,0.08)',
+} as const;
+
+/** Dark green palette for immersive, calming screens. */
+export const Calm = {
+  bgFrom: '#1F3B2D',
+  bgTo: '#0E1A14',
+  card: 'rgba(255,255,255,0.07)',
+  text: '#EEF6F1',
+  muted: 'rgba(238,246,241,0.62)',
+  accent: '#74C69A',
+  track: 'rgba(255,255,255,0.12)',
 } as const;
 
 /** Pastel tile background + matching ink, one per activity family. */
@@ -47,7 +60,7 @@ export type TintName = keyof typeof Tints;
 /** Soft card elevation for the light theme. */
 export const Shadow = {
   card: {
-    shadowColor: '#5B4A36',
+    shadowColor: '#1F4D36',
     shadowOpacity: 0.07,
     shadowRadius: 14,
     shadowOffset: { width: 0, height: 4 },
@@ -84,6 +97,8 @@ export const FontSize = {
 
 export const FontFamily = {
   soraBold: 'Sora-Bold',
+  /** Big, confident screen titles. */
+  display: 'Sora-Bold',
   soraExtraBold: 'Sora-ExtraBold',
   soraSemiBold: 'Sora-SemiBold',
   soraRegular: 'Sora-Regular',

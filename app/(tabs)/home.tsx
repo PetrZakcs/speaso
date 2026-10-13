@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useStore, useShallow } from '../../state/store';
-import ProgressBar from '../../components/ProgressBar';
+import ProgressRing from '../../components/ProgressRing';
 import WeekDots from '../../components/WeekDots';
 import ActivityIcon from '../../components/ActivityIcon';
 import CheckInCard from '../../components/CheckInCard';
@@ -41,6 +41,7 @@ export default function HomeScreen() {
 
   const name = addressName(user.name, lang);
   const greeting = t(greetingKey(new Date().getHours()));
+  const initial = (user.name.trim()[0] ?? '').toUpperCase();
   const rawDate = fromDateKey(today).toLocaleDateString(lang === 'cs' ? 'cs-CZ' : 'en-GB', {
     weekday: 'long',
     day: 'numeric',
@@ -69,79 +70,100 @@ export default function HomeScreen() {
           <View style={{ flex: 1 }}>
             <Text style={styles.date}>{dateLabel}</Text>
             <Text style={styles.hello} accessibilityRole="header">
-              {name ? t('home.greeting_name', { greeting, name }) : greeting}
+              {name ? t('home.greeting_comma', { greeting }) : t('home.greeting_noname')}
             </Text>
+            {!!name && <Text style={[styles.hello, styles.helloName]}>{name}</Text>}
           </View>
-          <View
-            style={styles.streakPill}
-            accessible
-            accessibilityLabel={tn('home.streak_days', streakDays)}
-          >
-            <Ionicons name="flame" size={16} color={Tints.peach.fg} />
-            <Text style={styles.streakNum}>{streakDays}</Text>
+          <View style={styles.headerRight}>
+            <View
+              style={styles.streakPill}
+              accessible
+              accessibilityLabel={tn('home.streak_days', streakDays)}
+            >
+              <Ionicons name="flame" size={15} color={Tints.peach.fg} />
+              <Text style={styles.streakNum}>{streakDays}</Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => router.push('/(tabs)/profile')}
+              accessibilityRole="button"
+              accessibilityLabel={t('home.plan_progress', { done: doneCount, total: plan.length })}
+            >
+              <ProgressRing progress={doneCount / plan.length} size={52} stroke={3.5}>
+                <View style={styles.avatar}>
+                  {initial
+                    ? <Text style={styles.avatarText}>{initial}</Text>
+                    : <Ionicons name="person" size={20} color={Colors.accent.main} />}
+                </View>
+              </ProgressRing>
+            </TouchableOpacity>
           </View>
         </View>
 
         <CheckInCard today={today} />
 
-        {/* Today's plan */}
-        <View style={styles.planCard}>
-          <View style={styles.planHead}>
-            <Text style={styles.planTitle}>{t('home.plan_title')}</Text>
-            <Text style={styles.planCount}>
-              {t('home.plan_progress', { done: doneCount, total: plan.length })}
-            </Text>
-          </View>
-          <ProgressBar progress={doneCount / plan.length} />
+        {/* Today's plan — a vertical timeline */}
+        <View style={styles.planHead}>
+          <Text style={styles.sectionTitle}>{t('home.plan_title')}</Text>
+          <Text style={styles.planCount}>
+            {t('home.plan_progress', { done: doneCount, total: plan.length })}
+          </Text>
+        </View>
 
-          <View style={styles.planList}>
-            {plan.map((item, i) => {
-              const isDone = done.has(item.activityId);
-              const title = item.kind === 'exercise'
-                ? t(`exercises.${item.exercise.id}`)
-                : item.situation.content[lang].title;
-              const minutes = item.kind === 'exercise' ? item.exercise.minutes : item.situation.minutes;
-              const icon = item.kind === 'exercise' ? item.exercise.icon : item.situation.icon;
-              const tint = item.kind === 'exercise' ? item.exercise.tint : item.situation.tint;
-              return (
+        <View>
+          {plan.map((item, i) => {
+            const isDone = done.has(item.activityId);
+            const isNext = !isDone && plan.findIndex((p) => !done.has(p.activityId)) === i;
+            const isLast = i === plan.length - 1;
+            const title = item.kind === 'exercise'
+              ? t(`exercises.${item.exercise.id}`)
+              : item.situation.content[lang].title;
+            const minutes = item.kind === 'exercise' ? item.exercise.minutes : item.situation.minutes;
+            const icon = item.kind === 'exercise' ? item.exercise.icon : item.situation.icon;
+            const tint = item.kind === 'exercise' ? item.exercise.tint : item.situation.tint;
+            return (
+              <View key={item.activityId} style={styles.tlRow}>
+                <View style={styles.tlRail}>
+                  <View style={[styles.node, isDone && styles.nodeDone, isNext && styles.nodeNext]}>
+                    {isDone
+                      ? <Ionicons name="checkmark" size={14} color={Colors.accent.on} />
+                      : <Text style={[styles.nodeText, isNext && styles.nodeTextNext]}>{i + 1}</Text>}
+                  </View>
+                  {!isLast && <View style={[styles.line, isDone && styles.lineDone]} />}
+                </View>
                 <TouchableOpacity
-                  key={item.activityId}
                   onPress={() => start(item)}
-                  activeOpacity={0.7}
-                  style={styles.planRow}
+                  activeOpacity={0.8}
+                  style={[styles.tlCard, isDone && styles.tlCardDone]}
                   accessibilityRole="button"
                   accessibilityState={{ checked: isDone }}
                   accessibilityLabel={`${title}, ${t(ROLE_KEYS[i])}, ${minutes} ${t('common.min_short')}${isDone ? `, ${t('home.plan_item_done')}` : ''}`}
                 >
-                  <ActivityIcon name={icon} tint={tint} size={46} />
-                  <View style={{ flex: 1 }}>
-                    <Text style={[styles.rowTitle, isDone && styles.rowTitleDone]}>{title}</Text>
-                    <Text style={styles.rowMeta}>
-                      {t(ROLE_KEYS[i])} · {minutes} {t('common.min_short')}
-                    </Text>
+                  <View style={{ flex: 1, gap: 3 }}>
+                    <Text style={styles.kicker}>{t(ROLE_KEYS[i])}</Text>
+                    <Text style={[styles.tlTitle, isDone && styles.tlTitleDone]}>{title}</Text>
+                    <View style={styles.metaRow}>
+                      <Ionicons name="time-outline" size={13} color={Colors.text.secondary} />
+                      <Text style={styles.rowMeta}>{minutes} {t('common.min_short')}</Text>
+                    </View>
                   </View>
-                  <View style={[styles.check, isDone && styles.checkDone]}>
-                    {isDone
-                      ? <Ionicons name="checkmark" size={16} color={Colors.accent.on} />
-                      : <Ionicons name="play" size={13} color={Colors.accent.main} style={{ marginLeft: 2 }} />}
-                  </View>
+                  <ActivityIcon name={icon} tint={tint} size={60} muted={isDone} bg={isDone ? undefined : Colors.surface.card} />
                 </TouchableOpacity>
-              );
-            })}
-          </View>
-
-          {allDone && (
-            <View style={styles.doneBanner}>
-              <Ionicons name="sparkles-outline" size={18} color={Colors.accent.main} />
-              <Text style={styles.doneText}>{t('home.plan_done')}</Text>
-            </View>
-          )}
-          {!isPremium && (
-            <Text style={styles.limit}>
-              {t('home.plan_free')} {tn('home.left_this_week', left)}
-            </Text>
-          )}
+              </View>
+            );
+          })}
         </View>
+
+        {allDone && (
+          <View style={styles.doneBanner}>
+            <Ionicons name="sparkles-outline" size={18} color={Colors.accent.main} />
+            <Text style={styles.doneText}>{t('home.plan_done')}</Text>
+          </View>
+        )}
+        {!isPremium && (
+          <Text style={styles.limit}>
+            {t('home.plan_free')} {tn('home.left_this_week', left)}
+          </Text>
+        )}
 
         {/* This week */}
         <View style={styles.card}>
@@ -193,50 +215,83 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.dmSansMedium,
     fontSize: FontSize.bodySmall,
     color: Colors.text.tertiary,
+    marginBottom: 4,
   },
   hello: {
-    fontFamily: FontFamily.soraSemiBold,
-    fontSize: 28,
+    fontFamily: FontFamily.display,
+    fontSize: 30,
     lineHeight: 36,
     color: Colors.text.primary,
-    letterSpacing: -0.5,
-    marginTop: 2,
+    letterSpacing: -0.8,
   },
+  helloName: { color: Colors.accent.main },
+  headerRight: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 4 },
   streakPill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: Tints.peach.bg,
-    borderRadius: Radius.pill,
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    marginTop: 6,
-  },
-  streakNum: { fontFamily: FontFamily.soraSemiBold, fontSize: FontSize.body, color: Tints.peach.fg },
-  planCard: {
     backgroundColor: Colors.surface.card,
-    borderRadius: Radius.card,
-    padding: 18,
-    gap: 12,
+    borderRadius: Radius.pill,
+    paddingHorizontal: 11,
+    paddingVertical: 7,
     ...Shadow.card,
   },
-  planHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
-  planTitle: { fontFamily: FontFamily.soraSemiBold, fontSize: 19, color: Colors.text.primary },
-  planCount: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.bodySmall, color: Colors.accent.main },
-  planList: { gap: 6, marginTop: 4 },
-  planRow: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 8 },
-  rowTitle: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.body, color: Colors.text.primary },
-  rowTitleDone: { color: Colors.text.tertiary, textDecorationLine: 'line-through' },
-  rowMeta: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.bodySmall, color: Colors.text.secondary, marginTop: 2 },
-  check: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: Colors.accent.soft,
+  streakNum: { fontFamily: FontFamily.soraBold, fontSize: FontSize.body, color: Colors.text.primary },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.surface.card,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  checkDone: { backgroundColor: Colors.accent.main },
+  avatarText: { fontFamily: FontFamily.soraBold, fontSize: 17, color: Colors.accent.main },
+  planHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 8 },
+  sectionTitle: { fontFamily: FontFamily.display, fontSize: 22, color: Colors.text.primary, letterSpacing: -0.4 },
+  planCount: { fontFamily: FontFamily.dmSansBold, fontSize: FontSize.bodySmall, color: Colors.accent.main },
+  tlRow: { flexDirection: 'row', gap: 12 },
+  tlRail: { width: 28, alignItems: 'center' },
+  node: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: Colors.surface.card,
+    borderWidth: 1.5,
+    borderColor: Colors.hairline,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 34,
+  },
+  nodeNext: { borderColor: Colors.accent.main, borderWidth: 2 },
+  nodeDone: { backgroundColor: Colors.accent.main, borderColor: Colors.accent.main },
+  nodeText: { fontFamily: FontFamily.soraBold, fontSize: FontSize.meta, color: Colors.text.tertiary },
+  nodeTextNext: { color: Colors.accent.main },
+  line: { flex: 1, width: 2, backgroundColor: Colors.hairline, marginTop: 4, marginBottom: -34 },
+  lineDone: { backgroundColor: Colors.accent.main },
+  tlCard: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: Colors.surface.mint,
+    borderRadius: Radius.card,
+    padding: 16,
+    paddingLeft: 18,
+    marginBottom: 12,
+  },
+  tlCardDone: { backgroundColor: Colors.surface.card },
+  kicker: {
+    fontFamily: FontFamily.dmSansBold,
+    fontSize: FontSize.micro + 1,
+    letterSpacing: 1.1,
+    textTransform: 'uppercase',
+    color: Colors.accent.main,
+  },
+  tlTitle: { fontFamily: FontFamily.soraBold, fontSize: 17, lineHeight: 22, color: Colors.text.primary, letterSpacing: -0.2 },
+  tlTitleDone: { color: Colors.text.tertiary, textDecorationLine: 'line-through' },
+  metaRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
+  rowTitle: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.body, color: Colors.text.primary },
+  rowMeta: { fontFamily: FontFamily.dmSansMedium, fontSize: FontSize.bodySmall, color: Colors.text.secondary },
   doneBanner: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -260,7 +315,7 @@ const styles = StyleSheet.create({
     ...Shadow.card,
   },
   rowBetween: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
-  cardTitle: { fontFamily: FontFamily.soraSemiBold, fontSize: 17, color: Colors.text.primary },
+  cardTitle: { fontFamily: FontFamily.soraBold, fontSize: 17, color: Colors.text.primary },
   cardMeta: { fontFamily: FontFamily.dmSansMedium, fontSize: FontSize.bodySmall, color: Colors.text.secondary },
   grace: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.meta, color: Colors.text.tertiary, marginTop: -6 },
   panicRow: {
