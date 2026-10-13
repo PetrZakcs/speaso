@@ -6,6 +6,7 @@ import Animated, {
 import { useTranslation } from '../i18n/useTranslation';
 import { Calm, Colors, FontFamily, FontSize } from '../theme/tokens';
 import { hapticTick } from '../lib/haptics';
+import { BREATH } from '../lib/breath';
 
 const BALL_SIZE = 148;
 /** Concentric halo rings, as a multiple of the ball size. */
@@ -14,9 +15,9 @@ const RINGS = [1.9, 1.55, 1.25];
 type Phase = 'inhale' | 'hold' | 'exhale';
 
 const PHASES: { phase: Phase; seconds: number; scale: number }[] = [
-  { phase: 'inhale', seconds: 4, scale: 1.12 },
-  { phase: 'hold', seconds: 4, scale: 1.12 },
-  { phase: 'exhale', seconds: 6, scale: 0.8 },
+  { phase: 'inhale', seconds: BREATH.inhale / 1000, scale: 1.12 },
+  { phase: 'hold', seconds: BREATH.hold / 1000, scale: 1.12 },
+  { phase: 'exhale', seconds: BREATH.exhale / 1000, scale: 0.8 },
 ];
 export const CYCLE_SECONDS = PHASES.reduce((sum, p) => sum + p.seconds, 0);
 
@@ -156,7 +157,7 @@ const styles = StyleSheet.create({
   },
   ballCalm: { backgroundColor: Calm.accent, shadowColor: Calm.accent },
   onCalm: { color: Calm.bgTo },
-  phaseCount: { fontFamily: FontFamily.soraBold, fontSize: 40, color: Colors.accent.on, letterSpacing: -1 },
+  phaseCount: { fontFamily: FontFamily.heading, fontSize: 40, color: Colors.accent.on, letterSpacing: -1 },
   phaseLabel: { fontFamily: FontFamily.dmSansMedium, fontSize: FontSize.bodySmall, color: Colors.accent.on },
   roundDots: { flexDirection: 'row', justifyContent: 'center', gap: 8, marginBottom: 24 },
   roundDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: Colors.surface.card2 },

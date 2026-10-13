@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   },
   recBtnActive: { backgroundColor: Colors.danger.panic },
   title: {
-    fontFamily: FontFamily.soraSemiBold,
+    fontFamily: FontFamily.heading,
     fontSize: FontSize.cardTitleSmall,
     color: Colors.text.primary,
   },

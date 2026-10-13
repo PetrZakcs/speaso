@@ -12,15 +12,17 @@ import { retryPendingAnswers } from '../lib/answers';
 
 SplashScreen.preventAutoHideAsync();
 
+export { default as ErrorBoundary } from '../components/AppErrorScreen';
+
 const STARTUP_TIMEOUT_MS = 5000;
 
 export default function RootLayout() {
   const hydrated = useStoreHydrated();
   const [fontsLoaded, fontError] = useFonts({
-    'Sora-Regular': require('../assets/fonts/Sora-Regular.ttf'),
-    'Sora-SemiBold': require('../assets/fonts/Sora-SemiBold.ttf'),
-    'Sora-Bold': require('../assets/fonts/Sora-Bold.ttf'),
-    'Sora-ExtraBold': require('../assets/fonts/Sora-ExtraBold.ttf'),
+    'Fraunces-SemiBold': require('../assets/fonts/Fraunces-SemiBold.ttf'),
+    'Fraunces-Bold': require('../assets/fonts/Fraunces-Bold.ttf'),
+    'Fraunces-Italic': require('../assets/fonts/Fraunces-Italic.ttf'),
+    'Fraunces-SemiBoldItalic': require('../assets/fonts/Fraunces-SemiBoldItalic.ttf'),
     'DMSans-Regular': require('../assets/fonts/DMSans-Regular.ttf'),
     'DMSans-Medium': require('../assets/fonts/DMSans-Medium.ttf'),
     'DMSans-SemiBold': require('../assets/fonts/DMSans-SemiBold.ttf'),

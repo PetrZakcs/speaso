@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   },
   beatRunning: { backgroundColor: Colors.accent.main },
   onAccent: { color: Colors.accent.on },
-  bpm: { fontFamily: FontFamily.soraSemiBold, fontSize: 34, color: Colors.text.primary },
+  bpm: { fontFamily: FontFamily.heading, fontSize: 34, color: Colors.text.primary },
   bpmLabel: {
     fontFamily: FontFamily.dmSansMedium,
     fontSize: FontSize.micro,

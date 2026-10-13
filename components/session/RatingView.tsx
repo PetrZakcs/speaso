@@ -79,7 +79,7 @@ export default function RatingView({ onDone }: { onDone: (rating?: Rating, note?
 const styles = StyleSheet.create({
   wrap: { paddingHorizontal: Spacing.screenH, paddingTop: 32, paddingBottom: 40, gap: 14 },
   title: {
-    fontFamily: FontFamily.soraSemiBold,
+    fontFamily: FontFamily.heading,
     fontSize: FontSize.screenTitle,
     color: Colors.text.primary,
     textAlign: 'center',
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   faceActive: { backgroundColor: Colors.accent.main },
-  num: { fontFamily: FontFamily.soraSemiBold, fontSize: 20, color: Colors.text.secondary },
+  num: { fontFamily: FontFamily.heading, fontSize: 20, color: Colors.text.secondary },
   numActive: { color: Colors.accent.on },
   ends: { flexDirection: 'row', justifyContent: 'space-between', marginTop: -4 },
   endText: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.meta, color: Colors.text.tertiary },

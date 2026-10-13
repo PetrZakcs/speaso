@@ -39,7 +39,7 @@ export default function TextAnswer({
 }
 
 const styles = StyleSheet.create({
-  label: { fontFamily: FontFamily.soraBold, fontSize: FontSize.body, color: Colors.text.primary },
+  label: { fontFamily: FontFamily.heading, fontSize: FontSize.body, color: Colors.text.primary },
   input: {
     minHeight: 56,
     backgroundColor: Colors.surface.card,

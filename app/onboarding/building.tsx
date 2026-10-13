@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bg.base, paddingHorizontal: Spacing.screenH },
   main: { flex: 1, justifyContent: 'center', gap: 28 },
   title: {
-    fontFamily: FontFamily.soraSemiBold,
+    fontFamily: FontFamily.heading,
     fontSize: 28,
     lineHeight: 36,
     color: Colors.text.primary,

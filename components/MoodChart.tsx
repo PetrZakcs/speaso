@@ -119,10 +119,10 @@ export default function MoodChart({ checkIns, today }: { checkIns: CheckIn[]; to
 }
 
 const styles = StyleSheet.create({
-  title: { fontFamily: FontFamily.soraBold, fontSize: FontSize.cardTitle, color: Colors.text.primary },
+  title: { fontFamily: FontFamily.heading, fontSize: FontSize.cardTitle, color: Colors.text.primary },
   head: { gap: 2 },
-  big: { fontFamily: FontFamily.soraExtraBold, fontSize: 34, letterSpacing: -1, color: Colors.text.primary },
-  bigUnit: { fontFamily: FontFamily.soraSemiBold, fontSize: 16, letterSpacing: 0, color: Colors.text.tertiary },
+  big: { fontFamily: FontFamily.headingBold, fontSize: 34, letterSpacing: -1, color: Colors.text.primary },
+  bigUnit: { fontFamily: FontFamily.heading, fontSize: 16, letterSpacing: 0, color: Colors.text.tertiary },
   delta: { fontFamily: FontFamily.dmSansBold, fontSize: FontSize.bodySmall, color: Colors.accent.main },
   deltaDown: { color: Colors.premium.main },
   empty: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.bodySmall, lineHeight: 20, color: Colors.text.secondary },

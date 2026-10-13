@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 12,
   },
-  title: { fontFamily: FontFamily.soraSemiBold, fontSize: FontSize.cardTitle, color: Colors.text.primary },
+  title: { fontFamily: FontFamily.heading, fontSize: FontSize.cardTitle, color: Colors.text.primary },
   banner: {
     marginHorizontal: Spacing.screenH,
     backgroundColor: Colors.premium.main + '18',
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 6,
   },
-  compareTitle: { fontFamily: FontFamily.soraSemiBold, fontSize: 17, color: Colors.text.primary },
+  compareTitle: { fontFamily: FontFamily.heading, fontSize: 17, color: Colors.text.primary },
   compareSub: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.bodySmall, lineHeight: 19, color: Colors.text.secondary, marginBottom: 4 },
   compareRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   compareLabel: { flex: 1, fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.body, color: Colors.text.primary },

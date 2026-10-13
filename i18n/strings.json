@@ -23,6 +23,12 @@
     "cancel":          { "cs": "Zrušit", "en": "Cancel" }
   },
 
+  "errors": {
+    "title":             { "cs": "Tady se něco pokazilo", "en": "Something went wrong here" },
+    "sub":               { "cs": "Není to tvoje chyba. Tvoje data jsou v pořádku — zkus to prosím znovu.", "en": "It's not your fault. Your data is safe — please try again." },
+    "retry":             { "cs": "Zkusit znovu", "en": "Try again" }
+  },
+
   "lang_switch": {
     "label":           { "cs": "Jazyk", "en": "Language" },
     "cs_option":       { "cs": "Čeština", "en": "Czech" },
@@ -31,11 +37,9 @@
 
   "onboarding": {
     "step_of":           { "cs": "Krok {n} z {total}", "en": "Step {n} of {total}" },
-    "welcome_title":     { "cs": "Mluv svým tempem.", "en": "Speak at your own pace." },
+    "welcome_title_a":   { "cs": "Mluv svým", "en": "Speak at your" },
+    "welcome_title_b":   { "cs": "tempem.", "en": "own pace." },
     "welcome_sub":       { "cs": "Speasy ti pomáhá s koktáním v běžném dni — doma, v práci i na telefonu.", "en": "Speasy helps you with stuttering in everyday life — at home, at work and on the phone." },
-    "welcome_point_1":   { "cs": "Krátká cvičení na dýchání, čtení a tempo řeči", "en": "Short exercises for breathing, reading and speech rate" },
-    "welcome_point_2":   { "cs": "Nácvik konkrétních situací, než do nich půjdeš naostro", "en": "Rehearse specific situations before you face them for real" },
-    "welcome_point_3":   { "cs": "Rychlá pomoc, když se zasekneš", "en": "Quick help when you get stuck" },
     "welcome_cta":       { "cs": "Začít", "en": "Get started" },
     "welcome_note":      { "cs": "Nenahrazuje logopeda. Tvoje data zůstávají v telefonu.", "en": "Not a replacement for a speech therapist. Your data stays on your phone." },
 
@@ -129,6 +133,10 @@
     "greeting_day":      { "cs": "Dobrý den", "en": "Good afternoon" },
     "greeting_evening":  { "cs": "Dobrý večer", "en": "Good evening" },
     "greeting_name":     { "cs": "{greeting}, {name}", "en": "{greeting}, {name}" },
+    "wave_title":        { "cs": "Tvoje vlna", "en": "Your wave" },
+    "wave_start":        { "cs": "Zatím je neklidná. Každý den tréninku ji trochu zklidní.", "en": "Still restless. Every day of practice calms it a little." },
+    "wave_mid":          { "cs": "Zklidňuje se. Vlna ukazuje, jak pravidelně trénuješ.", "en": "It's settling. The wave shows how regularly you practise." },
+    "wave_calm":         { "cs": "Klidná a plynulá. Takhle vypadá pravidelnost.", "en": "Calm and even. This is what consistency looks like." },
     "greeting_comma":    { "cs": "{greeting},", "en": "{greeting}," },
     "greeting_noname":   { "cs": "Vítej zpátky", "en": "Welcome back" },
     "first_label":       { "cs": "Začni tady", "en": "Start here" },

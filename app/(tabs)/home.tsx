@@ -5,7 +5,8 @@ import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useStore, useShallow } from '../../state/store';
-import ProgressRing from '../../components/ProgressRing';
+import VoiceWave from '../../components/brand/VoiceWave';
+import { waveCalm, waveCaptionKey } from '../../lib/wave';
 import WeekDots from '../../components/WeekDots';
 import ActivityIcon from '../../components/ActivityIcon';
 import CheckInCard from '../../components/CheckInCard';
@@ -17,7 +18,7 @@ import {
 } from '../../lib/streak';
 import { useToday } from '../../lib/useToday';
 import { useStartExercise, useStartSituation } from '../../lib/useStartExercise';
-import { Colors, FontFamily, FontSize, Radius, Shadow, Spacing, Tints } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Shadow, Spacing } from '../../theme/tokens';
 
 function greetingKey(hour: number) {
   if (hour < 11) return 'home.greeting_morning';
@@ -41,7 +42,6 @@ export default function HomeScreen() {
 
   const name = addressName(user.name, lang);
   const greeting = t(greetingKey(new Date().getHours()));
-  const initial = (user.name.trim()[0] ?? '').toUpperCase();
   const rawDate = fromDateKey(today).toLocaleDateString(lang === 'cs' ? 'cs-CZ' : 'en-GB', {
     weekday: 'long',
     day: 'numeric',
@@ -57,6 +57,7 @@ export default function HomeScreen() {
   const done = useMemo(() => doneOn(sessions, today), [sessions, today]);
   const doneCount = plan.filter((i) => done.has(i.activityId)).length;
   const allDone = doneCount === plan.length;
+  const calm = waveCalm(streakDays, doneCount / plan.length);
   const left = Math.max(0, FREE_WEEKLY_LIMIT - extraSessionsThisWeek(sessions, today));
 
   const start = (item: PlanItem) =>
@@ -66,37 +67,28 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         {/* Header */}
-        <View style={styles.header}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.date}>{dateLabel}</Text>
-            <Text style={styles.hello} accessibilityRole="header">
-              {name ? t('home.greeting_comma', { greeting }) : t('home.greeting_noname')}
+        <View>
+          <Text style={styles.date}>{dateLabel}</Text>
+          <Text style={styles.hello} accessibilityRole="header">
+            {name ? t('home.greeting_comma', { greeting }) : t('home.greeting_noname')}
+          </Text>
+          {!!name && <Text style={styles.helloName}>{name}</Text>}
+        </View>
+
+        {/* The brand wave: calmer with every day of practice */}
+        <View
+          style={styles.waveCard}
+          accessible
+          accessibilityLabel={`${tn('home.streak_days', streakDays)}. ${t(waveCaptionKey(calm))}`}
+        >
+          <View style={styles.waveHead}>
+            <Text style={styles.waveTitle}>{t('home.wave_title')}</Text>
+            <Text style={styles.waveStreak}>
+              {streakDays > 0 ? tn('home.streak_days', streakDays) : t('home.streak_start')}
             </Text>
-            {!!name && <Text style={[styles.hello, styles.helloName]}>{name}</Text>}
           </View>
-          <View style={styles.headerRight}>
-            <View
-              style={styles.streakPill}
-              accessible
-              accessibilityLabel={tn('home.streak_days', streakDays)}
-            >
-              <Ionicons name="flame" size={15} color={Tints.peach.fg} />
-              <Text style={styles.streakNum}>{streakDays}</Text>
-            </View>
-            <TouchableOpacity
-              onPress={() => router.push('/(tabs)/profile')}
-              accessibilityRole="button"
-              accessibilityLabel={t('home.plan_progress', { done: doneCount, total: plan.length })}
-            >
-              <ProgressRing progress={doneCount / plan.length} size={52} stroke={3.5}>
-                <View style={styles.avatar}>
-                  {initial
-                    ? <Text style={styles.avatarText}>{initial}</Text>
-                    : <Ionicons name="person" size={20} color={Colors.accent.main} />}
-                </View>
-              </ProgressRing>
-            </TouchableOpacity>
-          </View>
+          <VoiceWave calm={calm} height={72} style={{ marginVertical: 6 }} />
+          <Text style={styles.waveCaption}>{t(waveCaptionKey(calm))}</Text>
         </View>
 
         <CheckInCard today={today} />
@@ -155,7 +147,6 @@ export default function HomeScreen() {
 
         {allDone && (
           <View style={styles.doneBanner}>
-            <Ionicons name="sparkles-outline" size={18} color={Colors.accent.main} />
             <Text style={styles.doneText}>{t('home.plan_done')}</Text>
           </View>
         )}
@@ -218,36 +209,33 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   hello: {
-    fontFamily: FontFamily.display,
-    fontSize: 30,
-    lineHeight: 36,
+    fontFamily: FontFamily.heading,
+    fontSize: 32,
+    lineHeight: 38,
     color: Colors.text.primary,
-    letterSpacing: -0.8,
+    letterSpacing: -0.6,
   },
-  helloName: { color: Colors.accent.main },
-  headerRight: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 4 },
-  streakPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
+  helloName: {
+    fontFamily: FontFamily.headingSemiBoldItalic,
+    fontSize: 36,
+    lineHeight: 42,
+    color: Colors.accent.main,
+    letterSpacing: -0.6,
+  },
+  waveCard: {
     backgroundColor: Colors.surface.card,
-    borderRadius: Radius.pill,
-    paddingHorizontal: 11,
-    paddingVertical: 7,
+    borderRadius: Radius.card,
+    paddingTop: 16,
+    paddingBottom: 16,
+    paddingHorizontal: 18,
     ...Shadow.card,
   },
-  streakNum: { fontFamily: FontFamily.soraBold, fontSize: FontSize.body, color: Colors.text.primary },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: Colors.surface.card,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarText: { fontFamily: FontFamily.soraBold, fontSize: 17, color: Colors.accent.main },
+  waveHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
+  waveTitle: { fontFamily: FontFamily.heading, fontSize: 18, color: Colors.text.primary },
+  waveStreak: { fontFamily: FontFamily.headingItalic, fontSize: 15, color: Colors.brand.main },
+  waveCaption: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.bodySmall, lineHeight: 19, color: Colors.text.secondary },
   planHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 8 },
-  sectionTitle: { fontFamily: FontFamily.display, fontSize: 22, color: Colors.text.primary, letterSpacing: -0.4 },
+  sectionTitle: { fontFamily: FontFamily.heading, fontSize: 22, color: Colors.text.primary, letterSpacing: -0.4 },
   planCount: { fontFamily: FontFamily.dmSansBold, fontSize: FontSize.bodySmall, color: Colors.accent.main },
   tlRow: { flexDirection: 'row', gap: 12 },
   tlRail: { width: 28, alignItems: 'center' },
@@ -264,7 +252,7 @@ const styles = StyleSheet.create({
   },
   nodeNext: { borderColor: Colors.accent.main, borderWidth: 2 },
   nodeDone: { backgroundColor: Colors.accent.main, borderColor: Colors.accent.main },
-  nodeText: { fontFamily: FontFamily.soraBold, fontSize: FontSize.meta, color: Colors.text.tertiary },
+  nodeText: { fontFamily: FontFamily.heading, fontSize: FontSize.meta, color: Colors.text.tertiary },
   nodeTextNext: { color: Colors.accent.main },
   line: { flex: 1, width: 2, backgroundColor: Colors.hairline, marginTop: 4, marginBottom: -34 },
   lineDone: { backgroundColor: Colors.accent.main },
@@ -281,13 +269,11 @@ const styles = StyleSheet.create({
   },
   tlCardDone: { backgroundColor: Colors.surface.card },
   kicker: {
-    fontFamily: FontFamily.dmSansBold,
-    fontSize: FontSize.micro + 1,
-    letterSpacing: 1.1,
-    textTransform: 'uppercase',
+    fontFamily: FontFamily.headingItalic,
+    fontSize: 14,
     color: Colors.accent.main,
   },
-  tlTitle: { fontFamily: FontFamily.soraBold, fontSize: 17, lineHeight: 22, color: Colors.text.primary, letterSpacing: -0.2 },
+  tlTitle: { fontFamily: FontFamily.heading, fontSize: 17, lineHeight: 22, color: Colors.text.primary, letterSpacing: -0.2 },
   tlTitleDone: { color: Colors.text.tertiary, textDecorationLine: 'line-through' },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
   rowTitle: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.body, color: Colors.text.primary },
@@ -315,7 +301,7 @@ const styles = StyleSheet.create({
     ...Shadow.card,
   },
   rowBetween: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
-  cardTitle: { fontFamily: FontFamily.soraBold, fontSize: 17, color: Colors.text.primary },
+  cardTitle: { fontFamily: FontFamily.heading, fontSize: 17, color: Colors.text.primary },
   cardMeta: { fontFamily: FontFamily.dmSansMedium, fontSize: FontSize.bodySmall, color: Colors.text.secondary },
   grace: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.meta, color: Colors.text.tertiary, marginTop: -6 },
   panicRow: {

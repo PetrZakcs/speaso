@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   title: {
-    fontFamily: FontFamily.display,
+    fontFamily: FontFamily.heading,
     fontSize: FontSize.hero,
     color: Calm.text,
     letterSpacing: -0.8,
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   affirmText: {
-    fontFamily: FontFamily.soraSemiBold,
+    fontFamily: FontFamily.heading,
     fontSize: 17,
     color: Calm.text,
     lineHeight: 25,

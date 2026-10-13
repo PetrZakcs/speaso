@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   scroll: { paddingHorizontal: Spacing.screenH, paddingTop: 32, paddingBottom: 24, gap: 14 },
   kicker: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.bodySmall, color: Colors.accent.main },
   title: {
-    fontFamily: FontFamily.soraSemiBold,
+    fontFamily: FontFamily.heading,
     fontSize: 30,
     lineHeight: 38,
     color: Colors.text.primary,
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     ...Shadow.card,
   },
-  cardTitle: { fontFamily: FontFamily.soraSemiBold, fontSize: 17, color: Colors.text.primary },
+  cardTitle: { fontFamily: FontFamily.heading, fontSize: 17, color: Colors.text.primary },
   row: { flexDirection: 'row', alignItems: 'center', gap: 14 },
   rowTitle: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.body, color: Colors.text.primary },
   rowMeta: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.bodySmall, color: Colors.text.secondary, marginTop: 2 },

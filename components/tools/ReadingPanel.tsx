@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   levelTextActive: { color: Colors.accent.on },
   another: { flexDirection: 'row', alignItems: 'center', gap: 4, padding: 4 },
   anotherText: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.bodySmall, color: Colors.accent.main },
-  title: { fontFamily: FontFamily.soraSemiBold, fontSize: FontSize.cardTitle, color: Colors.text.primary },
+  title: { fontFamily: FontFamily.heading, fontSize: FontSize.cardTitle, color: Colors.text.primary },
   body: {
     fontFamily: FontFamily.dmSansRegular,
     fontSize: 19,

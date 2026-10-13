@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   segmentDone: { backgroundColor: Colors.accent.main },
   content: { paddingHorizontal: Spacing.screenH, paddingTop: 36, paddingBottom: 24 },
   title: {
-    fontFamily: FontFamily.display,
+    fontFamily: FontFamily.heading,
     fontSize: 30,
     lineHeight: 36,
     color: Colors.text.primary,

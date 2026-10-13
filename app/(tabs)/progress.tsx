@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bg.base },
   scroll: { paddingHorizontal: Spacing.screenH, paddingTop: 20, paddingBottom: 40, gap: 12 },
   screenTitle: {
-    fontFamily: FontFamily.soraSemiBold,
+    fontFamily: FontFamily.heading,
     fontSize: FontSize.screenTitle,
     color: Colors.text.primary,
     letterSpacing: -0.4,
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   streakVal: {
-    fontFamily: FontFamily.soraExtraBold,
+    fontFamily: FontFamily.headingBold,
     fontSize: 32,
     color: Colors.text.primary,
     letterSpacing: -0.5,
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
   statsRow: { flexDirection: 'row', gap: 10 },
   statCard: { flex: 1, alignItems: 'center', paddingVertical: 16, paddingHorizontal: 8 },
   statNum: {
-    fontFamily: FontFamily.soraBold,
+    fontFamily: FontFamily.heading,
     fontSize: 26,
     color: Colors.text.primary,
   },
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
   },
   lockedContent: { alignItems: 'center', paddingVertical: 16, gap: 10 },
   lockedTitle: {
-    fontFamily: FontFamily.soraSemiBold,
+    fontFamily: FontFamily.heading,
     fontSize: FontSize.cardTitle,
     color: Colors.text.primary,
     textAlign: 'center',
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
   },
   ratingRow: { flexDirection: 'row', marginBottom: 8 },
   ratingCol: { flex: 1, alignItems: 'center' },
-  ratingVal: { fontFamily: FontFamily.soraSemiBold, fontSize: 28, color: Colors.accent.main },
+  ratingVal: { fontFamily: FontFamily.heading, fontSize: 28, color: Colors.accent.main },
   ratingPrev: { color: Colors.text.secondary },
   journalRow: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
   ratingChip: {
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.card,
     padding: 16,
   },
-  linkTitle: { fontFamily: FontFamily.soraSemiBold, fontSize: FontSize.cardTitleSmall, color: Colors.text.primary },
+  linkTitle: { fontFamily: FontFamily.heading, fontSize: FontSize.cardTitleSmall, color: Colors.text.primary },
   linkSub: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.meta, color: Colors.text.secondary, marginTop: 2 },
   unlockBtnText: {
     fontFamily: FontFamily.dmSansBold,

@@ -1,9 +1,12 @@
 import React from 'react';
 import { Tabs, router } from 'expo-router';
-import { TouchableOpacity, View, StyleSheet, type ColorValue } from 'react-native';
+import { TouchableOpacity, StyleSheet, type ColorValue } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Colors, FontFamily } from '../../theme/tokens';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
+import { Calm, Colors, FontFamily } from '../../theme/tokens';
+import WaveGlyph from '../../components/brand/WaveGlyph';
+import { useBreath } from '../../lib/breath';
 import { useTranslation } from '../../i18n/useTranslation';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -15,7 +18,10 @@ function tabIcon(active: IconName, inactive: IconName) {
   return TabIcon;
 }
 
+/** Panic is a calm place, not an alarm: deep green, breathing slowly with the app's rhythm. */
 function PanicTabButton({ label }: { label: string }) {
+  const breath = useBreath();
+  const breathing = useAnimatedStyle(() => ({ transform: [{ scale: 1 + breath.value * 0.06 }] }));
   return (
     <TouchableOpacity
       onPress={() => router.push('/panic')}
@@ -25,9 +31,9 @@ function PanicTabButton({ label }: { label: string }) {
       accessibilityLabel={label}
       testID="tab-panic"
     >
-      <View style={styles.panicCircle}>
-        <Ionicons name="pulse" size={24} color={Colors.text.primary} />
-      </View>
+      <Animated.View style={[styles.panicCircle, breathing]}>
+        <WaveGlyph size={26} color={Calm.text} />
+      </Animated.View>
     </TouchableOpacity>
   );
 }
@@ -90,12 +96,12 @@ const styles = StyleSheet.create({
     width: 54,
     height: 54,
     borderRadius: 27,
-    backgroundColor: Colors.danger.panic,
+    backgroundColor: Calm.bgFrom,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: Colors.danger.panic,
+    shadowColor: Calm.bgFrom,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
+    shadowOpacity: 0.35,
     shadowRadius: 12,
     elevation: 10,
   },

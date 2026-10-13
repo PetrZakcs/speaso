@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bg.base },
   scroll: { paddingHorizontal: Spacing.screenH, paddingTop: 20, paddingBottom: 40, gap: 16 },
   screenTitle: {
-    fontFamily: FontFamily.soraSemiBold,
+    fontFamily: FontFamily.heading,
     fontSize: FontSize.screenTitle,
     color: Colors.text.primary,
     letterSpacing: -0.4,
@@ -267,9 +267,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  avatarText: { fontFamily: FontFamily.soraSemiBold, fontSize: 22, color: Colors.accent.main },
+  avatarText: { fontFamily: FontFamily.heading, fontSize: 22, color: Colors.accent.main },
   profileName: {
-    fontFamily: FontFamily.soraSemiBold,
+    fontFamily: FontFamily.heading,
     fontSize: FontSize.cardTitle,
     color: Colors.text.primary,
   },

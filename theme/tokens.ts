@@ -25,6 +25,11 @@ export const Colors = {
     /** Text and icons placed on top of the accent color. */
     on: '#FFFFFF',
   },
+  /** The second brand colour: warm apricot, used sparingly (streak, wave echo, highlights). */
+  brand: {
+    main: '#E07A4F',
+    soft: '#FBE7DC',
+  },
   danger: {
     panic: '#E0604F',
     soft: '#FBE4DF',
@@ -95,13 +100,16 @@ export const FontSize = {
   micro: 10,
 } as const;
 
+/**
+ * Fraunces (soft serif) carries the voice: headings, numbers, quotes.
+ * DM Sans does the quiet work: body, labels, buttons.
+ */
 export const FontFamily = {
-  soraBold: 'Sora-Bold',
-  /** Big, confident screen titles. */
-  display: 'Sora-Bold',
-  soraExtraBold: 'Sora-ExtraBold',
-  soraSemiBold: 'Sora-SemiBold',
-  soraRegular: 'Sora-Regular',
+  heading: 'Fraunces-SemiBold',
+  headingBold: 'Fraunces-Bold',
+  /** Accents: names, kickers, quotes — the human, handwritten-ish touch. */
+  headingItalic: 'Fraunces-Italic',
+  headingSemiBoldItalic: 'Fraunces-SemiBoldItalic',
   dmSansBold: 'DMSans-Bold',
   dmSansSemiBold: 'DMSans-SemiBold',
   dmSansMedium: 'DMSans-Medium',

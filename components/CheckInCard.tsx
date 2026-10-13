@@ -61,13 +61,11 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   kicker: {
-    fontFamily: FontFamily.dmSansBold,
-    fontSize: FontSize.micro + 1,
-    letterSpacing: 1.1,
-    textTransform: 'uppercase',
+    fontFamily: FontFamily.headingItalic,
+    fontSize: 14,
     color: Calm.accent,
   },
-  title: { fontFamily: FontFamily.soraBold, fontSize: 19, color: Calm.text, letterSpacing: -0.3 },
+  title: { fontFamily: FontFamily.heading, fontSize: 19, color: Calm.text, letterSpacing: -0.3 },
   sub: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.bodySmall, color: Calm.muted },
   go: {
     width: 44,
@@ -87,7 +85,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surface.card,
   },
   moodBadge: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
-  moodBadgeText: { fontFamily: FontFamily.soraBold, fontSize: FontSize.body, color: '#14241C' },
+  moodBadgeText: { fontFamily: FontFamily.heading, fontSize: FontSize.body, color: '#14241C' },
   compactText: { flex: 1, fontFamily: FontFamily.dmSansMedium, fontSize: FontSize.body, color: Colors.text.primary },
   change: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.bodySmall, color: Colors.accent.main },
 });

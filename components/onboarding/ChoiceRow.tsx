@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   rowSelected: { borderColor: Colors.accent.main },
-  title: { fontFamily: FontFamily.soraSemiBold, fontSize: FontSize.body, color: Colors.text.primary },
+  title: { fontFamily: FontFamily.heading, fontSize: FontSize.body, color: Colors.text.primary },
   detail: {
     fontFamily: FontFamily.dmSansRegular,
     fontSize: FontSize.bodySmall,

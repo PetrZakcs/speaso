@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bg.base },
   scroll: { paddingHorizontal: Spacing.screenH, paddingTop: 16, paddingBottom: 48, gap: 16 },
   title: {
-    fontFamily: FontFamily.soraSemiBold,
+    fontFamily: FontFamily.heading,
     fontSize: FontSize.hero,
     color: Colors.text.primary,
     textAlign: 'center',
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
   radioActive: { borderColor: Colors.accent.main },
   radioDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: Colors.accent.main },
   planName: {
-    fontFamily: FontFamily.soraSemiBold,
+    fontFamily: FontFamily.heading,
     fontSize: FontSize.cardTitle,
     color: Colors.text.primary,
   },
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   planPrice: {
-    fontFamily: FontFamily.soraSemiBold,
+    fontFamily: FontFamily.heading,
     fontSize: FontSize.cardTitle,
     color: Colors.text.primary,
   },

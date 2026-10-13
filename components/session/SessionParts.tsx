@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
   },
   headerCenter: { flex: 1, alignItems: 'center', paddingHorizontal: 8 },
   headerTitle: {
-    fontFamily: FontFamily.soraSemiBold,
+    fontFamily: FontFamily.heading,
     fontSize: FontSize.cardTitle,
     color: Colors.text.primary,
   },
@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   startTitle: {
-    fontFamily: FontFamily.soraSemiBold,
+    fontFamily: FontFamily.heading,
     fontSize: 26,
     color: Colors.text.primary,
     textAlign: 'center',
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     color: Colors.text.tertiary,
   },
   stepText: {
-    fontFamily: FontFamily.soraSemiBold,
+    fontFamily: FontFamily.heading,
     fontSize: 22,
     color: Colors.text.primary,
     lineHeight: 32,
@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   doneTitle: {
-    fontFamily: FontFamily.soraSemiBold,
+    fontFamily: FontFamily.heading,
     fontSize: 32,
     color: Colors.text.primary,
     letterSpacing: -0.6,
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   doneStat: { alignItems: 'center', gap: 4, flex: 1 },
-  doneStatVal: { fontFamily: FontFamily.soraSemiBold, fontSize: 30, color: Colors.text.primary },
+  doneStatVal: { fontFamily: FontFamily.heading, fontSize: 30, color: Colors.text.primary },
   doneStatLabel: { fontFamily: FontFamily.dmSansMedium, fontSize: FontSize.bodySmall, color: Colors.text.secondary },
   doneStatDiv: { width: 1, height: 40, backgroundColor: Colors.hairline },
   doneCta: { alignSelf: 'stretch', marginTop: 8 },

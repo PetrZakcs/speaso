@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
   tileSelected: { borderColor: Colors.accent.main, backgroundColor: Colors.surface.mint },
   top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 },
-  title: { fontFamily: FontFamily.soraBold, fontSize: FontSize.body, lineHeight: 20, color: Colors.text.primary },
+  title: { fontFamily: FontFamily.heading, fontSize: FontSize.body, lineHeight: 20, color: Colors.text.primary },
   detail: {
     fontFamily: FontFamily.dmSansRegular,
     fontSize: FontSize.meta,

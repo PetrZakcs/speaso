@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    fontFamily: FontFamily.soraSemiBold,
+    fontFamily: FontFamily.heading,
     fontSize: 30,
     lineHeight: 38,
     color: Colors.text.primary,

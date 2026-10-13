@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   skip: { fontFamily: FontFamily.dmSansMedium, fontSize: FontSize.body, color: Colors.text.tertiary },
   main: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 10 },
   title: {
-    fontFamily: FontFamily.soraSemiBold,
+    fontFamily: FontFamily.heading,
     fontSize: 28,
     lineHeight: 36,
     color: Colors.text.primary,

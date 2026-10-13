@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bg.base },
   scroll: { paddingHorizontal: Spacing.screenH, paddingTop: 12, paddingBottom: 40, gap: 16 },
   screenTitle: {
-    fontFamily: FontFamily.display,
+    fontFamily: FontFamily.heading,
     fontSize: 30,
     color: Colors.text.primary,
     letterSpacing: -0.6,
@@ -169,11 +169,11 @@ const styles = StyleSheet.create({
   group: { backgroundColor: Colors.surface.card, borderRadius: Radius.card, paddingHorizontal: 16, ...Shadow.card },
   row: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 14 },
   rowBorder: { borderTopWidth: 1, borderTopColor: Colors.hairline },
-  title: { fontFamily: FontFamily.soraSemiBold, fontSize: FontSize.body, color: Colors.text.primary },
+  title: { fontFamily: FontFamily.heading, fontSize: FontSize.body, color: Colors.text.primary },
   sub: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.bodySmall, color: Colors.text.secondary, marginTop: 2 },
   meta: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.meta, color: Colors.text.tertiary, marginTop: 4 },
   sectionHead: { marginTop: 12, gap: 4 },
-  sectionTitle: { fontFamily: FontFamily.soraBold, fontSize: 20, color: Colors.text.primary, letterSpacing: -0.3 },
+  sectionTitle: { fontFamily: FontFamily.heading, fontSize: 20, color: Colors.text.primary, letterSpacing: -0.3 },
   addIcon: {
     width: 44,
     height: 44,
