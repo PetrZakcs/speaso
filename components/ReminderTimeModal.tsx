@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Modal, View, Text, TouchableOpacity, StyleSheet,
   KeyboardAvoidingView, Platform,
@@ -36,12 +36,18 @@ export default function ReminderTimeModal({
   const [hour, setHour] = useState(initialHour);
   const [minute, setMinute] = useState(initialMinute);
 
-  useEffect(() => {
+  const [prev, setPrev] = useState({ visible, initialHour, initialMinute });
+  if (
+    prev.visible !== visible ||
+    prev.initialHour !== initialHour ||
+    prev.initialMinute !== initialMinute
+  ) {
+    setPrev({ visible, initialHour, initialMinute });
     if (visible) {
       setHour(initialHour);
       setMinute(initialMinute);
     }
-  }, [visible, initialHour, initialMinute]);
+  }
 
   const changeHour = (delta: number) => {
     hapticTick();

@@ -87,4 +87,26 @@ describe('ratings and report', () => {
     expect(html).toContain('3/5');
     expect(html).toContain('Průměrný denní check-in: 3.5/5');
   });
+
+  it('renders clinical diagnostic tension index when present in the PDF report', () => {
+    const html = buildReportHtml(
+      {
+        name: 'Petr',
+        from: '1. 9. 2026',
+        to: '30. 9. 2026',
+        sessions: [session('2026-09-29', 3)],
+        streak: 3,
+        panicUses: 0,
+        diagnosticTensionScore: 78,
+        diagnosticTriggers: ['Telefonování', 'Cizí lidé'],
+        diagnosticFrictionAreas: ['Křeč hrtanu a hlasivek', 'Mělký hrudní dech'],
+      },
+      'cs',
+    );
+    expect(html).toContain('Vstupní diagnostika &amp; index napětí');
+    expect(html).toContain('78/100');
+    expect(html).toContain('Telefonování, Cizí lidé');
+    expect(html).toContain('Křeč hrtanu a hlasivek, Mělký hrudní dech');
+  });
 });
+

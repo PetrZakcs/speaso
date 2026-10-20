@@ -15,6 +15,11 @@ import { hapticSelect, hapticSuccess, hapticSighPhase } from '../../lib/haptics'
 
 type PanicMode = 'ball' | 'sigh' | 'body';
 
+function computeElapsedSec(startedAt: number): number {
+  if (!startedAt) return 0;
+  return Math.round((Date.now() - startedAt) / 1000);
+}
+
 export default function PanicScreen() {
   const { t, tList } = useTranslation();
   const incrementPanicUses = useStore((s) => s.incrementPanicUses);
@@ -22,7 +27,7 @@ export default function PanicScreen() {
   const [mode, setMode] = useState<PanicMode>('ball');
   const [affirmIdx, setAffirmIdx] = useState(0);
   const [showTriggerSurvey, setShowTriggerSurvey] = useState(false);
-  const startTime = useRef(Date.now());
+  const startTime = useRef(0);
   const counted = useRef(false);
 
   // Physiological Sigh timer state
@@ -30,6 +35,7 @@ export default function PanicScreen() {
   const [sighCycle, setSighCycle] = useState(1);
 
   useEffect(() => {
+    startTime.current = Date.now();
     if (!counted.current) {
       counted.current = true;
       incrementPanicUses();
@@ -59,7 +65,7 @@ export default function PanicScreen() {
   }, [mode, sighPhase]);
 
   const handleClose = () => {
-    const elapsedSec = Math.round((Date.now() - startTime.current) / 1000);
+    const elapsedSec = computeElapsedSec(startTime.current);
     if (elapsedSec >= 4 && !showTriggerSurvey) {
       hapticSelect();
       setShowTriggerSurvey(true);
@@ -70,7 +76,7 @@ export default function PanicScreen() {
 
   const handleSelectTrigger = (triggerKey: string) => {
     hapticSuccess();
-    const elapsedSec = Math.round((Date.now() - startTime.current) / 1000);
+    const elapsedSec = computeElapsedSec(startTime.current);
     trackEvent('panic_sos', { trigger: triggerKey, mode, durationSec: elapsedSec });
     setShowTriggerSurvey(false);
     router.back();

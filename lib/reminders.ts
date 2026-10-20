@@ -93,10 +93,10 @@ export async function ensureNotificationPermission(): Promise<boolean> {
   const Notifications = notifications();
   if (!Notifications) return false;
   const current = await Notifications.getPermissionsAsync();
-  if (current.granted) return true;
-  if (!current.canAskAgain) return false;
+  if (current?.granted) return true;
+  if (!current?.canAskAgain) return false;
   const requested = await Notifications.requestPermissionsAsync();
-  return requested.granted;
+  return Boolean(requested?.granted);
 }
 
 async function ensureChannel(lang: SupportedLang) {

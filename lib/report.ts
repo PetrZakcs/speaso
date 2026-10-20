@@ -6,6 +6,7 @@ import { activityTitle, formatDate } from './activities';
 import { addDays, toDateKey } from './dates';
 import { currentStreak, type Session } from './streak';
 import type { SupportedLang } from './locale';
+import { calculateDiagnosticProfile } from './diagnostic';
 
 export const REPORT_DAYS = 30;
 
@@ -29,6 +30,9 @@ export interface ReportData {
   checkInAvg?: number | null;
   /** Daily check-in records in the period. */
   checkIns?: import('../state/store').CheckIn[];
+  diagnosticTensionScore?: number | null;
+  diagnosticTriggers?: string[];
+  diagnosticFrictionAreas?: string[];
 }
 
 /** Pure HTML builder — exported for tests. */
@@ -93,6 +97,16 @@ export function buildReportHtml(data: ReportData, lang: SupportedLang): string {
         data.checkInAvg ? ` · ${esc(t('report.checkin_avg'))}: ${data.checkInAvg.toFixed(1)}/5` : ''
       }</p>
 
+    ${data.diagnosticTensionScore !== undefined && data.diagnosticTensionScore !== null ? `
+      <h2>${esc(t('report.tension_title'))}</h2>
+      <div class="stats">
+        <div class="stat"><b>${data.diagnosticTensionScore}/100</b>${esc(t('report.tension_score'))}</div>
+        ${data.diagnosticTriggers && data.diagnosticTriggers.length > 0 ? `<div class="stat"><b>${data.diagnosticTriggers.length}</b>${esc(t('report.primary_triggers'))}</div>` : ''}
+      </div>
+      ${data.diagnosticTriggers && data.diagnosticTriggers.length > 0 ? `<p class="muted">${esc(t('report.primary_triggers'))}: <b>${esc(data.diagnosticTriggers.join(', '))}</b></p>` : ''}
+      ${data.diagnosticFrictionAreas && data.diagnosticFrictionAreas.length > 0 ? `<p class="muted">${esc(t('report.friction_centers'))}: <b>${esc(data.diagnosticFrictionAreas.join(', '))}</b></p>` : ''}
+    ` : ''}
+
     <h2>${esc(t('report.by_activity'))}</h2>
     ${activityRows
       ? `<table><tr><th>${esc(t('report.activity'))}</th><th>${esc(t('report.count'))}</th><th>${esc(t('report.minutes'))}</th></tr>${activityRows}</table>`
@@ -137,6 +151,7 @@ export async function exportReport(lang: SupportedLang) {
   const { user, sessions, streak, panicUses, checkIns } = useStore.getState();
   const today = toDateKey();
   const from = addDays(today, -(REPORT_DAYS - 1));
+  const diag = user.situations?.length ? calculateDiagnosticProfile(user, lang) : null;
   const data: ReportData = {
     name: user.name,
     from: formatDate(`${from}T12:00:00`, lang),
@@ -149,6 +164,9 @@ export async function exportReport(lang: SupportedLang) {
       return inRange.length ? inRange.reduce((sum, c) => sum + c.mood, 0) / inRange.length : null;
     })(),
     checkIns: checkIns.filter((c) => c.date >= from && c.date <= today).sort((a, b) => b.date.localeCompare(a.date)),
+    diagnosticTensionScore: diag?.tensionScore ?? null,
+    diagnosticTriggers: diag?.primaryTriggers.map((pt) => pt.title) ?? [],
+    diagnosticFrictionAreas: diag?.vocalFrictionAreas.map((fa) => translate(lang, fa.titleKey)) ?? [],
   };
   const { uri } = await Print.printToFileAsync({ html: buildReportHtml(data, lang) });
   if (!(await Sharing.isAvailableAsync())) throw new Error('SHARING_UNAVAILABLE');

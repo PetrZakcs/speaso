@@ -124,7 +124,7 @@ export default function Recorder({ exerciseId }: { exerciseId: string }) {
     hapticSelect();
     setPlaybackSpeed(rate);
     try {
-      player.playbackRate = rate;
+      player.setPlaybackRate(rate);
     } catch (e) {
       console.warn('[recorder] playbackRate failed:', e);
     }

@@ -6,7 +6,7 @@ import type { CheckIn } from '../state/store';
 import type { Session, StreakData } from '../lib/streak';
 import { generateSmartInsights } from '../lib/insights';
 import Card from './Card';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius } from '../theme/tokens';
 
 interface SmartInsightsCardProps {
   sessions: Session[];

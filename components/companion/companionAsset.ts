@@ -10,3 +10,4 @@ import type { ImageSourcePropType } from 'react-native';
  * If null, CompanionAvatar renders the rich procedural organic SVG companion with all animations!
  */
 export const CUSTOM_MASCOT_SOURCE: ImageSourcePropType | null = null;
+export const hasCustomMascot = CUSTOM_MASCOT_SOURCE !== null;

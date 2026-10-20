@@ -36,7 +36,7 @@ export default function RecordingsScreen() {
     hapticSelect();
     setPlaybackSpeed(rate);
     try {
-      player.playbackRate = rate;
+      player.setPlaybackRate(rate);
     } catch (e) {
       console.warn('[recordings] playbackRate failed:', e);
     }
@@ -49,7 +49,7 @@ export default function RecordingsScreen() {
       } else {
         if (status.duration > 0 && status.currentTime >= status.duration - 0.05) player.seekTo(0);
         try {
-          player.playbackRate = playbackSpeed;
+          player.setPlaybackRate(playbackSpeed);
         } catch {}
         player.play();
       }
@@ -57,7 +57,7 @@ export default function RecordingsScreen() {
     }
     player.replace({ uri: recordingUri(rec.fileName) });
     try {
-      player.playbackRate = playbackSpeed;
+      player.setPlaybackRate(playbackSpeed);
     } catch {}
     player.play();
     setCurrentId(rec.id);

@@ -4,7 +4,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from '../i18n/useTranslation';
 import type { CheckIn } from '../state/store';
 import Card from './Card';
-import { Colors, FontFamily, FontSize, Radius, Spacing } from '../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius } from '../theme/tokens';
 
 function avgMood(items: CheckIn[]) {
   if (items.length === 0) return null;

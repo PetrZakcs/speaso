@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Modal, View, Text, TouchableOpacity, StyleSheet,
+  Modal, View, Text, StyleSheet,
   KeyboardAvoidingView, Platform, Share, Alert,
 } from 'react-native';
 import * as Sharing from 'expo-sharing';

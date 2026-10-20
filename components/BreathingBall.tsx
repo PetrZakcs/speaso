@@ -5,7 +5,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useTranslation } from '../i18n/useTranslation';
 import { Calm, Colors, FontFamily, FontSize } from '../theme/tokens';
-import { hapticTick, hapticBreathPhase } from '../lib/haptics';
+import { hapticBreathPhase } from '../lib/haptics';
 import { BREATH } from '../lib/breath';
 
 const BALL_SIZE = 148;

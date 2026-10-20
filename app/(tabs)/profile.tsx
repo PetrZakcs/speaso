@@ -15,7 +15,6 @@ import {
   REMINDER_TIMES,
   MORNING_REMINDER_TIMES,
   STREAK_REMINDER_TIMES,
-  disableReminder,
   enableReminder,
   updateReminderSettings,
   formatTime,
@@ -63,7 +62,7 @@ export default function ProfileScreen() {
   const [therapistModalVisible, setTherapistModalVisible] = useState(false);
   const [editingSlot, setEditingSlot] = useState<'practice' | 'morning' | 'streak' | null>(null);
   const {
-    name, subscription, language, setLanguage, reminder, setReminder, shareAnswers, setUser, therapistName,
+    name, subscription, language, setLanguage, reminder, shareAnswers, setUser, therapistName,
     biometricsEnabled, setBiometricsEnabled,
   } = useStore(useShallow((s) => ({
     name: s.user.name,
@@ -71,7 +70,6 @@ export default function ProfileScreen() {
     language: s.language,
     setLanguage: s.setLanguage,
     reminder: s.reminder,
-    setReminder: s.setReminder,
     shareAnswers: s.user.shareAnswers,
     setUser: s.setUser,
     therapistName: s.user.therapistName,
@@ -455,6 +453,20 @@ export default function ProfileScreen() {
             />
           </View>
           <Text style={styles.sectionHint}>{t('settings.therapist_hint')}</Text>
+        </View>
+
+        {/* Companion Mascot Studio */}
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>{t('companion_lab.title')}</Text>
+          <View style={styles.sectionCard}>
+            <SettingRow
+              icon="color-palette-outline"
+              label={t('settings.companion_lab')}
+              value="Lab →"
+              onPress={() => router.push('/companion-lab' as any)}
+            />
+          </View>
+          <Text style={styles.sectionHint}>{t('settings.companion_lab_sub')}</Text>
         </View>
 
         {/* About */}

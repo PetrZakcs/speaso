@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from '../i18n/useTranslation';
@@ -7,7 +7,7 @@ import { useStore } from '../state/store';
 import { authenticateWithBiometrics, checkBiometricsAvailability, type BiometryType } from '../lib/biometrics';
 import CompanionAvatar from './CompanionAvatar';
 import PillButton from './PillButton';
-import { Colors, FontFamily, FontSize, Radius, Shadow } from '../theme/tokens';
+import { Colors, FontFamily, FontSize } from '../theme/tokens';
 import { hapticSuccess } from '../lib/haptics';
 
 export default function BiometricLockOverlay() {
