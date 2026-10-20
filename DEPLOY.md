@@ -1,4 +1,4 @@
-# Speasy — Deploy checklist
+# Speaso — Deploy checklist
 
 ## 1. RevenueCat nastavení (5 min)
 1. Jdi na https://app.revenuecat.com → tvůj projekt → API Keys
@@ -33,8 +33,8 @@ npx expo start
 
 ### Vytvoř app v App Store Connect
 1. https://appstoreconnect.apple.com → My Apps → + → New App
-2. Bundle ID: `com.speasy.app`
-3. SKU: `speasy-ios`
+2. Bundle ID: `com.speaso.app`
+3. SKU: `speaso-ios`
 4. Doplň `ascAppId` a `appleTeamId` do `eas.json`
 
 ### EAS Build (cloud, ~20 min)

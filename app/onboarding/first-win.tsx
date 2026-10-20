@@ -49,9 +49,14 @@ export default function FirstWin() {
             </View>
             <Text style={[styles.title, styles.center]} accessibilityRole="header">{t('onboarding.win_done_title')}</Text>
             <Text style={[styles.sub, styles.center]}>{t('onboarding.win_done_sub')}</Text>
+
+            <View style={styles.tipCard}>
+              <Ionicons name="bulb-outline" size={20} color={Colors.accent.main} />
+              <Text style={styles.tipText}>{t('onboarding.win_insight_tip')}</Text>
+            </View>
           </View>
           <View style={styles.footer}>
-            <PillButton label={t('common.continue')} onPress={next} />
+            <PillButton label={t('onboarding.win_cta')} onPress={next} />
           </View>
         </>
       )}
@@ -88,6 +93,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 12,
+  },
+  tipCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: Colors.accent.soft,
+    padding: 16,
+    borderRadius: 16,
+    marginTop: 16,
+    marginHorizontal: 8,
+  },
+  tipText: {
+    flex: 1,
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: FontSize.bodySmall,
+    lineHeight: 20,
+    color: Colors.text.primary,
   },
   footer: { paddingBottom: 12 },
 });

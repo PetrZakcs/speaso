@@ -33,6 +33,11 @@ interface UserState {
   goalOther: string;
   /** Opt-in to send onboarding answers (anonymously) to the Speasy team. */
   shareAnswers: boolean;
+  /** Connected speech therapist info. */
+  therapistCode?: string;
+  therapistName?: string;
+  /** True once user has redeemed a friend's referral gift code (prevents infinite free looping). */
+  hasRedeemedReferral?: boolean;
 }
 
 /** A practice scenario the user wrote themselves. */
@@ -57,6 +62,7 @@ export interface SubscriptionState {
   isPremium: boolean;
   isTrial: boolean;
   expiresAt: string | null;
+  promoCode?: string | null;
 }
 
 export interface Recording {
@@ -69,16 +75,39 @@ export interface Recording {
   durationSec: number;
 }
 
-/** Daily "how is speaking today?" check-in (one per day, last one wins). */
+export type WeatherType = 'sunny' | 'cloudy' | 'rain' | 'storm' | 'cold';
+
+/** Daily "how is speaking today?" check-in with holistic tracking factors. */
 export interface CheckIn {
   date: DateKey;
   mood: Rating;
+  /** Hydration in glasses (approx 250ml each). */
+  waterGlasses?: number;
+  /** Sleep duration in hours. */
+  sleepHours?: number;
+  /** Weather condition on this day. */
+  weather?: WeatherType;
+  /** Somatic & speech state tags (e.g. 'throat_tension', 'jaw_tension', 'fast_pace', etc.). */
+  tags?: string[];
+  /** Daily journal note / reflection. Stays on device. */
+  note?: string;
 }
 
+export type CheckInInput = Rating | (Omit<CheckIn, 'date'> & { date?: DateKey });
+
 export interface ReminderSettings {
+  /** Daily practice reminder toggle. */
   enabled: boolean;
   hour: number;
   minute: number;
+  /** Morning check-in reminder toggle (default 08:00). */
+  morningEnabled?: boolean;
+  morningHour?: number;
+  morningMinute?: number;
+  /** Evening streak-saver reminder toggle (default 20:30). */
+  streakSaverEnabled?: boolean;
+  streakSaverHour?: number;
+  streakSaverMinute?: number;
 }
 
 interface AppState {
@@ -98,6 +127,8 @@ interface AppState {
   installId: string;
   /** Onboarding answers are waiting to be sent (offline at the time). */
   answersPending: boolean;
+  /** Track which streak milestone days have already been celebrated. */
+  celebratedMilestones: number[];
 
   setOnboardingDone: (v: boolean) => void;
   setLanguage: (lang: SupportedLang) => void;
@@ -110,15 +141,28 @@ interface AppState {
   addRecording: (recording: Omit<Recording, 'id' | 'createdAt'>) => void;
   removeRecording: (id: string) => void;
   setReminder: (reminder: ReminderSettings) => void;
-  setCheckIn: (mood: Rating) => void;
+  setCheckIn: (input: CheckInInput) => void;
   /** Saves a new scenario and returns its id. */
   addScenario: (s: Pick<CustomScenario, 'title' | 'phrases' | 'challenge'>) => string;
   updateScenario: (id: string, s: Pick<CustomScenario, 'title' | 'phrases' | 'challenge'>) => void;
   removeScenario: (id: string) => void;
   setAnswersPending: (v: boolean) => void;
+  unlockPromo: (code: string, expiresAt: string | null) => void;
+  setTherapist: (therapist: { code?: string; name?: string }) => void;
+  markMilestoneCelebrated: (days: number) => void;
 }
 
-const DEFAULT_REMINDER: ReminderSettings = { enabled: false, hour: 18, minute: 0 };
+export const DEFAULT_REMINDER: ReminderSettings = {
+  enabled: false,
+  hour: 18,
+  minute: 0,
+  morningEnabled: false,
+  morningHour: 8,
+  morningMinute: 0,
+  streakSaverEnabled: false,
+  streakSaverHour: 20,
+  streakSaverMinute: 30,
+};
 
 function newId(now: Date) {
   return `${now.getTime().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
@@ -135,6 +179,7 @@ const initialUser: UserState = {
   situationsOther: '',
   goalOther: '',
   shareAnswers: false,
+  hasRedeemedReferral: false,
 };
 
 /** Trims text and drops empty phrases so stored scenarios are always clean. */
@@ -164,6 +209,25 @@ export function isStoreReady() {
   return storeReady;
 }
 
+const storageAdapter = {
+  getItem: async (name: string) => {
+    const val = await AsyncStorage.getItem(name);
+    if (val !== null) return val;
+    // Migrate from legacy 'speasy-storage' if found
+    if (name === 'speaso-storage') {
+      const legacy = await AsyncStorage.getItem('speasy-storage');
+      if (legacy !== null) {
+        await AsyncStorage.setItem('speaso-storage', legacy);
+        await AsyncStorage.removeItem('speasy-storage');
+        return legacy;
+      }
+    }
+    return null;
+  },
+  setItem: (name: string, value: string) => AsyncStorage.setItem(name, value),
+  removeItem: (name: string) => AsyncStorage.removeItem(name),
+};
+
 export const useStore = create<AppState>()(
   persist(
     (set, get) => ({
@@ -172,7 +236,7 @@ export const useStore = create<AppState>()(
       reminder: DEFAULT_REMINDER,
 
       user: initialUser,
-      subscription: { isPremium: false, isTrial: false, expiresAt: null },
+      subscription: { isPremium: false, isTrial: false, expiresAt: null, promoCode: null },
       streak: EMPTY_STREAK,
       sessions: [],
       panicUses: 0,
@@ -181,6 +245,7 @@ export const useStore = create<AppState>()(
       scenarios: [],
       installId: newId(new Date()),
       answersPending: false,
+      celebratedMilestones: [],
 
       setOnboardingDone: (v) => set({ onboardingDone: v }),
       setLanguage: (language) => set({ language }),
@@ -235,12 +300,32 @@ export const useStore = create<AppState>()(
 
       setReminder: (reminder) => set({ reminder }),
 
-      setCheckIn: (mood) =>
+      setCheckIn: (input) =>
         set((s) => {
-          const date = toDateKey();
+          const isNum = typeof input === 'number';
+          const date = isNum ? toDateKey() : (input.date ?? toDateKey());
+          const mood = isNum ? input : input.mood;
+          const entry: CheckIn = isNum
+            ? { date, mood }
+            : {
+                date,
+                mood,
+                waterGlasses: input.waterGlasses,
+                sleepHours: input.sleepHours,
+                weather: input.weather,
+                tags: input.tags,
+                note: input.note?.trim() || undefined,
+              };
           const rest = s.checkIns.filter((c) => c.date !== date);
-          return { checkIns: [...rest, { date, mood }].slice(-MAX_CHECKINS) };
+          return { checkIns: [...rest, entry].slice(-MAX_CHECKINS) };
         }),
+
+      markMilestoneCelebrated: (days) =>
+        set((s) => ({
+          celebratedMilestones: s.celebratedMilestones.includes(days)
+            ? s.celebratedMilestones
+            : [...s.celebratedMilestones, days],
+        })),
 
       addScenario: (input) => {
         const now = new Date();
@@ -257,11 +342,30 @@ export const useStore = create<AppState>()(
       removeScenario: (id) => set((s) => ({ scenarios: s.scenarios.filter((x) => x.id !== id) })),
 
       setAnswersPending: (answersPending) => set({ answersPending }),
+
+      unlockPromo: (code, expiresAt) =>
+        set({
+          subscription: {
+            isPremium: true,
+            isTrial: false,
+            expiresAt,
+            promoCode: code.toUpperCase().trim(),
+          },
+        }),
+
+      setTherapist: (therapist) =>
+        set((s) => ({
+          user: {
+            ...s.user,
+            therapistCode: therapist.code?.trim().toUpperCase(),
+            therapistName: therapist.name?.trim(),
+          },
+        })),
     }),
     {
-      name: 'speasy-storage',
-      version: 4,
-      storage: createJSONStorage(() => AsyncStorage),
+      name: 'speaso-storage',
+      version: 5,
+      storage: createJSONStorage(() => storageAdapter),
       onRehydrateStorage: () => (_state, error) => {
         if (error) console.warn('[store] rehydration failed, starting with defaults:', error);
         markStoreReady();
@@ -310,6 +414,16 @@ export const useStore = create<AppState>()(
             answersPending: false,
           };
         }
+        if (version <= 4) {
+          // v5: reminder slots (morning check-in, streak saver).
+          old = {
+            ...old,
+            reminder: {
+              ...DEFAULT_REMINDER,
+              ...(old.reminder ?? {}),
+            },
+          };
+        }
         return old;
       },
     },
@@ -331,3 +445,10 @@ export function useStoreHydrated() {
 export const useIsPremium = () => useStore((s) => s.subscription.isPremium);
 
 export { useShallow } from 'zustand/react/shallow';
+
+/** Stable 6-character patient code for therapist linking. */
+export function patientPairingCode(installId: string): string {
+  const clean = installId.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+  return `SPE-${clean.slice(0, 4) || '2026'}`;
+}
+

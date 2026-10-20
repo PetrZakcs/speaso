@@ -16,17 +16,69 @@ export default function CheckInCard({ today }: { today: DateKey }) {
   const open = () => router.push('/checkin');
 
   if (checkIn) {
+    const hasFactors = checkIn.sleepHours !== undefined || checkIn.waterGlasses !== undefined || checkIn.weather !== undefined || (checkIn.tags && checkIn.tags.length > 0);
     return (
       <View style={[styles.compact, Shadow.card]}>
-        <View style={[styles.moodBadge, { backgroundColor: MOOD_GRADIENT[checkIn.mood - 1] }]}>
-          <Text style={styles.moodBadgeText}>{checkIn.mood}</Text>
+        <View style={styles.compactMain}>
+          <View style={[styles.moodBadge, { backgroundColor: MOOD_GRADIENT[checkIn.mood - 1] }]}>
+            <Text style={styles.moodBadgeText}>{checkIn.mood}</Text>
+          </View>
+          <Text style={styles.compactText}>
+            {t('checkin.today', { mood: t(`rating.level_${checkIn.mood}`).toLowerCase() })}
+          </Text>
+          <TouchableOpacity onPress={open} accessibilityRole="button" hitSlop={10}>
+            <Text style={styles.change}>{t('checkin.change')}</Text>
+          </TouchableOpacity>
         </View>
-        <Text style={styles.compactText}>
-          {t('checkin.today', { mood: t(`rating.level_${checkIn.mood}`).toLowerCase() })}
-        </Text>
-        <TouchableOpacity onPress={open} accessibilityRole="button" hitSlop={10}>
-          <Text style={styles.change}>{t('checkin.change')}</Text>
-        </TouchableOpacity>
+
+        {hasFactors && (
+          <View style={styles.factorsRow}>
+            {checkIn.tags?.slice(0, 2).map((tagId) => (
+              <View key={tagId} style={styles.somaticChip}>
+                <Ionicons name="sparkles" size={11} color={Colors.accent.main} />
+                <Text style={styles.somaticText}>{t(`checkin.tag_${tagId}`)}</Text>
+              </View>
+            ))}
+            {checkIn.sleepHours !== undefined && (
+              <View style={styles.factorChip}>
+                <Ionicons name="moon-outline" size={13} color={Colors.accent.main} />
+                <Text style={styles.factorText}>{checkIn.sleepHours}h</Text>
+              </View>
+            )}
+            {checkIn.waterGlasses !== undefined && (
+              <View style={styles.factorChip}>
+                <Ionicons name="water-outline" size={13} color={Colors.accent.main} />
+                <Text style={styles.factorText}>{checkIn.waterGlasses} skl.</Text>
+              </View>
+            )}
+            {checkIn.weather && (
+              <View style={styles.factorChip}>
+                <Ionicons
+                  name={
+                    checkIn.weather === 'sunny'
+                      ? 'sunny-outline'
+                      : checkIn.weather === 'rain'
+                      ? 'rainy-outline'
+                      : checkIn.weather === 'storm'
+                      ? 'thunderstorm-outline'
+                      : checkIn.weather === 'cold'
+                      ? 'snow-outline'
+                      : 'partly-sunny-outline'
+                  }
+                  size={13}
+                  color={Colors.accent.main}
+                />
+                <Text style={styles.factorText}>{t(`checkin.weather_${checkIn.weather}`)}</Text>
+              </View>
+            )}
+          </View>
+        )}
+
+        {!!checkIn.note && (
+          <Text style={styles.noteSnippet} numberOfLines={2}>
+            „{checkIn.note}“
+          </Text>
+        )}
       </View>
     );
   }
@@ -76,16 +128,62 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   compact: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    padding: 14,
+    padding: 16,
     paddingHorizontal: 18,
     borderRadius: Radius.card,
     backgroundColor: Colors.surface.card,
+    gap: 10,
+  },
+  compactMain: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
   moodBadge: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
   moodBadgeText: { fontFamily: FontFamily.heading, fontSize: FontSize.body, color: '#14241C' },
   compactText: { flex: 1, fontFamily: FontFamily.dmSansMedium, fontSize: FontSize.body, color: Colors.text.primary },
   change: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.bodySmall, color: Colors.accent.main },
+  factorsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    paddingTop: 2,
+  },
+  factorChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: Colors.surface.card2,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: Radius.pill,
+  },
+  factorText: {
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: FontSize.meta,
+    color: Colors.text.secondary,
+  },
+  somaticChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: 'rgba(44, 86, 65, 0.12)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: Radius.pill,
+    borderWidth: 1,
+    borderColor: 'rgba(44, 86, 65, 0.25)',
+  },
+  somaticText: {
+    fontFamily: FontFamily.dmSansSemiBold,
+    fontSize: FontSize.meta,
+    color: Colors.accent.main,
+  },
+  noteSnippet: {
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: FontSize.bodySmall,
+    color: Colors.text.secondary,
+    fontStyle: 'italic',
+    lineHeight: 18,
+  },
 });

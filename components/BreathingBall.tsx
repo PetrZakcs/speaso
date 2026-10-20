@@ -5,7 +5,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useTranslation } from '../i18n/useTranslation';
 import { Calm, Colors, FontFamily, FontSize } from '../theme/tokens';
-import { hapticTick } from '../lib/haptics';
+import { hapticTick, hapticBreathPhase } from '../lib/haptics';
 import { BREATH } from '../lib/breath';
 
 const BALL_SIZE = 148;
@@ -75,11 +75,11 @@ export default function BreathingBall({
   }, [finished, onComplete]);
 
   // Each phase (of each round) animates the ball to its target over the phase length,
-  // with a soft tick so the rhythm can be followed with eyes closed.
+  // with tactile phase guidance so the rhythm can be followed with eyes closed.
   useEffect(() => {
     if (finished) return;
-    hapticTick();
     const p = PHASES[phaseIdx];
+    hapticBreathPhase(p.phase);
     breathScale.set(withTiming(p.scale, { duration: p.seconds * 1000, easing: Easing.inOut(Easing.ease) }));
   }, [phaseIdx, round, breathScale, finished]);
 

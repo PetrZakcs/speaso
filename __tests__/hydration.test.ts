@@ -6,7 +6,7 @@ jest.mock('../lib/recordings', () => ({ deleteRecordingFile: () => {} }));
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const KEY = 'speasy-storage';
+const KEY = 'speaso-storage';
 
 /** Loads a fresh copy of the store module against whatever is in storage. */
 async function bootWith(raw: string | null) {

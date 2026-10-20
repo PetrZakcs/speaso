@@ -43,17 +43,47 @@ function requireRC(): RCModule {
   return Purchases;
 }
 
-/** Mirrors the entitlement into the store — the only writer of `subscription`. */
+/** Mirrors the entitlement into the store — preserving active promos if Store has no entitlement. */
 function applyCustomerInfo(info: CustomerInfo) {
   const ent = info.entitlements.active[ENTITLEMENT_ID];
-  const isTrial = ent?.periodType === 'TRIAL';
-  const expiresAt = ent?.expirationDate ?? null;
-  useStore.getState().setSubscription({ isPremium: !!ent, isTrial, expiresAt });
-  // The paywall promises a reminder before the trial ends — keep that promise.
-  const task = isTrial && expiresAt
-    ? scheduleTrialReminder(expiresAt, useStore.getState().language)
-    : cancelTrialReminder();
-  task.catch((e) => console.warn('[RC] trial reminder failed:', e));
+  const current = useStore.getState().subscription;
+
+  if (ent) {
+    const isTrial = ent.periodType === 'TRIAL';
+    const expiresAt = ent.expirationDate ?? null;
+    useStore.getState().setSubscription({
+      isPremium: true,
+      isTrial,
+      expiresAt,
+      promoCode: null,
+    });
+    const task = isTrial && expiresAt
+      ? scheduleTrialReminder(expiresAt, useStore.getState().language)
+      : cancelTrialReminder();
+    task.catch((e) => console.warn('[RC] trial reminder failed:', e));
+  } else {
+    // If no store subscription is active, preserve any active unexpired promo code
+    const isPromoActive =
+      !!current.promoCode &&
+      (!current.expiresAt || new Date(current.expiresAt).getTime() > Date.now());
+
+    if (isPromoActive) {
+      useStore.getState().setSubscription({
+        isPremium: true,
+        isTrial: false,
+        expiresAt: current.expiresAt,
+        promoCode: current.promoCode,
+      });
+    } else {
+      useStore.getState().setSubscription({
+        isPremium: false,
+        isTrial: false,
+        expiresAt: null,
+        promoCode: null,
+      });
+    }
+    cancelTrialReminder().catch(() => {});
+  }
 }
 
 /** Configures RevenueCat and keeps the store in sync with the entitlement. */
@@ -76,7 +106,7 @@ export function initPurchases() {
     configured = true;
     Purchases.addCustomerInfoUpdateListener(applyCustomerInfo);
     // Offline: keep the cached entitlement until RevenueCat answers.
-    Purchases.getCustomerInfo().then(applyCustomerInfo).catch(() => {});
+    Purchases.getCustomerInfo().then(applyCustomerInfo).catch(() => { });
   } catch (e) {
     console.warn('[RC] configure failed:', e);
   }
@@ -143,5 +173,21 @@ export async function manageSubscription() {
     await requireRC().showManageSubscriptions();
   } catch {
     await Linking.openURL(STORE_SUBSCRIPTIONS_URL);
+  }
+}
+
+/**
+ * Presents Apple's native Offer Code redemption sheet on iOS.
+ */
+export async function presentCodeRedemptionSheet() {
+  if (Platform.OS === 'ios') {
+    try {
+      const Purchases = requireRC();
+      if (typeof (Purchases as any).presentCodeRedemptionSheet === 'function') {
+        await (Purchases as any).presentCodeRedemptionSheet();
+      }
+    } catch (e) {
+      console.warn('[RC] presentCodeRedemptionSheet failed:', e);
+    }
   }
 }

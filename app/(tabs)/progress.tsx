@@ -7,6 +7,8 @@ import { useTranslation } from '../../i18n/useTranslation';
 import { useStore, useShallow } from '../../state/store';
 import Card from '../../components/Card';
 import MoodChart from '../../components/MoodChart';
+import SpeechFactorsCard from '../../components/SpeechFactorsCard';
+import SmartInsightsCard from '../../components/SmartInsightsCard';
 import WeekDots from '../../components/WeekDots';
 import ProgressRing from '../../components/ProgressRing';
 import { averageRating, currentStreak, weekActivity, weekMinutes } from '../../lib/streak';
@@ -14,6 +16,8 @@ import { addDays, mondayOf, weekdayIndex } from '../../lib/dates';
 import { activityTitle, formatDate } from '../../lib/activities';
 import { exportReport } from '../../lib/report';
 import PremiumTag from '../../components/PremiumTag';
+import ResearchContributionCard from '../../components/ResearchContributionCard';
+import ShareProgressModal from '../../components/ShareProgressModal';
 import { useToday } from '../../lib/useToday';
 import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow, Tints } from '../../theme/tokens';
 
@@ -64,6 +68,7 @@ export default function ProgressScreen() {
   const { t, tn, lang } = useTranslation();
   const today = useToday();
   const [exporting, setExporting] = useState(false);
+  const [shareModalVisible, setShareModalVisible] = useState(false);
   const { isPremium, streak, sessions, panicUses, recordingsCount, checkIns } = useStore(useShallow((s) => ({
     checkIns: s.checkIns,
     isPremium: s.subscription.isPremium,
@@ -125,6 +130,8 @@ export default function ProgressScreen() {
         </View>
 
         <MoodChart checkIns={checkIns} today={today} />
+        <SpeechFactorsCard checkIns={checkIns} />
+        <SmartInsightsCard sessions={sessions} checkIns={checkIns} streak={streak} />
 
         {/* Stats */}
         <View style={styles.statsRow}>
@@ -233,6 +240,29 @@ export default function ProgressScreen() {
             <PremiumTag />
           )}
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.linkCard}
+          onPress={() => setShareModalVisible(true)}
+          accessibilityRole="button"
+        >
+          <Ionicons name="sparkles" size={22} color="#F59E0B" />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.linkTitle}>{t('progress.share_card_btn')}</Text>
+            <Text style={styles.linkSub}>
+              {tn('progress.streak_value', streakDays)} · Instagram & WhatsApp
+            </Text>
+          </View>
+          <Ionicons name="share-social-outline" size={18} color={Colors.text.tertiary} />
+        </TouchableOpacity>
+
+        {/* Clinical Balbuties Research Contribution */}
+        <ResearchContributionCard />
+
+        <ShareProgressModal
+          visible={shareModalVisible}
+          onClose={() => setShareModalVisible(false)}
+        />
       </ScrollView>
     </SafeAreaView>
   );

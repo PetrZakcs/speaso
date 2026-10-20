@@ -39,3 +39,25 @@ export function hapticSuccess() {
     : Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
   ).catch(ignore);
 }
+
+/** Tactile breath guidance so users can follow breathing cycles with eyes closed. */
+export function hapticBreathPhase(phase: 'inhale' | 'hold' | 'exhale') {
+  if (Platform.OS === 'android') {
+    const effect =
+      phase === 'inhale'
+        ? Haptics.AndroidHaptics.Clock_Tick
+        : phase === 'hold'
+          ? Haptics.AndroidHaptics.Context_Click
+          : Haptics.AndroidHaptics.Segment_Tick;
+    Haptics.performAndroidHapticsAsync(effect).catch(ignore);
+  } else {
+    const style =
+      phase === 'inhale'
+        ? Haptics.ImpactFeedbackStyle.Light
+        : phase === 'hold'
+          ? Haptics.ImpactFeedbackStyle.Rigid
+          : Haptics.ImpactFeedbackStyle.Soft;
+    Haptics.impactAsync(style).catch(ignore);
+  }
+}
+

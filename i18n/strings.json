@@ -39,21 +39,37 @@
     "step_of":           { "cs": "Krok {n} z {total}", "en": "Step {n} of {total}" },
     "welcome_title_a":   { "cs": "Mluv svým", "en": "Speak at your" },
     "welcome_title_b":   { "cs": "tempem.", "en": "own pace." },
-    "welcome_sub":       { "cs": "Speasy ti pomáhá s koktáním v běžném dni — doma, v práci i na telefonu.", "en": "Speasy helps you with stuttering in everyday life — at home, at work and on the phone." },
+    "welcome_sub":       { "cs": "Speaso ti pomáhá s koktáním v běžném dni — doma, v práci i na telefonu.", "en": "Speaso helps you with stuttering in everyday life — at home, at work and on the phone." },
+    "welcome_social_proof": { "cs": "⭐ 4.9/5 · Vyvinuto s klinickými logopedy", "en": "⭐ 4.9/5 · Developed with clinical speech therapists" },
+    "welcome_pillar_breath": { "cs": "Dechová opora bránice a měkký začátek hlásek", "en": "Diaphragmatic breath support & soft onsets" },
+    "welcome_pillar_safety": { "cs": "Bezpečný nácvik situací bez stresu", "en": "Safe rehearsals without pressure" },
+    "welcome_pillar_research": { "cs": "Anonymní podpora výzkumu balbuties", "en": "Anonymous support for balbuties research" },
     "welcome_cta":       { "cs": "Začít", "en": "Get started" },
     "welcome_note":      { "cs": "Nenahrazuje logopeda. Tvoje data zůstávají v telefonu.", "en": "Not a replacement for a speech therapist. Your data stays on your phone." },
+    "plan_projection_title": { "cs": "Tvůj cíl za 30 dní", "en": "Your 30-day target" },
+    "plan_projection_before": { "cs": "Dnes: Napětí v krku, obavy z hovorů, zrychlené tempo", "en": "Today: Vocal tension, call anxiety, hurried pacing" },
+    "plan_projection_after": { "cs": "Za 30 dní: Měkké nasazení hlásek, klidné tempo a zvládnuté situace", "en": "In 30 days: Soft consonant onsets, calm pace and mastered situations" },
 
     "name_title":        { "cs": "Jak ti máme říkat?", "en": "What should we call you?" },
     "name_sub":          { "cs": "Stačí křestní jméno nebo přezdívka. Klidně přeskoč.", "en": "A first name or nickname is enough. Feel free to skip." },
     "name_placeholder":  { "cs": "Jméno", "en": "Name" },
     "name_preview":      { "cs": "Budeme tě oslovovat: {name}", "en": "We'll call you {name}" },
 
-    "who_title":         { "cs": "Pro koho Speasy nastavujeme?", "en": "Who are we setting Speasy up for?" },
+    "who_title":         { "cs": "Pro koho Speaso nastavujeme?", "en": "Who are we setting Speaso up for?" },
     "who_sub":           { "cs": "Podle toho vybereme texty ke čtení.", "en": "This decides which reading texts you get." },
     "who_self":          { "cs": "Pro sebe", "en": "For myself" },
     "who_self_detail":   { "cs": "Texty a situace pro dospívající a dospělé", "en": "Texts and situations for teens and adults" },
     "who_child":         { "cs": "Pro své dítě", "en": "For my child" },
     "who_child_detail":  { "cs": "Kratší texty a jednodušší jazyk. Nejlépe cvičte spolu.", "en": "Shorter texts and simpler language. Best practised together." },
+    "therapy_section_title": { "cs": "Zkušenost s logopedií (nepovinné)", "en": "Speech therapy experience (optional)" },
+    "therapy_never":     { "cs": "Zatím jsem u logopeda nebyl/a", "en": "Never seen a speech therapist" },
+    "therapy_never_detail": { "cs": "Začínáš od základů, provedeme tě krok za krokem", "en": "Starting from scratch, we'll guide you step by step" },
+    "therapy_past":      { "cs": "Chodil/a jsem v dětství či dříve", "en": "Attended therapy in the past" },
+    "therapy_past_detail": { "cs": "Oprášíme techniky a zavedeme je do denního návyku", "en": "We'll refresh techniques and build daily habits" },
+    "therapy_current":   { "cs": "Aktuálně navštěvuji logopeda", "en": "Currently seeing a therapist" },
+    "therapy_current_detail": { "cs": "Speaso ti umožní exportovat PDF zprávy pro ordinaci", "en": "Speaso lets you export PDF reports for your clinic" },
+    "therapy_self":      { "cs": "Zkouším pracovat na řeči sám/sama", "en": "Working on speech by myself" },
+    "therapy_self_detail": { "cs": "Strukturovaný plán a měření pokroku", "en": "Structured plan and progress tracking" },
 
     "situations_title":  { "cs": "Kdy se ti mluví nejhůř?", "en": "When is speaking hardest?" },
     "situations_sub":    { "cs": "Vyber, co sedí. Tyhle situace ti pak nabídneme k nácviku.", "en": "Pick what fits. We'll suggest these situations for practice." },
@@ -83,7 +99,17 @@
     "scenario_field_ph": { "cs": "Např. Objednat pizzu po telefonu", "en": "E.g. Ordering a pizza by phone" },
     "scenario_phrase":   { "cs": "Co v ní potřebuješ říct?", "en": "What do you need to say?" },
     "scenario_phrase_ph":{ "cs": "Např. Dobrý den, rád bych si objednal jednu pizzu.", "en": "E.g. Hi, I'd like to order one pizza, please." },
-    "share_title":       { "cs": "Poslat odpovědi anonymně týmu Speasy", "en": "Send my answers anonymously to the Speasy team" },
+    "scenario_presets_hint": { "cs": "Nebo klepni pro rychlou inspiraci:", "en": "Or tap for quick inspiration:" },
+    "scenario_preset_coffee_label": { "cs": "Objednání kávy", "en": "Ordering coffee" },
+    "scenario_preset_coffee_title": { "cs": "Objednat kávu v kavárně", "en": "Order coffee at a cafe" },
+    "scenario_preset_coffee_phrase": { "cs": "Dobrý den, jedno cappuccino s ovesným mlékem s sebou, prosím.", "en": "Hi, one oat milk cappuccino to go, please." },
+    "scenario_preset_doctor_label": { "cs": "Telefonát k lékaři", "en": "Doctor call" },
+    "scenario_preset_doctor_title": { "cs": "Zavolání do ordinace lékaře", "en": "Calling the doctor's office" },
+    "scenario_preset_doctor_phrase": { "cs": "Dobrý den, chtěl/a bych se objednat na preventivní prohlídku.", "en": "Hello, I'd like to book an appointment for a check-up." },
+    "scenario_preset_meeting_label": { "cs": "Představení na poradě", "en": "Meeting intro" },
+    "scenario_preset_meeting_title": { "cs": "Představení se na poradě", "en": "Introducing myself at a meeting" },
+    "scenario_preset_meeting_phrase": { "cs": "Ahoj všem, já jsem Petr a v týmu pracuji na...", "en": "Hi everyone, I'm Peter and I work on..." },
+    "share_title":       { "cs": "Poslat odpovědi anonymně týmu Speaso", "en": "Send my answers anonymously to the Speaso team" },
     "share_detail":      { "cs": "Pomůže nám to aplikaci zlepšovat. Bez jména — jen odpovědi z úvodu. Souhlas můžeš kdykoli zrušit v Profilu.", "en": "It helps us improve the app. No name — only your answers from this intro. You can withdraw any time in Profile." },
     "goal_title":        { "cs": "Co by ti nejvíc pomohlo?", "en": "What would help you most?" },
     "goal_sub":          { "cs": "Podle toho ti poskládáme plán.", "en": "We'll shape your plan around it." },
@@ -97,6 +123,7 @@
     "goal_accept_detail":{ "cs": "Přijmout ho a žít s ním v klidu", "en": "Accept it and live with it calmly" },
 
     "building_title":    { "cs": "Sestavujeme tvůj plán…", "en": "Building your plan…" },
+    "building_progress": { "cs": "{pct} % hotovo", "en": "{pct}% complete" },
     "building_warmups":  { "cs": "Vybíráme rozcvičky na dech a hlas", "en": "Choosing breath and voice warm-ups" },
     "building_situations": { "cs": "Přidáváme situace k nácviku: {situations}", "en": "Adding situations to rehearse: {situations}" },
     "building_situations_any": { "cs": "Přidáváme situace k nácviku", "en": "Adding situations to rehearse" },
@@ -118,6 +145,8 @@
     "win_sub":           { "cs": "{n} klidné nádechy. Nic víc.", "en": "{n} calm breaths. That's all." },
     "win_done_title":    { "cs": "První krok máš za sebou", "en": "You've taken the first step" },
     "win_done_sub":      { "cs": "Přesně takhle to bude fungovat — po malých krocích, každý den.", "en": "That's how it works — small steps, every day." },
+    "win_insight_tip":   { "cs": "Všimni si: krk a ramena jsou teď volnější. Když se tohle uvolnění naučíš navodit před promluvou, zásek nepřijde.", "en": "Notice: your throat and shoulders are relaxed. When you learn to summon this ease before speaking, blocks won't lock up." },
+    "win_cta":           { "cs": "Zobrazit můj osobní plán a nabídku →", "en": "View my custom plan & offer →" },
 
     "offer_title":       { "cs": "Odemkni celý plán", "en": "Unlock your full plan" },
     "offer_tagline_calm":       { "cs": "Trénuj klidnou řeč bez limitů — se všemi situacemi a přehledem pro logopeda.", "en": "Practise calm speech without limits — every situation and a report for your therapist." },
@@ -160,7 +189,13 @@
     "role_warmup":       { "cs": "Rozcvička", "en": "Warm-up" },
     "role_situation":    { "cs": "Situace", "en": "Situation" },
     "role_practice":     { "cs": "Trénink", "en": "Practice" },
-    "streak_grace":      { "cs": "Jeden vynechaný den sérii nezruší.", "en": "Missing a single day won't break your streak." }
+    "streak_grace":      { "cs": "Jeden vynechaný den sérii nezruší.", "en": "Missing a single day won't break your streak." },
+    "community_title":   { "cs": "Dnes trénuje 1 420 mluvčích v ČR a SK", "en": "1,420 speakers practicing today" },
+    "community_sub":     { "cs": "Nejsi v tom sám — každý klidný nádech se počítá.", "en": "You are not alone — every calm breath counts." },
+    "sos_quick":         { "cs": "Rychlé SOS zklidnění", "en": "Quick SOS Calm" },
+    "sos_quick_sub":     { "cs": "60s dech pro uvolnění hlasivek před hovorem či schůzkou", "en": "60s breath to ease vocal cords before a call or meeting" },
+    "streak_broken_title": { "cs": "Včera nebyl čas? Nevadí.", "en": "No worries about yesterday." },
+    "streak_broken_sub": { "cs": "Mozek si vytvořené návyky pamatuje. Dnes pokračujeme v klidném tempu.", "en": "Your brain remembers the neural pathways. Let's continue today at your pace." }
   },
 
   "panic": {
@@ -182,7 +217,35 @@
       ]
     },
     "affirmation_next":  { "cs": "Další věta", "en": "Next line" },
-    "close_a11y":        { "cs": "Zavřít dýchání", "en": "Close breathing" }
+    "close_a11y":        { "cs": "Zavřít dýchání", "en": "Close breathing" },
+    "trigger_title":     { "cs": "Co situaci vyvolalo?", "en": "What triggered this?" },
+    "trigger_sub":       { "cs": "1 klepnutím pomůžeš anonymnímu výzkumu spouštěčů bloků.", "en": "1 tap helps anonymous research into speech block triggers." },
+    "trigger_phone":     { "cs": "📞 Telefonát", "en": "📞 Phone call" },
+    "trigger_people":    { "cs": "👥 Cizí lidé / Veřejnost", "en": "👥 Strangers / Public" },
+    "trigger_work":      { "cs": "🏢 Práce / Porada", "en": "🏢 Work / Meeting" },
+    "trigger_chat":      { "cs": "💬 Běžný rozhovor", "en": "💬 Casual conversation" },
+    "trigger_tension":   { "cs": "⚡ Vnitřní napětí", "en": "⚡ Internal tension" },
+    "trigger_skip":      { "cs": "Přeskočit a zavřít", "en": "Skip and close" },
+    "trigger_thanks":    { "cs": "Děkujeme, záznam uložen pro výzkum", "en": "Thank you, record saved for research" },
+    "mode_ball":         { "cs": "Dechová koule", "en": "Breathing ball" },
+    "mode_sigh":         { "cs": "Fyziologický vzdech", "en": "Physiological sigh" },
+    "mode_body":         { "cs": "Tělesný reset", "en": "Body reset" },
+    "sigh_title":        { "cs": "Fyziologický vzdech", "en": "Physiological sigh" },
+    "sigh_sub":          { "cs": "2 rychlé nádechy nosem + 1 dlouhý výdech ústy. Nejrychlejší uvolnění svalů mluvidel.", "en": "2 quick nose inhales + 1 long mouth exhale. Fastest release of speech muscles." },
+    "sigh_phase_1":      { "cs": "1. Hluboký nádech nosem", "en": "1. Deep inhale through nose" },
+    "sigh_phase_2":      { "cs": "2. Doplň ještě kousek vzduchu", "en": "2. Top off with extra air" },
+    "sigh_phase_3":      { "cs": "3. Dlouhý uvolněný výdech ústy", "en": "3. Long relaxed exhale through mouth" },
+    "sigh_cycle":        { "cs": "Cyklus {n} z {total}", "en": "Cycle {n} of {total}" },
+    "body_title":        { "cs": "Tělesný reset mluvidel", "en": "Somatic speech reset" },
+    "body_sub":          { "cs": "Rychlé uvolnění svalů před začátkem mluvení", "en": "Quick muscle release before speaking" },
+    "body_step1_title":  { "cs": "1. Spusť ramena dolů", "en": "1. Drop your shoulders" },
+    "body_step1_desc":   { "cs": "Uvolni trapézy a nech ramena klesnout od uší. Dech klesne do břicha.", "en": "Release trapezius muscles. Let your breath sink into your belly." },
+    "body_step2_title":  { "cs": "2. Povol spodní čelist", "en": "2. Relax your jaw" },
+    "body_step2_desc":   { "cs": "Nech ústa mírně pootevřená. Jazyk leží volně a měkce na spodině úst.", "en": "Keep mouth slightly open. Tongue rests soft and flat." },
+    "body_step3_title":  { "cs": "3. Měkký výdech se zvukem", "en": "3. Soft sigh exhale" },
+    "body_step3_desc":   { "cs": "Vydechni se zvukem „húúúú“. Hlasivky se uvolní ze sevření.", "en": "Exhale with a gentle 'whoosh'. Vocal cords release from tension." },
+    "body_step4_title":  { "cs": "4. Mluv svým tempem", "en": "4. Speak at your pace" },
+    "body_step4_desc":   { "cs": "Nemusíš začít hned. Pauza před první větou je přirozená.", "en": "No rush to start. A pause before the first sentence is natural." }
   },
 
   "exercises": {
@@ -311,9 +374,14 @@
     "pause":             { "cs": "Pozastavit", "en": "Pause" },
     "again_hint":        { "cs": "Mikrofonem nahraješ nový pokus — nahradí tento.", "en": "Tap the mic to record a new take — it replaces this one." },
     "permission_title":  { "cs": "Přístup k mikrofonu", "en": "Microphone access" },
-    "permission_body":   { "cs": "Pro nahrávání povol Speasy přístup k mikrofonu v nastavení telefonu.", "en": "To record, allow Speasy to use the microphone in your phone settings." },
+    "permission_body":   { "cs": "Pro nahrávání povol Speaso přístup k mikrofonu v nastavení telefonu.", "en": "To record, allow Speaso to use the microphone in your phone settings." },
     "open_settings":     { "cs": "Otevřít nastavení", "en": "Open settings" },
-    "error":             { "cs": "Nahrávání se nepodařilo. Zkus to prosím znovu.", "en": "Recording failed. Please try again." }
+    "error":             { "cs": "Nahrávání se nepodařilo. Zkus to prosím znovu.", "en": "Recording failed. Please try again." },
+    "speed":             { "cs": "Rychlost", "en": "Speed" },
+    "speed_normal":      { "cs": "1.0× Normální", "en": "1.0× Normal" },
+    "speed_slow":        { "cs": "0.8× Analýza", "en": "0.8× Analysis" },
+    "cadence_calm":      { "cs": "Klidné tempo řeči", "en": "Calm speech cadence" },
+    "cadence_hint":      { "cs": "Při 0.8× lépe uslyšíš měkký začátek hlásek a uvolnění krku.", "en": "At 0.8× you can better hear soft vowel onsets and throat relaxation." }
   },
 
   "metronome": {
@@ -360,7 +428,32 @@
     "chart_title":       { "cs": "Jak se ti mluví · 14 dní", "en": "How speaking feels · 14 days" },
     "chart_avg":         { "cs": "průměr {n}", "en": "average {n}" },
     "chart_from":        { "cs": "před 2 týdny", "en": "2 weeks ago" },
-    "chart_empty":       { "cs": "Každý den na domovské obrazovce odpověz, jak se ti mluví. Tady uvidíš, jak se to mění.", "en": "Answer how speaking feels on the home screen each day. You'll see the trend here." }
+    "chart_empty":       { "cs": "Každý den na domovské obrazovce odpověz, jak se ti mluví. Tady uvidíš, jak se to mění.", "en": "Answer how speaking feels on the home screen each day. You'll see the trend here." },
+    "section_mood":      { "cs": "Jak se ti dnes mluvilo?", "en": "How was speaking today?" },
+    "section_sleep":     { "cs": "Spánek v noci", "en": "Sleep last night" },
+    "sleep_hours":       { "cs": "{n} hodin", "en": "{n} hours" },
+    "section_water":     { "cs": "Pitný režim", "en": "Hydration" },
+    "water_glasses":     { "cs": "{n} sklenic vody (~{liters} l)", "en": "{n} glasses of water (~{liters} L)" },
+    "section_weather":   { "cs": "Dnešní počasí", "en": "Today's weather" },
+    "weather_sunny":     { "cs": "Slunečno", "en": "Sunny" },
+    "weather_cloudy":    { "cs": "Zataženo", "en": "Cloudy" },
+    "weather_rain":      { "cs": "Déšť", "en": "Rain" },
+    "weather_storm":     { "cs": "Bouřka / Dusno", "en": "Storm / Humid" },
+    "weather_cold":      { "cs": "Zima", "en": "Cold" },
+    "section_tags":      { "cs": "Co dnes vnímáš v těle a řeči?", "en": "What do you notice in body & speech?" },
+    "tag_throat_tension": { "cs": "Napětí v krku", "en": "Throat tension" },
+    "tag_jaw_tension":   { "cs": "Ztuhlá čelist", "en": "Tight jaw" },
+    "tag_chest_tightness": { "cs": "Sevřená bránice", "en": "Chest tightness" },
+    "tag_body_relaxed":  { "cs": "Uvolněné tělo", "en": "Relaxed body" },
+    "tag_speech_blocks": { "cs": "Bloky při startu", "en": "Initial blocks" },
+    "tag_fast_pace":     { "cs": "Zrychlené tempo", "en": "Fast pace" },
+    "tag_fluent_speech": { "cs": "Plynulý den", "en": "Fluent day" },
+    "tag_social_anxiety": { "cs": "Obava z mluvení", "en": "Speaking anxiety" },
+    "tag_hint_tension":  { "cs": "Tip: Při napětí v krku či čelisti pomáhá fyziologický vzdech v Krizové pomoci.", "en": "Tip: For throat or jaw tension, try the physiological sigh in Panic SOS." },
+    "section_note":      { "cs": "Deník dne (volitelné)", "en": "Daily journal (optional)" },
+    "note_placeholder":  { "cs": "Co se dnes dělo? Stres, záseky, klidné momenty…", "en": "What happened today? Stress, blocks, calm moments…" },
+    "badge_sleep":       { "cs": "{n}h spánek", "en": "{n}h sleep" },
+    "badge_water":       { "cs": "{n} skl. vody", "en": "{n} gl. water" }
   },
 
   "scenarios": {
@@ -409,19 +502,34 @@
   },
 
   "reminders": {
-    "section":           { "cs": "Připomínky", "en": "Reminders" },
-    "daily":             { "cs": "Denní připomínka", "en": "Daily reminder" },
+    "section":           { "cs": "Připomínky a notifikace", "en": "Reminders & Notifications" },
+    "daily":             { "cs": "Denní trénink", "en": "Daily practice" },
+    "daily_sub":         { "cs": "Pravidelné cvičení plynulosti", "en": "Regular fluency practice" },
+    "morning":           { "cs": "Ranní naladění", "en": "Morning check-in" },
+    "morning_sub":       { "cs": "Zápis spánku, faktorů mluvy a deníku", "en": "Log sleep, speech factors, and journal" },
+    "streak":            { "cs": "Záchrana série", "en": "Streak saver" },
+    "streak_sub":        { "cs": "Večerní upozornění před půlnocí", "en": "Evening alert before midnight" },
     "channel":           { "cs": "Denní připomínky", "en": "Daily reminders" },
     "title":             { "cs": "Čas na chvilku cvičení", "en": "Time for a little practice" },
     "body":              { "cs": "Pár minut denně dělá rozdíl. Jdeme na to?", "en": "A few minutes a day makes a difference. Shall we?" },
+    "morning_title":     { "cs": "Speaso · Ranní naladění", "en": "Speaso · Morning check-in" },
+    "morning_body":      { "cs": "Jak se ti dnes mluví? Zaznamenej si spánek a hydrataci.", "en": "How is your speech today? Log your sleep and hydration." },
+    "streak_title":      { "cs": "Speaso · Zachraň svou sérii! 🔥", "en": "Speaso · Save your streak! 🔥" },
+    "streak_body":       { "cs": "Zbývá už jen pár hodin. Zacvič si pár minut a udrž si sérii.", "en": "Only a few hours left. Practice a few minutes to keep your streak." },
     "denied_title":      { "cs": "Oznámení jsou vypnutá", "en": "Notifications are off" },
     "trial_title":       { "cs": "Zkušební doba brzy končí", "en": "Your trial ends soon" },
     "trial_body":        { "cs": "Za {n} dny začne placené předplatné. Zrušit ho můžeš v nastavení svého účtu v obchodě.", "en": "Your paid subscription starts in {n} days. You can cancel it in your store account settings." },
-    "denied_body":       { "cs": "Pro připomínky povol Speasy oznámení v nastavení telefonu.", "en": "To get reminders, allow notifications for Speasy in your phone settings." }
+    "denied_body":       { "cs": "Pro připomínky povol Speaso oznámení v nastavení telefonu.", "en": "To get reminders, allow notifications for Speaso in your phone settings." },
+    "modal_title":       { "cs": "Nastavit čas", "en": "Set time" },
+    "presets":           { "cs": "Oblíbené časy", "en": "Favorite times" },
+    "stepper_title":     { "cs": "Přesný čas", "en": "Exact time" },
+    "save_time":         { "cs": "Uložit čas", "en": "Save time" },
+    "hour":              { "cs": "Hodina", "en": "Hour" },
+    "minute":            { "cs": "Minuta", "en": "Minute" }
   },
 
   "report": {
-    "title":             { "cs": "Speasy · přehled pokroku", "en": "Speasy · progress report" },
+    "title":             { "cs": "Speaso · přehled pokroku", "en": "Speaso · progress report" },
     "cta":               { "cs": "PDF přehled pro logopeda", "en": "PDF report for your therapist" },
     "cta_sub":           { "cs": "Posledních 30 dní — cvičení, minuty, hodnocení, poznámky", "en": "Last 30 days — exercises, minutes, ratings, notes" },
     "generating":        { "cs": "Připravuji PDF…", "en": "Preparing PDF…" },
@@ -442,8 +550,14 @@
     "rating":            { "cs": "Hodnocení", "en": "Rating" },
     "note":              { "cs": "Poznámka", "en": "Note" },
     "empty":             { "cs": "V tomto období žádná data.", "en": "No data for this period." },
+    "checkins_title":    { "cs": "Denní záznamy a vlivy na řeč", "en": "Daily logs and speech factors" },
+    "mood_col":          { "cs": "Mluvení", "en": "Speaking" },
+    "tags_col":          { "cs": "Tělo & Řeč", "en": "Body & Speech" },
+    "sleep_col":         { "cs": "Spánek", "en": "Sleep" },
+    "water_col":         { "cs": "Voda", "en": "Water" },
+    "weather_col":       { "cs": "Počasí", "en": "Weather" },
     "rating_explain":    { "cs": "Hodnocení je subjektivní sebehodnocení uživatele po cvičení (1 = hodně těžko, 5 = skvěle), nikoli měření plynulosti.", "en": "The rating is the user's subjective self-assessment after each session (1 = very hard, 5 = great), not a fluency measurement." },
-    "footer":            { "cs": "Vygenerováno aplikací Speasy. Speasy není zdravotnický prostředek.", "en": "Generated by Speasy. Speasy is not a medical device." }
+    "footer":            { "cs": "Vygenerováno aplikací Speaso. Speaso není zdravotnický prostředek.", "en": "Generated by Speaso. Speaso is not a medical device." }
   },
 
   "progress": {
@@ -464,11 +578,20 @@
     "rating_explain":    { "cs": "Průměr tvého hodnocení po cvičeních (1–5).", "en": "Average of your ratings after sessions (1–5)." },
     "journal_title":     { "cs": "Deník", "en": "Journal" },
     "journal_empty":     { "cs": "Po každém cvičení můžeš ohodnotit, jak se ti mluvilo. Záznamy uvidíš tady.", "en": "After each session you can rate how speaking felt. Your entries will show up here." },
-    "unlock":            { "cs": "Odemknout", "en": "Unlock" }
+    "unlock":            { "cs": "Odemknout", "en": "Unlock" },
+    "factors_title":     { "cs": "Co ovlivňuje tvoji řeč", "en": "What affects your speech" },
+    "factors_sub":       { "cs": "Souvislost mezi spánkem, hydratací a tvou plynulostí", "en": "Connection between sleep, hydration and your fluency" },
+    "factor_sleep_good": { "cs": "Při 7+ hodinách spánku", "en": "With 7+ hours of sleep" },
+    "factor_sleep_poor": { "cs": "Při méně než 6h spánku", "en": "With under 6 hours of sleep" },
+    "factor_water_good": { "cs": "Při 6+ sklenicích vody", "en": "With 6+ glasses of water" },
+    "factor_water_poor": { "cs": "Při méně než 4 sklenicích", "en": "With under 4 glasses of water" },
+    "factor_score":      { "cs": "průměrné hodnocení řeči: {avg} / 5", "en": "average speech rating: {avg} / 5" },
+    "factors_hint":      { "cs": "Dostatek spánku a tekutin uvolňuje napětí hlasivek i svalů.", "en": "Sufficient sleep and hydration reduce vocal cord and muscle tension." },
+    "share_card_btn":    { "cs": "Sdílet můj pokrok", "en": "Share my progress" }
   },
 
   "premium": {
-    "title":             { "cs": "Speasy Premium", "en": "Speasy Premium" },
+    "title":             { "cs": "Speaso Premium", "en": "Speaso Premium" },
     "tagline":           { "cs": "Trénuj bez limitů, se všemi situacemi a přehledem pro logopeda.", "en": "Practise without limits, with every situation and a report for your therapist." },
     "context_limit":     { "cs": "Tento týden máš za sebou {n} cvičení navíc k plánu. Free verze jich má 5 týdně — tvůj denní plán zůstává zdarma.", "en": "You've done {n} extra sessions this week on top of your plan. The free version includes 5 a week — your daily plan stays free." },
     "context_stats":     { "cs": "Podrobné statistiky jsou součástí Premium.", "en": "Detailed statistics are part of Premium." },
@@ -526,31 +649,136 @@
     "post_recordings":   { "cs": "Neomezená historie nahrávek", "en": "Unlimited recording history" },
     "post_stats":        { "cs": "Podrobné statistiky", "en": "Detailed statistics" },
     "post_pdf":          { "cs": "PDF přehled pro logopeda", "en": "PDF report for your therapist" },
-    "post_cta":          { "cs": "Jdeme na to →", "en": "Let's go →" }
+    "post_cta":          { "cs": "Jdeme na to →", "en": "Let's go →" },
+    "patron_badge":      { "cs": "Podpora výzkumu balbuties", "en": "Supporting balbuties research" },
+    "patron_desc":       { "cs": "Předplatným přímo financuješ vývoj aplikací a klinický výzkum pro komunitu balbutiků.", "en": "With your subscription you directly fund app development and clinical research for the stuttering community." }
+  },
+
+  "referral": {
+    "gift_row":          { "cs": "Daruj měsíc zdarma příteli", "en": "Gift a free month to a friend" },
+    "gift_sub":          { "cs": "Dárkový kód na 30 dní plné verze", "en": "Gift code for 30 days of full access" },
+    "modal_title":       { "cs": "Daruj měsíc zdarma", "en": "Gift a free month" },
+    "modal_desc":        { "cs": "Znáš někoho, komu by Speaso pomohlo? Pošli mu svůj dárkový kód na 30 dní plného přístupu. Pomůžeš příteli a podpoříš komunitu balbutiků.", "en": "Know someone Speaso could help? Send them your gift code for 30 days of full access. Help a friend and support the stuttering community." },
+    "your_code":         { "cs": "Tvůj dárkový kód", "en": "Your gift code" },
+    "share_cta":         { "cs": "Odeslat dárkový kód příteli", "en": "Send gift code to a friend" },
+    "copy_cta":          { "cs": "Zkopírovat kód", "en": "Copy code" },
+    "copied":            { "cs": "Kód zkopírován do schránky!", "en": "Code copied to clipboard!" },
+    "share_message":     { "cs": "Ahoj, posílám ti dárkový kód na 1 měsíc plné verze Speaso zdarma pro trénink plynulosti mluvy a dechu: {code}. Stáhni si aplikaci na https://speaso.app a zadej kód v Profilu.", "en": "Hi, I'm sending you a gift code for 1 free month of Speaso Premium for speech fluency and breath training: {code}. Download the app at https://speaso.app and enter the code in Profile." }
   },
 
   "settings": {
     "section_privacy":   { "cs": "Soukromí", "en": "Privacy" },
     "share_answers":     { "cs": "Sdílet odpovědi z úvodu", "en": "Share intro answers" },
-    "share_answers_hint":{ "cs": "Anonymně, bez jména — pomáhá nám to zlepšovat Speasy. Pro smazání už odeslaných odpovědí nám napiš.", "en": "Anonymous, no name — it helps us improve Speasy. To delete answers already sent, contact us." },
+    "share_answers_hint":{ "cs": "Anonymně, bez jména — pomáhá nám to zlepšovat Speaso. Pro smazání už odeslaných odpovědí nám napiš.", "en": "Anonymous, no name — it helps us improve Speaso. To delete answers already sent, contact us." },
     "title":             { "cs": "Profil", "en": "Profile" },
     "plan_premium":      { "cs": "Premium", "en": "Premium" },
     "plan_beta":         { "cs": "Beta · všechno odemčeno", "en": "Beta · everything unlocked" },
     "plan_trial":        { "cs": "Premium · zkušební období", "en": "Premium · trial" },
     "plan_free":         { "cs": "Free · Upgradovat →", "en": "Free · Upgrade →" },
-    "default_name":      { "cs": "Uživatel Speasy", "en": "Speasy user" },
+    "default_name":      { "cs": "Uživatel Speaso", "en": "Speaso user" },
     "section_app":       { "cs": "Aplikace", "en": "App" },
     "language":          { "cs": "Jazyk", "en": "Language" },
     "section_subscription":{ "cs": "Předplatné", "en": "Subscription" },
     "manage_sub":        { "cs": "Spravovat předplatné", "en": "Manage subscription" },
+    "promo_code":        { "cs": "Uplatnit promo kód", "en": "Redeem promo code" },
     "restore":           { "cs": "Obnovit nákupy", "en": "Restore purchases" },
     "section_about":     { "cs": "O aplikaci", "en": "About" },
     "version":           { "cs": "Verze", "en": "Version" },
     "privacy":           { "cs": "Zásady soukromí", "en": "Privacy policy" },
     "terms":             { "cs": "Podmínky použití", "en": "Terms of use" },
-    "disclaimer":        { "cs": "Speasy není zdravotnický prostředek a nenahrazuje péči logopeda.", "en": "Speasy is not a medical device and does not replace a speech therapist." },
+    "disclaimer":        { "cs": "Speaso není zdravotnický prostředek a nenahrazuje péči logopeda.", "en": "Speaso is not a medical device and does not replace a speech therapist." },
+    "section_therapist": { "cs": "Spolupráce s logopedem", "en": "Speech Therapist Collaboration" },
+    "therapist_pair_row":{ "cs": "Propojit s ordinací", "en": "Link with Clinic" },
+    "therapist_not_linked": { "cs": "Nenastaveno", "en": "Not linked" },
+    "therapist_export":  { "cs": "Sdílet zprávu s logopedem (PDF)", "en": "Share report with therapist (PDF)" },
+    "therapist_hint":    { "cs": "Vygeneruje souhrn mluvení, cvičení, hydratace a spánku za 30 dní.", "en": "Generates a 30-day summary of speech, exercises, hydration, and sleep." },
     "dev_onboarding":    { "cs": "Projít onboarding znovu", "en": "Run onboarding again" },
     "footer_tagline":    { "cs": "Vytvořeno pro lidi, kteří koktají", "en": "Made for people who stutter" }
+  },
+
+  "therapist": {
+    "modal_title":       { "cs": "Propojení s logopedem", "en": "Connect with Therapist" },
+    "modal_sub":         { "cs": "Tento kód pacienta předej svému logopedovi pro sledování pokroku v ordinaci.", "en": "Share this patient code with your speech therapist to track your progress." },
+    "your_code":         { "cs": "Tvůj kód pacienta", "en": "Your patient code" },
+    "share_cta":         { "cs": "Odeslat kód logopedovi", "en": "Share code with therapist" },
+    "share_message":     { "cs": "Ahoj, posílám svůj kód pacienta pro aplikaci Speaso: {code}", "en": "Hi, here is my patient code for the Speaso app: {code}" },
+    "therapist_name_label": { "cs": "Jméno logopeda nebo kliniky", "en": "Therapist or clinic name" },
+    "therapist_name_ph": { "cs": "Např. Mgr. Lucie Novotná", "en": "E.g. Dr. Jane Smith" },
+    "save":              { "cs": "Uložit", "en": "Save" },
+    "linked_badge":      { "cs": "Aktivní spolupráce", "en": "Active collaboration" },
+    "unlink":            { "cs": "Odpojit", "en": "Unlink" }
+  },
+
+  "promo": {
+    "redeem_cta":        { "cs": "Máš promo kód?", "en": "Have a promo code?" },
+    "title":             { "cs": "Uplatnit promo kód", "en": "Redeem promo code" },
+    "sub":               { "cs": "Zadej partnerský kód nebo kód ze soutěže.", "en": "Enter your partner or promotional code." },
+    "placeholder":       { "cs": "NAPŘ. SPEASOVIP", "en": "E.G. SPEASOVIP" },
+    "submit":            { "cs": "Aktivovat", "en": "Activate" },
+    "app_store_cta":     { "cs": "Mám kód z App Storu", "en": "I have an App Store code" },
+    "success_title":     { "cs": "Kód byl úspěšně aktivován!", "en": "Code activated successfully!" },
+    "success_body":      { "cs": "Všechny funkce Speaso Premium máš nyní odemčené.", "en": "All Speaso Premium features are now unlocked." },
+    "invalid_title":     { "cs": "Neplatný kód", "en": "Invalid code" },
+    "invalid_body":      { "cs": "Tento kód neexistuje nebo již vypršel. Zkontroluj prosím překlepy.", "en": "This code is invalid or has expired. Please check for typos." },
+    "error_referral_used": { "cs": "Dárkový kód od přítele lze uplatnit pouze jednou na novém účtu. Pokračuj prosím předplatným.", "en": "A gift code from a friend can only be redeemed once on a new account. Please continue with a subscription." },
+    "error_active_trial":  { "cs": "Máš aktivní zkušební dobu přes App Store. Dárkový kód si uschovej na později.", "en": "You have an active trial via the App Store. Please save this gift code for later." },
+    "error_max_uses":      { "cs": "Tento kód již dosáhl maximálního počtu použití.", "en": "This promo code has reached its maximum number of redemptions." },
+    "error_already_redeemed": { "cs": "Tento kód jsi na tomto zařízení již v minulosti uplatnil(a).", "en": "You have already redeemed this promo code on this device." }
+  },
+
+  "research": {
+    "card_title":        { "cs": "Výzkum koktavosti (Balbuties)", "en": "Balbuties Stuttering Research" },
+    "points_count":      { "cs": { "one": "# přispěný záznam", "few": "# přispěné záznamy", "other": "# přispěných záznamů" }, "en": { "one": "# contributed record", "other": "# contributed records" } },
+    "card_body":         { "cs": "Každý tvůj check-in a trénink anonymně pomáhá vědcům a logopedům lépe porozumět vlivu spánku, vody a stresu na mluvení.", "en": "Every check-in and session anonymously helps scientists and speech therapists better understand how sleep, hydration, and stress affect speech." },
+    "status_contributing": { "cs": "Přispíváš k výzkumu", "en": "Contributing to research" },
+    "status_local_only": { "cs": "Pouze v telefonu", "en": "Local only" },
+    "download_json":     { "cs": "Export (JSON)", "en": "Export (JSON)" }
+  },
+
+  "share": {
+    "title":             { "cs": "Sdílet můj pokrok", "en": "Share My Progress" },
+    "share_btn":         { "cs": "Sdílet kartu pokroku", "en": "Share progress card" },
+    "quote":             { "cs": "Každý klidný nádech uvolňuje řeč.", "en": "Every calm breath eases speech." },
+    "download_cta":      { "cs": "Trénuj klidné mluvení na speaso.app", "en": "Train calm speaking on speaso.app" },
+    "message":           { "cs": "Už {days} dní v řadě trénuji klidné mluvení se Speaso ({minutes} minut celkem)! Vyzkoušej taky na https://speaso.app", "en": "I've been practicing calm speech with Speaso for {days} days straight ({minutes} min total)! Check it out at https://speaso.app" }
+  },
+
+  "wisdom": {
+    "title":             { "cs": "Myšlenka dne", "en": "Daily wisdom" },
+    "challenge":         { "cs": "Dnešní mikro-výzva", "en": "Today's micro-challenge" },
+    "share":             { "cs": "Sdílet myšlenku", "en": "Share wisdom" },
+    "share_footer":      { "cs": "Trénuji klidnou řeč se Speaso", "en": "Practicing calm speech with Speaso" }
+  },
+
+  "insights": {
+    "title":             { "cs": "Chytré vhledy", "en": "Smart insights" },
+    "sub":               { "cs": "Korelace mezi tvým tělem a plynulostí řeči", "en": "Correlations between your body & speech fluency" },
+    "empty_title":       { "cs": "Sbíráme tvá data", "en": "Gathering your data" },
+    "empty_sub":         { "cs": "Zaznamenej ještě {n} dny check-inu a odhalíme tvé řečové vzorce.", "en": "Log {n} more check-ins to uncover your speech patterns." },
+    "sleep_title":       { "cs": "Spánek a plynulost", "en": "Sleep & fluency" },
+    "sleep_desc":        { "cs": "Při 7+ hodinách spánku hodnotíš plynulost řeči o {pct}% lépe.", "en": "With 7+ hours of sleep, your speech rating is {pct}% better." },
+    "water_title":       { "cs": "Hydratace a hlasivky", "en": "Hydration & vocal cords" },
+    "water_desc":        { "cs": "Dostatečná hydratace u tebe souvisí s o {pct}% klidnější řečí.", "en": "Good hydration is linked to {pct}% calmer speech." },
+    "practice_title":    { "cs": "Vliv pravidelného tréninku", "en": "Impact of practice" },
+    "practice_desc":     { "cs": "Ve dnech s cvičením uvádíš o {pct}% méně řečového napětí.", "en": "On practice days, you report {pct}% less speech tension." },
+    "tension_title":     { "cs": "Častý spouštěč napětí", "en": "Frequent tension trigger" },
+    "tension_desc":      { "cs": "Nejčastěji vnímáš {tag}. Pomáhá 1minutový fyziologický vzdech.", "en": "Most frequent tension is {tag}. A 1-min physiological sigh helps." },
+    "streak_title":      { "cs": "Neuroplastická adaptace", "en": "Neuroplastic adaptation" },
+    "streak_desc":       { "cs": "Série {days} dní tréninku buduje v mozku automatické dráhy pro klidné tempo.", "en": "A streak of {days} days builds automatic neural pathways for calm pacing." }
+  },
+
+  "milestone": {
+    "title":             { "cs": "Oslava milníku!", "en": "Milestone celebration!" },
+    "share":             { "cs": "Sdílet úspěch", "en": "Share achievement" },
+    "continue":          { "cs": "Pokračovat v tréninku", "en": "Continue practice" },
+    "day_3_title":       { "cs": "3 dny: První vlna", "en": "3 days: First wave" },
+    "day_3_desc":        { "cs": "První důležitý krok. Vytváříš si ranní nebo večerní rituál klidné řeči.", "en": "The vital first step. You're building a ritual of calm speech." },
+    "day_7_title":       { "cs": "7 dní: Týden v klidném tempu", "en": "7 days: A week at your pace" },
+    "day_7_desc":        { "cs": "Celý týden dechové opory a vědomého tempa. Tvé tělo si začíná zvykat.", "en": "A whole week of breath support. Your body is adapting." },
+    "day_14_title":      { "cs": "14 dní: Pevný návyk", "en": "14 days: Strong habit" },
+    "day_14_desc":       { "cs": "Dva týdny tréninku. Bránicový dech se stává přirozenou reakcí na stres.", "en": "Two weeks of training. Diaphragmatic breath becomes natural." },
+    "day_30_title":      { "cs": "30 dní: Neuroplastický mistr", "en": "30 days: Neuroplastic master" },
+    "day_30_desc":       { "cs": "Měsíc soustavného tréninku. V mozku vznikají trvalé spoje pro plynulejší projev.", "en": "A month of consistent training. Lasting neural pathways are formed." }
   },
 
   "tabbar": {

@@ -10,6 +10,9 @@ import { waveCalm, waveCaptionKey } from '../../lib/wave';
 import WeekDots from '../../components/WeekDots';
 import ActivityIcon from '../../components/ActivityIcon';
 import CheckInCard from '../../components/CheckInCard';
+import DailyWisdomCard from '../../components/DailyWisdomCard';
+import MilestoneModal, { MILESTONE_DAYS } from '../../components/MilestoneModal';
+import CommunityPulse from '../../components/CommunityPulse';
 import { addressName } from '../../lib/names';
 import { dailyPlan, doneOn, type PlanItem } from '../../lib/plan';
 import { fromDateKey } from '../../lib/dates';
@@ -33,11 +36,13 @@ export default function HomeScreen() {
   const today = useToday();
   const startExercise = useStartExercise();
   const startSituation = useStartSituation();
-  const { user, isPremium, sessions, streak } = useStore(useShallow((s) => ({
+  const { user, isPremium, sessions, streak, celebratedMilestones, markMilestoneCelebrated } = useStore(useShallow((s) => ({
     user: s.user,
     isPremium: s.subscription.isPremium,
     sessions: s.sessions,
     streak: s.streak,
+    celebratedMilestones: s.celebratedMilestones ?? [],
+    markMilestoneCelebrated: s.markMilestoneCelebrated,
   })));
 
   const name = addressName(user.name, lang);
@@ -59,6 +64,7 @@ export default function HomeScreen() {
   const allDone = doneCount === plan.length;
   const calm = waveCalm(streakDays, doneCount / plan.length);
   const left = Math.max(0, FREE_WEEKLY_LIMIT - extraSessionsThisWeek(sessions, today));
+  const activeMilestone = MILESTONE_DAYS.find((d) => streakDays >= d && !celebratedMilestones.includes(d));
 
   const start = (item: PlanItem) =>
     item.kind === 'exercise' ? startExercise(item.activityId) : startSituation(item.situation);
@@ -91,7 +97,20 @@ export default function HomeScreen() {
           <Text style={styles.waveCaption}>{t(waveCaptionKey(calm))}</Text>
         </View>
 
+        {/* Motivational Streak Safeguard (VOS style recovery) */}
+        {streakDays === 0 && streak.record > 0 && (
+          <View style={styles.streakBrokenCard}>
+            <Ionicons name="heart" size={20} color={Colors.accent.main} />
+            <View style={{ flex: 1, gap: 2 }}>
+              <Text style={styles.streakBrokenTitle}>{t('home.streak_broken_title')}</Text>
+              <Text style={styles.streakBrokenSub}>{t('home.streak_broken_sub')}</Text>
+            </View>
+          </View>
+        )}
+
         <CheckInCard today={today} />
+        <DailyWisdomCard today={today} />
+        <CommunityPulse />
 
         {/* Today's plan — a vertical timeline */}
         <View style={styles.planHead}>
@@ -194,6 +213,14 @@ export default function HomeScreen() {
           <Ionicons name="arrow-forward" size={16} color={Colors.accent.main} />
         </TouchableOpacity>
       </ScrollView>
+
+      {!!activeMilestone && (
+        <MilestoneModal
+          visible={true}
+          days={activeMilestone}
+          onDismiss={() => markMilestoneCelebrated(activeMilestone)}
+        />
+      )}
     </SafeAreaView>
   );
 }
@@ -323,4 +350,25 @@ const styles = StyleSheet.create({
   },
   moreLink: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 6 },
   moreText: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.body, color: Colors.accent.main },
+  streakBrokenCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: 'rgba(237, 137, 54, 0.08)',
+    borderColor: 'rgba(237, 137, 54, 0.25)',
+    borderWidth: 1,
+    borderRadius: Radius.card,
+    padding: 14,
+  },
+  streakBrokenTitle: {
+    fontFamily: FontFamily.dmSansSemiBold,
+    fontSize: FontSize.bodySmall,
+    color: Colors.text.primary,
+  },
+  streakBrokenSub: {
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: FontSize.meta,
+    color: Colors.text.secondary,
+    lineHeight: 18,
+  },
 });

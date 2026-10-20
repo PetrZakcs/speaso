@@ -135,6 +135,66 @@ export const TEXTS: ReadingText[] = [
       en: 'During the holidays Grandpa and I set off for the forest. Grandpa showed me deer tracks and explained how to tell which way the deer had run. By the stream we built a little dam out of stones and watched the water find its way around it. We came home tired but happy.',
     },
   },
+  {
+    id: 'architecture',
+    level: 1,
+    audience: 'general',
+    title: { cs: 'Staré město', en: 'The Old Town' },
+    body: {
+      cs: 'Procházím úzkými uličkami starého města. Domy mají barevné fasády a vysoká okna. V dálce slyším zvonit kostelní zvon. Vzduch voní čerstvou kávou z malé pekárny. Každý krok mě vede k tichému náměstíčku.',
+      en: 'I walk through the narrow streets of the old town. The houses have colourful facades and tall windows. In the distance I hear church bells ringing. The air smells of fresh coffee from a small bakery. Every step leads me toward a quiet little square.',
+    },
+  },
+  {
+    id: 'nature_lake',
+    level: 1,
+    audience: 'general',
+    title: { cs: 'U jezera', en: 'By the lake' },
+    body: {
+      cs: 'Hladina jezera je klidná a čistá jako zrcadlo. Na břehu roste vysoké rákosí. Dvě divoké kachny pomalu plují ke stínu staré vrby. Sedím v trávě a pozoruji, jak se vlnky jemně dotýkají kamenů.',
+      en: 'The lake surface is still and clear as a mirror. Tall reeds grow along the shore. Two wild ducks slowly swim toward the shade of an old willow. I sit in the grass watching ripples gently touch the stones.',
+    },
+  },
+  {
+    id: 'travel_mountains',
+    level: 2,
+    audience: 'general',
+    title: { cs: 'Horský výstup', en: 'Mountain climb' },
+    body: {
+      cs: 'Cesta na vrchol vedla strmým smrkovým lesem. Zastavovali jsme se na každé vyhlídce, abychom popadli dech a napili se pramenité vody. Kolem poledne stromy ustoupily a před námi se otevřel pohled na celé údolí. Mlha se pomalu rozpouštěla a odhalovala ostré skalní hřebeny.',
+      en: 'The trail to the peak led through a steep spruce forest. We stopped at every viewpoint to catch our breath and drink fresh spring water. Around noon the trees gave way and the whole valley opened up before us. The mist was slowly lifting, unveiling sharp rocky ridges.',
+    },
+  },
+  {
+    id: 'work_presentation',
+    level: 2,
+    audience: 'general',
+    title: { cs: 'Týmová porada', en: 'Team meeting' },
+    body: {
+      cs: 'V konferenční místnosti vládla příjemná atmosféra. Před zahájením prezentace jsem se zhluboka nadechl a položil ruce na stůl. Představil jsem výsledky našeho čtvrtletního projektu a zodpověděl dotazy kolegů. Když člověk mluví pomalu a s rozmyslem, ostatní mu přirozeně naslouchají.',
+      en: 'There was a pleasant atmosphere in the conference room. Before starting the presentation I took a deep breath and rested my hands on the table. I presented the results of our quarterly project and answered questions from colleagues. When you speak slowly and deliberately, people naturally listen.',
+    },
+  },
+  {
+    id: 'science_neuroplasticity',
+    level: 3,
+    audience: 'general',
+    title: { cs: 'Síla neuroplasticity', en: 'The power of neuroplasticity' },
+    body: {
+      cs: 'Moderní neurologie potvrzuje, že lidský mozek si uchovává schopnost vytvářet nová nervová spojení po celý život. Když opakovaně trénujeme nový způsob dýchání a uvolňování mluvidel, mozek postupně přepisuje staré vzorce napětí. Pravidelný každodenní trénink posiluje dráhy plynulosti a proměňuje vědomé úsilí v přirozený, automatický návyk.',
+      en: 'Modern neurology confirms that the human brain retains the ability to form new neural pathways throughout life. When we repeatedly practice a new way of breathing and vocal cord relaxation, the brain gradually rewrites old tension habits. Daily consistent practice strengthens fluency pathways, turning conscious effort into a natural, automatic habit.',
+    },
+  },
+  {
+    id: 'kid_dragon',
+    level: 2,
+    audience: 'child',
+    title: { cs: 'Drak Vendelín', en: 'Oliver the dragon' },
+    body: {
+      cs: 'V jeskyni za lesem bydlel drak Vendelín. Na rozdíl od ostatních draků nechrlil oheň, ale kouzelné mýdlové bubliny. Každé ráno se posadil na palouček, zhluboka vydechl a vyfoukl obrovskou duhovou bublinu. Zvířátka z lesa k němu chodila na návštěvu a radostně skákala za bublinami.',
+      en: 'In a cave behind the forest lived Oliver the dragon. Unlike other dragons he did not breathe fire, but magical soap bubbles. Every morning he sat in a meadow, took a deep breath out, and blew a giant rainbow bubble. The forest animals came to visit him and joyfully leaped after the bubbles.',
+    },
+  },
 ];
 
 /** Texts suitable for the user, children get the child set. */

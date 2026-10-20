@@ -1,12 +1,35 @@
 import React, { useState } from 'react';
-import { View, Text, Switch, StyleSheet } from 'react-native';
+import { View, Text, Switch, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useStore } from '../../state/store';
 import OnboardingShell from '../../components/OnboardingShell';
 import TextAnswer from '../../components/onboarding/TextAnswer';
 import PillButton from '../../components/PillButton';
+import { hapticSelect } from '../../lib/haptics';
 import { Colors, FontFamily, FontSize, Radius, Shadow } from '../../theme/tokens';
+
+const PRESETS = [
+  {
+    icon: 'cafe-outline' as const,
+    labelKey: 'onboarding.scenario_preset_coffee_label' as const,
+    titleKey: 'onboarding.scenario_preset_coffee_title' as const,
+    phraseKey: 'onboarding.scenario_preset_coffee_phrase' as const,
+  },
+  {
+    icon: 'call-outline' as const,
+    labelKey: 'onboarding.scenario_preset_doctor_label' as const,
+    titleKey: 'onboarding.scenario_preset_doctor_title' as const,
+    phraseKey: 'onboarding.scenario_preset_doctor_phrase' as const,
+  },
+  {
+    icon: 'briefcase-outline' as const,
+    labelKey: 'onboarding.scenario_preset_meeting_label' as const,
+    titleKey: 'onboarding.scenario_preset_meeting_title' as const,
+    phraseKey: 'onboarding.scenario_preset_meeting_phrase' as const,
+  },
+];
 
 /**
  * Open question that becomes the user's first own scenario — the most
@@ -21,6 +44,12 @@ export default function ScenarioStep() {
   const [phrase, setPhrase] = useState(first?.phrases[0] ?? '');
   const [share, setShare] = useState(user.shareAnswers);
   const filled = !!title.trim();
+
+  const applyPreset = (p: typeof PRESETS[number]) => {
+    hapticSelect();
+    setTitle(t(p.titleKey));
+    setPhrase(t(p.phraseKey));
+  };
 
   const next = () => {
     if (filled) {
@@ -41,6 +70,23 @@ export default function ScenarioStep() {
       subtitle={t('onboarding.scenario_sub')}
       footer={<PillButton label={filled ? t('common.continue') : t('common.skip')} onPress={next} />}
     >
+      <View style={styles.presetsBlock}>
+        <Text style={styles.presetsHint}>{t('onboarding.scenario_presets_hint')}</Text>
+        <View style={styles.presetChips}>
+          {PRESETS.map((p) => (
+            <TouchableOpacity
+              key={p.labelKey}
+              style={styles.presetChip}
+              onPress={() => applyPreset(p)}
+              accessibilityRole="button"
+            >
+              <Ionicons name={p.icon} size={14} color={Colors.accent.main} />
+              <Text style={styles.presetChipText}>{t(p.labelKey)}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
       <TextAnswer
         label={t('onboarding.scenario_field')}
         value={title}
@@ -87,4 +133,34 @@ const styles = StyleSheet.create({
   },
   shareTitle: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.bodySmall, color: Colors.text.primary },
   shareDetail: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.meta, lineHeight: 16, color: Colors.text.secondary },
+  presetsBlock: {
+    marginBottom: 8,
+    gap: 8,
+  },
+  presetsHint: {
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: FontSize.meta,
+    color: Colors.text.secondary,
+  },
+  presetChips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  presetChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: Radius.pill,
+    backgroundColor: Colors.accent.soft,
+    borderWidth: 1,
+    borderColor: Colors.accent.main + '25',
+  },
+  presetChipText: {
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: FontSize.meta,
+    color: Colors.accent.main,
+  },
 });

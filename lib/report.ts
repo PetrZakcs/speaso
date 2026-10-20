@@ -27,6 +27,8 @@ export interface ReportData {
   panicUses: number;
   /** Average daily check-in (1–5) in the period, if any. */
   checkInAvg?: number | null;
+  /** Daily check-in records in the period. */
+  checkIns?: import('../state/store').CheckIn[];
 }
 
 /** Pure HTML builder — exported for tests. */
@@ -101,6 +103,30 @@ export function buildReportHtml(data: ReportData, lang: SupportedLang): string {
       ? `<table><tr><th>${esc(t('report.date'))}</th><th>${esc(t('report.activity'))}</th><th>${esc(t('report.min'))}</th><th>${esc(t('report.rating'))}</th><th>${esc(t('report.note'))}</th></tr>${journalRows}</table>`
       : `<p class="muted">${esc(t('report.empty'))}</p>`}
 
+    ${data.checkIns && data.checkIns.length > 0 ? `
+      <h2>${esc(t('report.checkins_title'))}</h2>
+      <table>
+        <tr>
+          <th>${esc(t('report.date'))}</th>
+          <th>${esc(t('report.mood_col'))}</th>
+          <th>${esc(t('report.tags_col'))}</th>
+          <th>${esc(t('report.sleep_col'))}</th>
+          <th>${esc(t('report.water_col'))}</th>
+          <th>${esc(t('report.weather_col'))}</th>
+          <th>${esc(t('report.note'))}</th>
+        </tr>
+        ${data.checkIns.map((c) => `<tr>
+          <td>${esc(formatDate(`${c.date}T12:00:00`, lang))}</td>
+          <td>${c.mood}/5</td>
+          <td>${c.tags && c.tags.length ? esc(c.tags.map((id) => t(`checkin.tag_${id}`)).join(', ')) : '—'}</td>
+          <td>${c.sleepHours !== undefined ? `${c.sleepHours}h` : '—'}</td>
+          <td>${c.waterGlasses !== undefined ? `${c.waterGlasses} skl.` : '—'}</td>
+          <td>${c.weather ? esc(t(`checkin.weather_${c.weather}`)) : '—'}</td>
+          <td>${c.note ? esc(c.note) : ''}</td>
+        </tr>`).join('')}
+      </table>
+    ` : ''}
+
     <p class="muted">${esc(t('report.rating_explain'))}</p>
     <div class="footer">${esc(t('report.footer'))}</div>
   </body></html>`;
@@ -122,6 +148,7 @@ export async function exportReport(lang: SupportedLang) {
       const inRange = checkIns.filter((c) => c.date >= from && c.date <= today);
       return inRange.length ? inRange.reduce((sum, c) => sum + c.mood, 0) / inRange.length : null;
     })(),
+    checkIns: checkIns.filter((c) => c.date >= from && c.date <= today).sort((a, b) => b.date.localeCompare(a.date)),
   };
   const { uri } = await Print.printToFileAsync({ html: buildReportHtml(data, lang) });
   if (!(await Sharing.isAvailableAsync())) throw new Error('SHARING_UNAVAILABLE');

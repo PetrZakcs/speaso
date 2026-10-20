@@ -53,12 +53,21 @@ export default function Building() {
     return () => clearTimeout(id);
   }, [shown, steps.length]);
 
+  const pct = Math.min(100, Math.round((shown / steps.length) * 100));
+
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.main}>
-        <Text style={styles.title} accessibilityRole="header" accessibilityLiveRegion="polite">
-          {t('onboarding.building_title')}
-        </Text>
+        <View style={styles.headerBlock}>
+          <Text style={styles.title} accessibilityRole="header" accessibilityLiveRegion="polite">
+            {t('onboarding.building_title')}
+          </Text>
+          <View style={styles.progressTrack}>
+            <View style={[styles.progressFill, { width: `${pct}%` }]} />
+          </View>
+          <Text style={styles.progressPct}>{t('onboarding.building_progress', { pct })}</Text>
+        </View>
+
         <View style={styles.list}>
           {steps.map((label, i) => {
             const done = i < shown;
@@ -84,13 +93,31 @@ export default function Building() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.bg.base, paddingHorizontal: Spacing.screenH },
-  main: { flex: 1, justifyContent: 'center', gap: 28 },
+  main: { flex: 1, justifyContent: 'center', gap: 24 },
+  headerBlock: { gap: 10 },
   title: {
     fontFamily: FontFamily.heading,
     fontSize: 28,
     lineHeight: 36,
     color: Colors.text.primary,
     letterSpacing: -0.5,
+  },
+  progressTrack: {
+    height: 6,
+    backgroundColor: Colors.accent.soft,
+    borderRadius: 3,
+    overflow: 'hidden',
+    marginTop: 4,
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: Colors.accent.main,
+    borderRadius: 3,
+  },
+  progressPct: {
+    fontFamily: FontFamily.dmSansSemiBold,
+    fontSize: FontSize.meta,
+    color: Colors.accent.main,
   },
   list: { gap: 16 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 14 },

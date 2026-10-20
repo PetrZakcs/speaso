@@ -25,6 +25,7 @@ export function buildAnswersRow() {
     scenario_title: first?.title ?? null,
     scenario_phrase: first?.phrases[0] ?? null,
     age_group: user.ageGroup,
+    therapy_status: user.therapyStatus || null,
     daily_minutes: user.dailyMinutes,
   };
 }

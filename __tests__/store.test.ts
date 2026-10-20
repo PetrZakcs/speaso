@@ -44,8 +44,38 @@ describe('store', () => {
     expect(migrated.progress).toBeUndefined();
     // v0 flows through the v1→v2 step as well
     expect(migrated.recordings).toEqual([]);
-    expect(migrated.reminder).toEqual({ enabled: false, hour: 18, minute: 0 });
+    expect(migrated.reminder).toEqual({
+      enabled: false,
+      hour: 18,
+      minute: 0,
+      morningEnabled: false,
+      morningHour: 8,
+      morningMinute: 0,
+      streakSaverEnabled: false,
+      streakSaverHour: 20,
+      streakSaverMinute: 30,
+    });
     expect(migrated.remindersEnabled).toBeUndefined();
+  });
+
+  it('migrates v4 to v5 with full reminder slots', () => {
+    const migrate = useStore.persist.getOptions().migrate!;
+    const v4 = {
+      onboardingDone: true,
+      reminder: { enabled: true, hour: 19, minute: 15 },
+    };
+    const migrated = migrate(v4, 4) as any;
+    expect(migrated.reminder).toEqual({
+      enabled: true,
+      hour: 19,
+      minute: 15,
+      morningEnabled: false,
+      morningHour: 8,
+      morningMinute: 0,
+      streakSaverEnabled: false,
+      streakSaverHour: 20,
+      streakSaverMinute: 30,
+    });
   });
 
   it('migrates v1 sessions to have ids', () => {
@@ -104,10 +134,25 @@ describe('store', () => {
     expect(useStore.getState().recordings).toHaveLength(5);
   });
 
-  it('removes a recording and its file', () => {
-    const rec = useStore.getState().recordings[0];
-    useStore.getState().removeRecording(rec.id);
-    expect(useStore.getState().recordings.find((r) => r.id === rec.id)).toBeUndefined();
-    expect(deleted).toContain(rec.fileName);
+  it('stores check-in with holistic somatic tags', () => {
+    useStore.getState().setCheckIn({
+      mood: 4,
+      sleepHours: 8,
+      waterGlasses: 7,
+      weather: 'sunny',
+      tags: ['throat_tension', 'fast_pace'],
+      note: 'Felt relaxed after breathing',
+    });
+    const today = useStore.getState().checkIns.find((c) => c.date === toDateKey());
+    expect(today?.tags).toEqual(['throat_tension', 'fast_pace']);
+    expect(today?.sleepHours).toBe(8);
+  });
+
+  it('marks streak milestones as celebrated without duplicates', () => {
+    const { markMilestoneCelebrated } = useStore.getState();
+    markMilestoneCelebrated(3);
+    markMilestoneCelebrated(7);
+    markMilestoneCelebrated(3); // duplicate
+    expect(useStore.getState().celebratedMilestones).toEqual([3, 7]);
   });
 });

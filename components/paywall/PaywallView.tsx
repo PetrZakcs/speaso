@@ -10,6 +10,7 @@ import { FREE_SITUATIONS, SITUATIONS } from '../../content/situations';
 import PillButton from '../../components/PillButton';
 import Card from '../../components/Card';
 import IconButton from '../../components/IconButton';
+import PromoCodeModal from './PromoCodeModal';
 import {
   getCurrentOffering, getTrialEligibility, purchase, restorePurchases,
 } from '../../lib/purchases';
@@ -115,6 +116,7 @@ export default function PaywallView({ context, onClose, onUnlocked, title, tagli
   const [selected, setSelected] = useState<PurchasesPackage | null>(null);
   const [trialEligible, setTrialEligible] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState<'purchase' | 'restore' | null>(null);
+  const [promoVisible, setPromoVisible] = useState(false);
 
   const [attempt, setAttempt] = useState(0);
 
@@ -236,6 +238,15 @@ export default function PaywallView({ context, onClose, onUnlocked, title, tagli
           </View>
         ) : (
           <>
+            {/* Research Support Mission Banner */}
+            <View style={styles.patronCard}>
+              <View style={styles.patronBadge}>
+                <Ionicons name="sparkles" size={15} color={Colors.premium.main} />
+                <Text style={styles.patronBadgeText}>{t('premium.patron_badge')}</Text>
+              </View>
+              <Text style={styles.patronDesc}>{t('premium.patron_desc')}</Text>
+            </View>
+
             {/* Plans — the billed amount is always the most prominent price. */}
             <View style={styles.plans} accessibilityRole="radiogroup">
               {plans.map((pkg) => {
@@ -293,6 +304,10 @@ export default function PaywallView({ context, onClose, onUnlocked, title, tagli
         )}
 
         <View style={styles.footerLinks}>
+          <TouchableOpacity onPress={() => setPromoVisible(true)} accessibilityRole="button">
+            <Text style={styles.link}>{t('promo.redeem_cta')}</Text>
+          </TouchableOpacity>
+          <Text style={styles.dot}>·</Text>
           <TouchableOpacity onPress={handleRestore} disabled={busy !== null} accessibilityRole="button">
             <Text style={styles.link}>{busy === 'restore' ? '…' : t('premium.restore')}</Text>
           </TouchableOpacity>
@@ -306,11 +321,19 @@ export default function PaywallView({ context, onClose, onUnlocked, title, tagli
           </TouchableOpacity>
         </View>
 
+        <Text style={styles.disclaimer}>{t('settings.disclaimer')}</Text>
+
         {!isPremium && (
           <TouchableOpacity onPress={onClose} style={styles.stayFree} accessibilityRole="button">
             <Text style={styles.stayFreeText}>{closeLabel ?? t('premium.stay_free')}</Text>
           </TouchableOpacity>
         )}
+
+        <PromoCodeModal
+          visible={promoVisible}
+          onClose={() => setPromoVisible(false)}
+          onSuccess={onUnlocked}
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -375,6 +398,31 @@ const styles = StyleSheet.create({
     fontSize: FontSize.body,
     color: Colors.text.secondary,
     textAlign: 'center',
+  },
+  patronCard: {
+    backgroundColor: Colors.surface.card,
+    borderRadius: Radius.cardSmall,
+    padding: 14,
+    marginBottom: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(168, 119, 31, 0.25)',
+    gap: 4,
+  },
+  patronBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  patronBadgeText: {
+    fontFamily: FontFamily.dmSansBold,
+    fontSize: FontSize.bodySmall,
+    color: Colors.premium.main,
+  },
+  patronDesc: {
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: FontSize.meta,
+    color: Colors.text.secondary,
+    lineHeight: 16,
   },
   plans: { gap: 10 },
   plan: {
@@ -466,5 +514,13 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.dmSansMedium,
     fontSize: FontSize.bodySmall,
     color: Colors.text.tertiary,
+  },
+  disclaimer: {
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: FontSize.meta,
+    color: Colors.text.tertiary,
+    textAlign: 'center',
+    lineHeight: 18,
+    paddingHorizontal: 12,
   },
 });

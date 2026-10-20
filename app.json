@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Speasy",
-    "slug": "speasy",
+    "name": "Speaso",
+    "slug": "speaso",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -9,12 +9,26 @@
     "backgroundColor": "#F7F3EE",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.speasy.app",
+      "bundleIdentifier": "com.speaso.app",
       "config": {
         "usesNonExemptEncryption": false
       },
       "infoPlist": {
-        "CFBundleAllowMixedLocalizations": true
+        "CFBundleAllowMixedLocalizations": true,
+        "UIApplicationShortcutItems": [
+          {
+            "UIApplicationShortcutItemType": "panic",
+            "UIApplicationShortcutItemTitle": "Panic záchrana dechu",
+            "UIApplicationShortcutItemSubtitle": "Klidný dech pro uvolnění krku",
+            "UIApplicationShortcutItemIconType": "UIApplicationShortcutIconTypePlay"
+          },
+          {
+            "UIApplicationShortcutItemType": "checkin",
+            "UIApplicationShortcutItemTitle": "Dnešní check-in",
+            "UIApplicationShortcutItemSubtitle": "Zápis mluvení, vody a spánku",
+            "UIApplicationShortcutItemIconType": "UIApplicationShortcutIconTypeCompose"
+          }
+        ]
       }
     },
     "android": {
@@ -22,10 +36,8 @@
         "backgroundColor": "#3F7F6C",
         "foregroundImage": "./assets/adaptive-icon.png"
       },
-      "package": "com.speasy.app",
+      "package": "com.speaso.app",
       "permissions": [
-        "android.permission.RECORD_AUDIO",
-        "android.permission.MODIFY_AUDIO_SETTINGS",
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS"
       ]
@@ -33,17 +45,17 @@
     "web": {
       "bundler": "metro"
     },
-    "scheme": "speasy",
+    "scheme": "speaso",
     "plugins": [
       "expo-router",
       [
         "expo-font",
         {
           "fonts": [
-            "./assets/fonts/Sora-Regular.ttf",
-            "./assets/fonts/Sora-SemiBold.ttf",
-            "./assets/fonts/Sora-Bold.ttf",
-            "./assets/fonts/Sora-ExtraBold.ttf",
+            "./assets/fonts/Fraunces-SemiBold.ttf",
+            "./assets/fonts/Fraunces-Bold.ttf",
+            "./assets/fonts/Fraunces-Italic.ttf",
+            "./assets/fonts/Fraunces-SemiBoldItalic.ttf",
             "./assets/fonts/DMSans-Regular.ttf",
             "./assets/fonts/DMSans-Medium.ttf",
             "./assets/fonts/DMSans-SemiBold.ttf",
@@ -70,7 +82,7 @@
       [
         "expo-audio",
         {
-          "microphonePermission": "Speasy uses the microphone so you can record your practice and listen back. Recordings stay on your phone.",
+          "microphonePermission": "Speaso uses the microphone so you can record your practice and listen back. Recordings stay on your phone.",
           "enableBackgroundPlayback": false,
           "enableBackgroundRecording": false,
           "recordAudioAndroid": true

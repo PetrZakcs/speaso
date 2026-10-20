@@ -5,6 +5,8 @@ import { canStartActivity } from './access';
 import { toDateKey } from './dates';
 import { secondsSince } from '../components/session/SessionParts';
 
+import { maybeRequestReview } from './review';
+
 export type Stage = 'intro' | 'steps' | 'practice' | 'rate' | 'done';
 
 /**
@@ -44,6 +46,15 @@ export function useActivitySession(activityId: string, requiresPremium = false) 
   const rate = (rating?: Rating, note?: string) => {
     if (sessionId && rating) rateSession(sessionId, rating, note);
     setStage('done');
+
+    // Request review on streak milestone or high rating
+    if (result?.streak === 3) {
+      maybeRequestReview('streak_3');
+    } else if (result?.streak === 7) {
+      maybeRequestReview('streak_7');
+    } else if (rating === 5) {
+      maybeRequestReview('great_rating');
+    }
   };
 
   return { gate, stage, setStage, startedAt, start, complete, rate, result };

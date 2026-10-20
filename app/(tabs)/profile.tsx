@@ -11,7 +11,20 @@ import { initials } from '../../lib/names';
 import { BETA_ALL_ACCESS } from '../../lib/beta';
 import { manageSubscription, restorePurchases } from '../../lib/purchases';
 import { PRIVACY_URL, TERMS_URL } from '../../lib/links';
-import { REMINDER_TIMES, disableReminder, enableReminder, formatTime } from '../../lib/reminders';
+import {
+  REMINDER_TIMES,
+  MORNING_REMINDER_TIMES,
+  STREAK_REMINDER_TIMES,
+  disableReminder,
+  enableReminder,
+  updateReminderSettings,
+  formatTime,
+} from '../../lib/reminders';
+import PromoCodeModal from '../../components/paywall/PromoCodeModal';
+import TherapistConnectModal from '../../components/TherapistConnectModal';
+import ReminderTimeModal from '../../components/ReminderTimeModal';
+import ReferralShareModal from '../../components/ReferralShareModal';
+import { exportReport } from '../../lib/report';
 import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow } from '../../theme/tokens';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -41,10 +54,14 @@ function SettingRow({
 }
 
 export default function ProfileScreen() {
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
   const [restoring, setRestoring] = useState(false);
+  const [promoVisible, setPromoVisible] = useState(false);
+  const [referralModalVisible, setReferralModalVisible] = useState(false);
+  const [therapistModalVisible, setTherapistModalVisible] = useState(false);
+  const [editingSlot, setEditingSlot] = useState<'practice' | 'morning' | 'streak' | null>(null);
   const {
-    name, subscription, language, setLanguage, reminder, setReminder, shareAnswers, setUser,
+    name, subscription, language, setLanguage, reminder, setReminder, shareAnswers, setUser, therapistName,
   } = useStore(useShallow((s) => ({
     name: s.user.name,
     subscription: s.subscription,
@@ -54,20 +71,49 @@ export default function ProfileScreen() {
     setReminder: s.setReminder,
     shareAnswers: s.user.shareAnswers,
     setUser: s.setUser,
+    therapistName: s.user.therapistName,
   })));
 
-  const toggleReminder = async (on: boolean) => {
+  const showPermissionAlert = () => {
+    Alert.alert(t('reminders.denied_title'), t('reminders.denied_body'), [
+      { text: t('common.close'), style: 'cancel' },
+      { text: t('recorder.open_settings'), onPress: () => Linking.openSettings() },
+    ]);
+  };
+
+  const togglePractice = async (on: boolean) => {
     if (!on) {
-      disableReminder();
+      updateReminderSettings({ enabled: false });
       return;
     }
     const ok = await enableReminder(reminder.hour, reminder.minute);
-    if (!ok) {
-      Alert.alert(t('reminders.denied_title'), t('reminders.denied_body'), [
-        { text: t('common.close'), style: 'cancel' },
-        { text: t('recorder.open_settings'), onPress: () => Linking.openSettings() },
-      ]);
+    if (!ok) showPermissionAlert();
+  };
+
+  const toggleMorning = async (on: boolean) => {
+    if (!on) {
+      updateReminderSettings({ morningEnabled: false });
+      return;
     }
+    const ok = await updateReminderSettings({
+      morningEnabled: true,
+      morningHour: reminder.morningHour ?? 8,
+      morningMinute: reminder.morningMinute ?? 0,
+    });
+    if (!ok) showPermissionAlert();
+  };
+
+  const toggleStreak = async (on: boolean) => {
+    if (!on) {
+      updateReminderSettings({ streakSaverEnabled: false });
+      return;
+    }
+    const ok = await updateReminderSettings({
+      streakSaverEnabled: true,
+      streakSaverHour: reminder.streakSaverHour ?? 20,
+      streakSaverMinute: reminder.streakSaverMinute ?? 30,
+    });
+    if (!ok) showPermissionAlert();
   };
   const version = Constants.expoConfig?.version ?? '—';
 
@@ -122,31 +168,34 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* Reminders */}
+        {/* Reminders & Notifications */}
         <View style={styles.section}>
           <Text style={styles.sectionLabel}>{t('reminders.section')}</Text>
           <View style={styles.sectionCard}>
-            <View style={styles.row}>
-              <Ionicons name="notifications-outline" size={18} color={Colors.text.secondary} style={styles.rowIcon} />
-              <Text style={styles.rowLabel}>{t('reminders.daily')}</Text>
-              <Switch
-                value={reminder.enabled}
-                onValueChange={toggleReminder}
-                trackColor={{ false: Colors.text.tertiary, true: Colors.accent.main }}
-                thumbColor="#FFFFFF"
-                accessibilityLabel={t('reminders.daily')}
-              />
-            </View>
-            {reminder.enabled && (
-              <>
-                <View style={styles.divider} />
+            {/* 1. Daily Practice */}
+            <View style={styles.slotBlock}>
+              <View style={styles.slotHeader}>
+                <Ionicons name="fitness-outline" size={18} color={Colors.accent.main} style={styles.rowIcon} />
+                <View style={styles.slotTextGroup}>
+                  <Text style={styles.rowLabel}>{t('reminders.daily')}</Text>
+                  <Text style={styles.rowSubLabel}>{t('reminders.daily_sub')}</Text>
+                </View>
+                <Switch
+                  value={reminder.enabled}
+                  onValueChange={togglePractice}
+                  trackColor={{ false: Colors.text.tertiary, true: Colors.accent.main }}
+                  thumbColor="#FFFFFF"
+                  accessibilityLabel={t('reminders.daily')}
+                />
+              </View>
+              {reminder.enabled && (
                 <View style={styles.timeRow} accessibilityRole="radiogroup">
                   {REMINDER_TIMES.map((time) => {
                     const active = time.hour === reminder.hour && time.minute === reminder.minute;
                     return (
                       <TouchableOpacity
                         key={`${time.hour}:${time.minute}`}
-                        onPress={() => setReminder({ ...reminder, ...time })}
+                        onPress={() => updateReminderSettings({ hour: time.hour, minute: time.minute })}
                         style={[styles.timeChip, active && styles.timeChipActive]}
                         accessibilityRole="radio"
                         accessibilityState={{ checked: active }}
@@ -157,9 +206,130 @@ export default function ProfileScreen() {
                       </TouchableOpacity>
                     );
                   })}
+                  <TouchableOpacity
+                    onPress={() => setEditingSlot('practice')}
+                    style={styles.customTimeChip}
+                    accessibilityRole="button"
+                  >
+                    <Ionicons name="time-outline" size={14} color={Colors.accent.main} />
+                    <Text style={styles.customTimeChipText}>
+                      {formatTime(reminder.hour, reminder.minute)} ✏️
+                    </Text>
+                  </TouchableOpacity>
                 </View>
-              </>
-            )}
+              )}
+            </View>
+
+            <View style={styles.divider} />
+
+            {/* 2. Morning Check-in */}
+            <View style={styles.slotBlock}>
+              <View style={styles.slotHeader}>
+                <Ionicons name="sunny-outline" size={18} color={Colors.brand.main} style={styles.rowIcon} />
+                <View style={styles.slotTextGroup}>
+                  <Text style={styles.rowLabel}>{t('reminders.morning')}</Text>
+                  <Text style={styles.rowSubLabel}>{t('reminders.morning_sub')}</Text>
+                </View>
+                <Switch
+                  value={reminder.morningEnabled ?? false}
+                  onValueChange={toggleMorning}
+                  trackColor={{ false: Colors.text.tertiary, true: Colors.accent.main }}
+                  thumbColor="#FFFFFF"
+                  accessibilityLabel={t('reminders.morning')}
+                />
+              </View>
+              {reminder.morningEnabled && (
+                <View style={styles.timeRow} accessibilityRole="radiogroup">
+                  {MORNING_REMINDER_TIMES.map((time) => {
+                    const active =
+                      time.hour === (reminder.morningHour ?? 8) &&
+                      time.minute === (reminder.morningMinute ?? 0);
+                    return (
+                      <TouchableOpacity
+                        key={`${time.hour}:${time.minute}`}
+                        onPress={() =>
+                          updateReminderSettings({ morningHour: time.hour, morningMinute: time.minute })
+                        }
+                        style={[styles.timeChip, active && styles.timeChipActive]}
+                        accessibilityRole="radio"
+                        accessibilityState={{ checked: active }}
+                      >
+                        <Text style={[styles.timeText, active && styles.timeTextActive]}>
+                          {formatTime(time.hour, time.minute)}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                  <TouchableOpacity
+                    onPress={() => setEditingSlot('morning')}
+                    style={styles.customTimeChip}
+                    accessibilityRole="button"
+                  >
+                    <Ionicons name="time-outline" size={14} color={Colors.accent.main} />
+                    <Text style={styles.customTimeChipText}>
+                      {formatTime(reminder.morningHour ?? 8, reminder.morningMinute ?? 0)} ✏️
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+
+            <View style={styles.divider} />
+
+            {/* 3. Streak Saver */}
+            <View style={styles.slotBlock}>
+              <View style={styles.slotHeader}>
+                <Ionicons name="flame-outline" size={18} color={Colors.danger.panic} style={styles.rowIcon} />
+                <View style={styles.slotTextGroup}>
+                  <Text style={styles.rowLabel}>{t('reminders.streak')}</Text>
+                  <Text style={styles.rowSubLabel}>{t('reminders.streak_sub')}</Text>
+                </View>
+                <Switch
+                  value={reminder.streakSaverEnabled ?? false}
+                  onValueChange={toggleStreak}
+                  trackColor={{ false: Colors.text.tertiary, true: Colors.accent.main }}
+                  thumbColor="#FFFFFF"
+                  accessibilityLabel={t('reminders.streak')}
+                />
+              </View>
+              {reminder.streakSaverEnabled && (
+                <View style={styles.timeRow} accessibilityRole="radiogroup">
+                  {STREAK_REMINDER_TIMES.map((time) => {
+                    const active =
+                      time.hour === (reminder.streakSaverHour ?? 20) &&
+                      time.minute === (reminder.streakSaverMinute ?? 30);
+                    return (
+                      <TouchableOpacity
+                        key={`${time.hour}:${time.minute}`}
+                        onPress={() =>
+                          updateReminderSettings({
+                            streakSaverHour: time.hour,
+                            streakSaverMinute: time.minute,
+                          })
+                        }
+                        style={[styles.timeChip, active && styles.timeChipActive]}
+                        accessibilityRole="radio"
+                        accessibilityState={{ checked: active }}
+                      >
+                        <Text style={[styles.timeText, active && styles.timeTextActive]}>
+                          {formatTime(time.hour, time.minute)}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                  <TouchableOpacity
+                    onPress={() => setEditingSlot('streak')}
+                    style={styles.customTimeChip}
+                    accessibilityRole="button"
+                  >
+                    <Ionicons name="time-outline" size={14} color={Colors.accent.main} />
+                    <Text style={styles.customTimeChipText}>
+                      {formatTime(reminder.streakSaverHour ?? 20, reminder.streakSaverMinute ?? 30)} ✏️
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
           </View>
         </View>
 
@@ -197,12 +367,51 @@ export default function ProfileScreen() {
               </>
             )}
             <SettingRow
+              icon="heart-outline"
+              label={t('referral.gift_row')}
+              value="30 dní zdarma"
+              onPress={() => setReferralModalVisible(true)}
+            />
+            <View style={styles.divider} />
+            <SettingRow
+              icon="gift-outline"
+              label={t('settings.promo_code')}
+              onPress={() => setPromoVisible(true)}
+            />
+            <View style={styles.divider} />
+            <SettingRow
               icon="refresh-outline"
               label={t('settings.restore')}
               value={restoring ? '…' : undefined}
               onPress={restoring ? undefined : handleRestore}
             />
           </View>
+        </View>
+
+        {/* Speech Therapist Collaboration */}
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>{t('settings.section_therapist')}</Text>
+          <View style={styles.sectionCard}>
+            <SettingRow
+              icon="link-outline"
+              label={t('settings.therapist_pair_row')}
+              value={therapistName || t('settings.therapist_not_linked')}
+              onPress={() => setTherapistModalVisible(true)}
+            />
+            <View style={styles.divider} />
+            <SettingRow
+              icon="medkit-outline"
+              label={t('settings.therapist_export')}
+              onPress={async () => {
+                try {
+                  await exportReport(lang);
+                } catch (e) {
+                  Alert.alert(t('common.close'), String(e));
+                }
+              }}
+            />
+          </View>
+          <Text style={styles.sectionHint}>{t('settings.therapist_hint')}</Text>
         </View>
 
         {/* About */}
@@ -236,6 +445,70 @@ export default function ProfileScreen() {
 
         <Text style={styles.disclaimer}>{t('settings.disclaimer')}</Text>
         <Text style={styles.footer}>{t('settings.footer_tagline')}</Text>
+
+        <ReminderTimeModal
+          visible={editingSlot !== null}
+          title={
+            editingSlot === 'morning'
+              ? t('reminders.morning')
+              : editingSlot === 'streak'
+                ? t('reminders.streak')
+                : t('reminders.daily')
+          }
+          subtitle={
+            editingSlot === 'morning'
+              ? t('reminders.morning_sub')
+              : editingSlot === 'streak'
+                ? t('reminders.streak_sub')
+                : t('reminders.daily_sub')
+          }
+          initialHour={
+            editingSlot === 'morning'
+              ? (reminder.morningHour ?? 8)
+              : editingSlot === 'streak'
+                ? (reminder.streakSaverHour ?? 20)
+                : reminder.hour
+          }
+          initialMinute={
+            editingSlot === 'morning'
+              ? (reminder.morningMinute ?? 0)
+              : editingSlot === 'streak'
+                ? (reminder.streakSaverMinute ?? 30)
+                : reminder.minute
+          }
+          presets={
+            editingSlot === 'morning'
+              ? MORNING_REMINDER_TIMES
+              : editingSlot === 'streak'
+                ? STREAK_REMINDER_TIMES
+                : REMINDER_TIMES
+          }
+          onSave={(h, m) => {
+            if (editingSlot === 'morning') {
+              updateReminderSettings({ morningHour: h, morningMinute: m });
+            } else if (editingSlot === 'streak') {
+              updateReminderSettings({ streakSaverHour: h, streakSaverMinute: m });
+            } else {
+              updateReminderSettings({ hour: h, minute: m });
+            }
+          }}
+          onClose={() => setEditingSlot(null)}
+        />
+
+        <PromoCodeModal
+          visible={promoVisible}
+          onClose={() => setPromoVisible(false)}
+        />
+
+        <TherapistConnectModal
+          visible={therapistModalVisible}
+          onClose={() => setTherapistModalVisible(false)}
+        />
+
+        <ReferralShareModal
+          visible={referralModalVisible}
+          onClose={() => setReferralModalVisible(false)}
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -314,12 +587,31 @@ const styles = StyleSheet.create({
     fontSize: FontSize.bodySmall,
     color: Colors.text.primary,
   },
+  rowSubLabel: {
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: FontSize.meta,
+    color: Colors.text.tertiary,
+    marginTop: 2,
+  },
   rowValue: {
     fontFamily: FontFamily.dmSansMedium,
     fontSize: FontSize.bodySmall,
     color: Colors.text.secondary,
   },
-  timeRow: { flexDirection: 'row', gap: 8, padding: 14, flexWrap: 'wrap' },
+  slotBlock: {
+    paddingVertical: 4,
+  },
+  slotHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+  },
+  slotTextGroup: {
+    flex: 1,
+  },
+  timeRow: { flexDirection: 'row', gap: 8, paddingHorizontal: 18, paddingBottom: 14, flexWrap: 'wrap', alignItems: 'center' },
   timeChip: {
     paddingHorizontal: 14,
     paddingVertical: 8,
@@ -328,7 +620,23 @@ const styles = StyleSheet.create({
   },
   timeChipActive: { backgroundColor: Colors.accent.main },
   timeText: { fontFamily: FontFamily.dmSansBold, fontSize: FontSize.bodySmall, color: Colors.text.secondary },
-  timeTextActive: { color: Colors.text.primary },
+  timeTextActive: { color: '#FFFFFF' },
+  customTimeChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: Radius.pill,
+    backgroundColor: Colors.accent.soft,
+    borderWidth: 1,
+    borderColor: Colors.accent.main,
+  },
+  customTimeChipText: {
+    fontFamily: FontFamily.dmSansBold,
+    fontSize: FontSize.bodySmall,
+    color: Colors.accent.main,
+  },
   divider: { height: 1, backgroundColor: Colors.hairline, marginHorizontal: 18 },
   disclaimer: {
     fontFamily: FontFamily.dmSansRegular,

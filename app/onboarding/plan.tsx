@@ -69,6 +69,22 @@ export default function PlanReveal() {
           })}
         </View>
 
+        {/* 30-Day Projection Visual */}
+        <View style={styles.projectionCard}>
+          <View style={styles.projectionHeader}>
+            <Ionicons name="trending-up-outline" size={18} color={Colors.accent.main} />
+            <Text style={styles.projectionTitle}>{t('onboarding.plan_projection_title')}</Text>
+          </View>
+          <View style={styles.projectionRow}>
+            <View style={styles.projectionDotBefore} />
+            <Text style={styles.projectionBefore}>{t('onboarding.plan_projection_before')}</Text>
+          </View>
+          <View style={styles.projectionRow}>
+            <View style={styles.projectionDotAfter} />
+            <Text style={styles.projectionAfter}>{t('onboarding.plan_projection_after')}</Text>
+          </View>
+        </View>
+
         <View style={styles.facts}>
           {facts.map((f) => (
             <View key={f.icon} style={styles.fact}>
@@ -113,6 +129,58 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: 14 },
   rowTitle: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.body, color: Colors.text.primary },
   rowMeta: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.bodySmall, color: Colors.text.secondary, marginTop: 2 },
+  projectionCard: {
+    backgroundColor: Colors.surface.card,
+    borderRadius: Radius.cardSmall,
+    padding: 16,
+    gap: 10,
+    borderLeftWidth: 3,
+    borderLeftColor: Colors.accent.main,
+    ...Shadow.card,
+  },
+  projectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  projectionTitle: {
+    fontFamily: FontFamily.dmSansSemiBold,
+    fontSize: FontSize.body,
+    color: Colors.text.primary,
+  },
+  projectionRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 10,
+  },
+  projectionDotBefore: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: Colors.danger.panic,
+    marginTop: 5,
+  },
+  projectionDotAfter: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: Colors.accent.main,
+    marginTop: 5,
+  },
+  projectionBefore: {
+    flex: 1,
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: FontSize.bodySmall,
+    color: Colors.text.secondary,
+    lineHeight: 18,
+  },
+  projectionAfter: {
+    flex: 1,
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: FontSize.bodySmall,
+    color: Colors.text.primary,
+    lineHeight: 18,
+  },
   facts: { gap: 12, marginTop: 6 },
   fact: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   factText: { flex: 1, fontFamily: FontFamily.dmSansMedium, fontSize: FontSize.body, color: Colors.text.primary },

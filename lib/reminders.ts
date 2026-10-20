@@ -3,16 +3,19 @@ import { Platform } from 'react-native';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { translate } from '../i18n';
 import type { SupportedLang } from './locale';
-import { useStore, useShallow } from '../state/store';
+import { useStore, useShallow, type ReminderSettings } from '../state/store';
 import { dailyPlan, doneOn } from './plan';
 import { reminderDates } from './reminderSchedule';
 import { toDateKey } from './dates';
 import { useToday } from './useToday';
+import { trackEvent } from './analytics';
 
 const CHANNEL_ID = 'reminders';
 /** Legacy id of the old repeating reminder (cleaned up on sync). */
 const LEGACY_DAILY_ID = 'daily-reminder';
 const DAILY_PREFIX = 'daily-';
+const MORNING_PREFIX = 'morning-';
+const STREAK_PREFIX = 'streak-';
 const TRIAL_ID = 'trial-reminder';
 /** How long before the trial ends we remind the user. */
 export const TRIAL_REMINDER_DAYS = 2;
@@ -66,8 +69,23 @@ export const REMINDER_TIMES = [
   { hour: 20, minute: 30 },
 ];
 
+export const MORNING_REMINDER_TIMES = [
+  { hour: 7, minute: 0 },
+  { hour: 7, minute: 30 },
+  { hour: 8, minute: 0 },
+  { hour: 8, minute: 30 },
+  { hour: 9, minute: 0 },
+];
+
+export const STREAK_REMINDER_TIMES = [
+  { hour: 20, minute: 0 },
+  { hour: 20, minute: 30 },
+  { hour: 21, minute: 0 },
+  { hour: 21, minute: 30 },
+];
+
 export function formatTime(hour: number, minute: number) {
-  return `${hour}:${minute.toString().padStart(2, '0')}`;
+  return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 }
 
 /** Asks for permission if needed. Returns whether notifications are allowed. */
@@ -98,15 +116,85 @@ async function cancelDailyReminders() {
   const scheduled = await Notifications.getAllScheduledNotificationsAsync();
   await Promise.all(
     scheduled
-      .filter((n) => n.identifier.startsWith(DAILY_PREFIX) || n.identifier === LEGACY_DAILY_ID)
+      .filter(
+        (n) =>
+          n.identifier.startsWith(DAILY_PREFIX) ||
+          n.identifier.startsWith(MORNING_PREFIX) ||
+          n.identifier.startsWith(STREAK_PREFIX) ||
+          n.identifier === LEGACY_DAILY_ID,
+      )
       .map((n) => Notifications.cancelScheduledNotificationAsync(n.identifier)),
   );
 }
 
 /**
- * Replaces the daily reminders with one-off notifications on the given
- * dates (see reminderDates — today is skipped once the plan is done).
- * Doesn't prompt for permission — call ensureNotificationPermission() first.
+ * Replaces daily and slot reminders with scheduled notifications on the given dates.
+ */
+export async function scheduleAllReminders(
+  settings: ReminderSettings,
+  planDoneToday: boolean,
+  checkInDoneToday: boolean,
+  lang: SupportedLang,
+) {
+  const Notifications = notifications();
+  if (!Notifications) return;
+  await ensureChannel(lang);
+  await cancelDailyReminders();
+
+  const now = new Date();
+
+  // 1. Daily practice
+  if (settings.enabled) {
+    const dates = reminderDates(now, settings.hour, settings.minute, planDoneToday);
+    for (const date of dates) {
+      await Notifications.scheduleNotificationAsync({
+        identifier: `${DAILY_PREFIX}${toDateKey(date)}`,
+        content: {
+          title: translate(lang, 'reminders.title'),
+          body: translate(lang, 'reminders.body'),
+        },
+        trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date, channelId: CHANNEL_ID },
+      });
+    }
+  }
+
+  // 2. Morning check-in
+  if (settings.morningEnabled) {
+    const mHour = settings.morningHour ?? 8;
+    const mMinute = settings.morningMinute ?? 0;
+    const dates = reminderDates(now, mHour, mMinute, checkInDoneToday);
+    for (const date of dates) {
+      await Notifications.scheduleNotificationAsync({
+        identifier: `${MORNING_PREFIX}${toDateKey(date)}`,
+        content: {
+          title: translate(lang, 'reminders.morning_title'),
+          body: translate(lang, 'reminders.morning_body'),
+        },
+        trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date, channelId: CHANNEL_ID },
+      });
+    }
+  }
+
+  // 3. Streak saver
+  if (settings.streakSaverEnabled) {
+    const sHour = settings.streakSaverHour ?? 20;
+    const sMinute = settings.streakSaverMinute ?? 30;
+    const dates = reminderDates(now, sHour, sMinute, planDoneToday);
+    for (const date of dates) {
+      await Notifications.scheduleNotificationAsync({
+        identifier: `${STREAK_PREFIX}${toDateKey(date)}`,
+        content: {
+          title: translate(lang, 'reminders.streak_title'),
+          body: translate(lang, 'reminders.streak_body'),
+        },
+        trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date, channelId: CHANNEL_ID },
+      });
+    }
+  }
+}
+
+/**
+ * Legacy single-slot scheduler for backward compatibility.
  */
 export async function scheduleDailyReminders(dates: Date[], lang: SupportedLang) {
   const Notifications = notifications();
@@ -162,35 +250,120 @@ export async function notificationsAllowed(): Promise<boolean> {
   return (await Notifications.getPermissionsAsync()).granted;
 }
 
+/**
+ * Syncs user notification schedule preferences to backend telemetry and Supabase.
+ * Lets the team know peak delivery windows and when users prefer to be reminded.
+ */
+export async function syncReminderSchedule(settings: ReminderSettings): Promise<boolean> {
+  const { user, installId, language } = useStore.getState();
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  const utcOffsetHours = -(new Date().getTimezoneOffset() / 60);
+
+  // 1. Track via product analytics event
+  trackEvent('reminder_schedule_updated', {
+    practice_enabled: settings.enabled,
+    practice_hour: settings.hour,
+    practice_minute: settings.minute,
+    morning_enabled: settings.morningEnabled ?? false,
+    morning_hour: settings.morningHour ?? 8,
+    morning_minute: settings.morningMinute ?? 0,
+    streak_saver_enabled: settings.streakSaverEnabled ?? false,
+    streak_saver_hour: settings.streakSaverHour ?? 20,
+    streak_saver_minute: settings.streakSaverMinute ?? 30,
+    timezone,
+    utc_offset_hours: utcOffsetHours,
+  });
+
+  // 2. Upsert directly to user_notification_schedules table if opted in
+  if (!user.shareAnswers) return false;
+  const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
+  const key = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return false;
+
+  const payload = {
+    install_id: installId,
+    timezone,
+    utc_offset_hours: utcOffsetHours,
+    language,
+    practice_enabled: settings.enabled,
+    practice_hour: settings.hour,
+    practice_minute: settings.minute,
+    morning_enabled: settings.morningEnabled ?? false,
+    morning_hour: settings.morningHour ?? 8,
+    morning_minute: settings.morningMinute ?? 0,
+    streak_saver_enabled: settings.streakSaverEnabled ?? false,
+    streak_saver_hour: settings.streakSaverHour ?? 20,
+    streak_saver_minute: settings.streakSaverMinute ?? 30,
+    platform: Platform.OS,
+    app_version: Constants.expoConfig?.version ?? null,
+    updated_at: new Date().toISOString(),
+  };
+
+  try {
+    const res = await fetch(`${url}/rest/v1/user_notification_schedules`, {
+      method: 'POST',
+      headers: {
+        apikey: key,
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
+        Prefer: 'resolution=merge-duplicates',
+      },
+      body: JSON.stringify(payload),
+    });
+    return res.ok;
+  } catch (e) {
+    if (__DEV__) console.warn('[reminders] sync schedule failed:', e);
+    return false;
+  }
+}
+
 /** Turns the daily reminder on (asking for permission). Returns false if denied. */
 export async function enableReminder(hour: number, minute: number): Promise<boolean> {
   const allowed = await ensureNotificationPermission();
   if (!allowed) return false;
-  useStore.getState().setReminder({ enabled: true, hour, minute });
+  const current = useStore.getState().reminder;
+  const next: ReminderSettings = { ...current, enabled: true, hour, minute };
+  useStore.getState().setReminder(next);
+  syncReminderSchedule(next).catch(() => {});
+  return true;
+}
+
+/** Updates arbitrary reminder settings and syncs telemetry. */
+export async function updateReminderSettings(partial: Partial<ReminderSettings>): Promise<boolean> {
+  const current = useStore.getState().reminder;
+  const next: ReminderSettings = { ...current, ...partial };
+  const wantsAnyOn = next.enabled || next.morningEnabled || next.streakSaverEnabled;
+  if (wantsAnyOn) {
+    const allowed = await ensureNotificationPermission();
+    if (!allowed) return false;
+  }
+  useStore.getState().setReminder(next);
+  syncReminderSchedule(next).catch(() => {});
   return true;
 }
 
 export function disableReminder() {
   const { reminder, setReminder } = useStore.getState();
-  setReminder({ ...reminder, enabled: false });
+  const next: ReminderSettings = { ...reminder, enabled: false };
+  setReminder(next);
+  syncReminderSchedule(next).catch(() => {});
 }
 
 /**
- * Keeps the OS schedule in sync: the next 7 days at the chosen time, minus
- * today once the plan is done. Re-runs when the time, language, plan state
- * or the day changes. Mounted once in the root layout.
+ * Keeps the OS schedule in sync: the next 7 days for enabled slots, minus
+ * today once the plan or check-in is done. Re-runs on changes.
  */
 export function useReminderSync(active: boolean) {
   const today = useToday();
-  const { enabled, hour, minute, language, planDoneToday } = useStore(useShallow((s) => {
+  const { reminder, language, planDoneToday, checkInDoneToday } = useStore(useShallow((s) => {
     const plan = dailyPlan(today, s.user.dailyMinutes, s.user.situations, s.subscription.isPremium);
     const done = doneOn(s.sessions, today);
+    const checkInDone = s.checkIns.some((c) => c.date === today);
     return {
-      enabled: s.reminder.enabled,
-      hour: s.reminder.hour,
-      minute: s.reminder.minute,
+      reminder: s.reminder,
       language: s.language,
       planDoneToday: plan.every((i) => done.has(i.activityId)),
+      checkInDoneToday: checkInDone,
     };
   }));
 
@@ -198,15 +371,17 @@ export function useReminderSync(active: boolean) {
     // Before rehydration the store holds defaults — don't cancel a real schedule.
     if (!active) return;
     const sync = async () => {
-      if (!enabled) {
+      const anyEnabled = reminder.enabled || reminder.morningEnabled || reminder.streakSaverEnabled;
+      if (!anyEnabled) {
         await cancelReminders();
         return;
       }
       // Permission revoked in system settings: keep the preference, skip scheduling.
       if (await notificationsAllowed()) {
-        await scheduleDailyReminders(reminderDates(new Date(), hour, minute, planDoneToday), language);
+        await scheduleAllReminders(reminder, planDoneToday, checkInDoneToday, language);
       }
     };
     sync().catch((e) => console.warn('[reminders] sync failed:', e));
-  }, [active, enabled, hour, minute, language, planDoneToday, today]);
+  }, [active, reminder, language, planDoneToday, checkInDoneToday, today]);
 }
+
