@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Modal, Share } from 'react-na
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from '../i18n/useTranslation';
 import { hapticPress, hapticSuccess } from '../lib/haptics';
+import { maybeRequestReview } from '../lib/review';
 import CompanionAvatar from './CompanionAvatar';
 import { Colors, FontFamily, FontSize, Radius, Shadow } from '../theme/tokens';
 
@@ -28,6 +29,7 @@ export default function MilestoneModal({ visible, days, onDismiss }: MilestoneMo
         message: `🏆 ${t(titleKey)}!\n\n${t(descKey)}\n\nTrénuji klidné mluvení se Speaso (https://speaso.app)`,
       });
       hapticSuccess();
+      maybeRequestReview(days >= 7 ? 'streak_7' : 'streak_3');
     } catch {
       // dismissed
     }
@@ -35,6 +37,7 @@ export default function MilestoneModal({ visible, days, onDismiss }: MilestoneMo
 
   const handleContinue = () => {
     hapticSuccess();
+    maybeRequestReview(days >= 7 ? 'streak_7' : 'streak_3');
     onDismiss();
   };
 

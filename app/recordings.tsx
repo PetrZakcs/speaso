@@ -11,6 +11,7 @@ import { activityTitle, formatDate } from '../lib/activities';
 import IconButton from '../components/IconButton';
 import ZeroCloudBadge from '../components/ZeroCloudBadge';
 import { formatTime } from '../components/session/SessionParts';
+import { hapticSelect } from '../lib/haptics';
 import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow, Tints } from '../theme/tokens';
 
 export default function RecordingsScreen() {
@@ -23,6 +24,7 @@ export default function RecordingsScreen() {
   const player = useAudioPlayer(null);
   const status = useAudioPlayerStatus(player);
   const [currentId, setCurrentId] = useState<string | null>(null);
+  const [playbackSpeed, setPlaybackSpeed] = useState<0.8 | 1.0>(1.0);
   const sorted = [...recordings].reverse();
 
   // First vs. latest take of the most recently recorded exercise.
@@ -30,17 +32,33 @@ export default function RecordingsScreen() {
   const sameExercise = latest ? recordings.filter((r) => r.exerciseId === latest.exerciseId) : [];
   const compare = sameExercise.length >= 2 ? { first: sameExercise[0], last: sameExercise[sameExercise.length - 1] } : null;
 
+  const changeSpeed = (rate: 0.8 | 1.0) => {
+    hapticSelect();
+    setPlaybackSpeed(rate);
+    try {
+      player.playbackRate = rate;
+    } catch (e) {
+      console.warn('[recordings] playbackRate failed:', e);
+    }
+  };
+
   const toggle = (rec: Recording) => {
     if (currentId === rec.id) {
       if (status.playing) {
         player.pause();
       } else {
         if (status.duration > 0 && status.currentTime >= status.duration - 0.05) player.seekTo(0);
+        try {
+          player.playbackRate = playbackSpeed;
+        } catch {}
         player.play();
       }
       return;
     }
     player.replace({ uri: recordingUri(rec.fileName) });
+    try {
+      player.playbackRate = playbackSpeed;
+    } catch {}
     player.play();
     setCurrentId(rec.id);
   };
@@ -121,32 +139,58 @@ export default function RecordingsScreen() {
           const active = currentId === item.id;
           const playing = active && status.playing;
           return (
-            <View style={styles.row}>
-              <TouchableOpacity
-                onPress={() => toggle(item)}
-                style={[styles.playBtn, playing && styles.playBtnActive]}
-                accessibilityRole="button"
-                accessibilityLabel={playing ? t('recorder.pause') : t('recorder.play')}
-              >
-                <Ionicons name={playing ? 'pause' : 'play'} size={18} color={playing ? Colors.accent.on : Colors.text.primary} />
-              </TouchableOpacity>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.rowTitle}>{activityTitle(item.exerciseId, lang)}</Text>
-                <Text style={styles.rowSub}>
-                  {formatDate(item.createdAt, lang)} ·{' '}
-                  {active && status.duration > 0
-                    ? `${formatTime(status.currentTime)} / ${formatTime(status.duration)}`
-                    : formatTime(item.durationSec)}
-                </Text>
+            <View style={[styles.cardRow, active && styles.cardRowActive]}>
+              <View style={styles.row}>
+                <TouchableOpacity
+                  onPress={() => toggle(item)}
+                  style={[styles.playBtn, playing && styles.playBtnActive]}
+                  accessibilityRole="button"
+                  accessibilityLabel={playing ? t('recorder.pause') : t('recorder.play')}
+                >
+                  <Ionicons name={playing ? 'pause' : 'play'} size={18} color={playing ? Colors.accent.on : Colors.text.primary} />
+                </TouchableOpacity>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.rowTitle}>{activityTitle(item.exerciseId, lang)}</Text>
+                  <Text style={styles.rowSub}>
+                    {formatDate(item.createdAt, lang)} ·{' '}
+                    {active && status.duration > 0
+                      ? `${formatTime(status.currentTime)} / ${formatTime(status.duration)}`
+                      : formatTime(item.durationSec)}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => confirmDelete(item)}
+                  style={styles.deleteBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('recordings.delete')}
+                >
+                  <Ionicons name="trash-outline" size={18} color={Colors.text.tertiary} />
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                onPress={() => confirmDelete(item)}
-                style={styles.deleteBtn}
-                accessibilityRole="button"
-                accessibilityLabel={t('recordings.delete')}
-              >
-                <Ionicons name="trash-outline" size={18} color={Colors.text.tertiary} />
-              </TouchableOpacity>
+
+              {active && (
+                <View style={styles.speedRow}>
+                  <Text style={styles.speedLabel}>{t('recorder.cadence_calm')}:</Text>
+                  <View style={styles.speedGroup}>
+                    <TouchableOpacity
+                      onPress={() => changeSpeed(1.0)}
+                      style={[styles.speedBtn, playbackSpeed === 1.0 && styles.speedBtnActive]}
+                    >
+                      <Text style={[styles.speedBtnText, playbackSpeed === 1.0 && styles.speedBtnTextActive]}>
+                        1.0x
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => changeSpeed(0.8)}
+                      style={[styles.speedBtn, playbackSpeed === 0.8 && styles.speedBtnActive]}
+                    >
+                      <Text style={[styles.speedBtnText, playbackSpeed === 0.8 && styles.speedBtnTextActive]}>
+                        0.8x
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
             </View>
           );
         }}
@@ -217,4 +261,53 @@ const styles = StyleSheet.create({
   compareSub: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.bodySmall, lineHeight: 19, color: Colors.text.secondary, marginBottom: 4 },
   compareRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   compareLabel: { flex: 1, fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.body, color: Colors.text.primary },
+  cardRow: {
+    backgroundColor: Colors.surface.card,
+    ...Shadow.card,
+    borderRadius: Radius.cardSmall,
+    padding: 12,
+    gap: 8,
+  },
+  cardRowActive: {
+    borderWidth: 1,
+    borderColor: Colors.accent.soft,
+  },
+  speedRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 8,
+    paddingTop: 4,
+    borderTopWidth: 1,
+    borderTopColor: Colors.surface.card2,
+  },
+  speedLabel: {
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: FontSize.meta,
+    color: Colors.text.tertiary,
+  },
+  speedGroup: {
+    flexDirection: 'row',
+    backgroundColor: Colors.surface.card2,
+    borderRadius: Radius.pill,
+    padding: 2,
+    gap: 2,
+  },
+  speedBtn: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: Radius.pill,
+  },
+  speedBtnActive: {
+    backgroundColor: Colors.surface.card,
+    ...Shadow.card,
+  },
+  speedBtnText: {
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: FontSize.meta,
+    color: Colors.text.tertiary,
+  },
+  speedBtnTextActive: {
+    color: Colors.text.primary,
+  },
 });

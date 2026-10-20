@@ -7,10 +7,11 @@ import { useTranslation } from '../../i18n/useTranslation';
 import { useStore } from '../../state/store';
 import BreathingBall from '../../components/BreathingBall';
 import CalmBackground from '../../components/calm/CalmBackground';
+import CompanionAvatar from '../../components/CompanionAvatar';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Calm, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
 import { trackEvent } from '../../lib/analytics';
-import { hapticSelect, hapticSuccess } from '../../lib/haptics';
+import { hapticSelect, hapticSuccess, hapticSighPhase } from '../../lib/haptics';
 
 type PanicMode = 'ball' | 'sigh' | 'body';
 
@@ -37,15 +38,14 @@ export default function PanicScreen() {
 
   useEffect(() => {
     if (mode !== 'sigh') return;
+    hapticSighPhase(sighPhase);
     let timer: ReturnType<typeof setTimeout>;
     if (sighPhase === 1) {
       timer = setTimeout(() => {
-        hapticSelect();
         setSighPhase(2);
       }, 2500);
     } else if (sighPhase === 2) {
       timer = setTimeout(() => {
-        hapticSelect();
         setSighPhase(3);
       }, 1500);
     } else {
@@ -191,10 +191,15 @@ export default function PanicScreen() {
             </View>
 
             <View style={styles.sighCenter}>
+              <CompanionAvatar
+                size={92}
+                mood="breathing"
+                style={{ marginBottom: 12 }}
+              />
               <View style={[styles.sighOrb, sighPhase === 3 ? styles.sighOrbExhale : styles.sighOrbInhale]}>
                 <Ionicons
                   name={sighPhase === 3 ? 'arrow-down' : 'arrow-up'}
-                  size={36}
+                  size={32}
                   color={Calm.accent}
                 />
                 <Text style={styles.sighPhaseText}>

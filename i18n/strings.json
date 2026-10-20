@@ -827,7 +827,9 @@
     "guarantee_reminder":{ "cs": "Upozorníme tě 2 dny před koncem zkoušky", "en": "We'll notify you 2 days before trial ends" },
     "guarantee_cancel":  { "cs": "Zrušení kdykoliv 1 kliknutím", "en": "Cancel anytime in 1 tap" },
     "guarantee_privacy": { "cs": "100% soukromé offline úložiště", "en": "100% private offline storage" },
-    "cta_start_trial":   { "cs": "Aktivovat můj 7denní plán zdarma", "en": "Activate my 7-day free plan" }
+    "cta_start_trial":   { "cs": "Aktivovat můj 7denní plán zdarma", "en": "Activate my 7-day free plan" },
+    "paywall_hook_title":{ "cs": "Tvůj plán pro klidnější řeč je připraven", "en": "Your calm speech plan is ready" },
+    "paywall_hook_desc": { "cs": "Vyzkoušej plný přístup na 7 dní zdarma. Upozorníme tě 2 dny předem.", "en": "Try full access free for 7 days. We'll remind you 2 days before." }
   },
 
   "tabbar": {

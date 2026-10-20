@@ -61,3 +61,24 @@ export function hapticBreathPhase(phase: 'inhale' | 'hold' | 'exhale') {
   }
 }
 
+/** Somatic physiological sigh guidance (double inhale + long exhale). */
+export function hapticSighPhase(phase: 1 | 2 | 3) {
+  if (Platform.OS === 'android') {
+    const effect =
+      phase === 1
+        ? Haptics.AndroidHaptics.Confirm
+        : phase === 2
+          ? Haptics.AndroidHaptics.Clock_Tick
+          : Haptics.AndroidHaptics.Segment_Tick;
+    Haptics.performAndroidHapticsAsync(effect).catch(ignore);
+  } else {
+    const style =
+      phase === 1
+        ? Haptics.ImpactFeedbackStyle.Medium
+        : phase === 2
+          ? Haptics.ImpactFeedbackStyle.Light
+          : Haptics.ImpactFeedbackStyle.Soft;
+    Haptics.impactAsync(style).catch(ignore);
+  }
+}
+

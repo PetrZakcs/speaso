@@ -10,6 +10,7 @@ import { FREE_SITUATIONS, SITUATIONS } from '../../content/situations';
 import PillButton from '../../components/PillButton';
 import Card from '../../components/Card';
 import IconButton from '../../components/IconButton';
+import CompanionAvatar from '../../components/CompanionAvatar';
 import PromoCodeModal from './PromoCodeModal';
 import {
   getCurrentOffering, getTrialEligibility, purchase, restorePurchases,
@@ -192,6 +193,16 @@ export default function PaywallView({ context, onClose, onUnlocked, title, tagli
         <Text style={styles.title} accessibilityRole="header">{title ?? t('premium.title')}</Text>
         <Text style={styles.tagline}>{tagline ?? t('premium.tagline')}</Text>
 
+        {context === 'onboarding' && (
+          <View style={[styles.diagnosticBanner, Shadow.card]}>
+            <CompanionAvatar size={48} mood="wisdom" />
+            <View style={styles.diagnosticBannerText}>
+              <Text style={styles.diagnosticBannerTitle}>{t('diagnostic.paywall_hook_title')}</Text>
+              <Text style={styles.diagnosticBannerDesc}>{t('diagnostic.paywall_hook_desc')}</Text>
+            </View>
+          </View>
+        )}
+
         {contextText && (
           <View style={styles.contextBanner}>
             <Text style={styles.contextText}>{contextText}</Text>
@@ -284,6 +295,22 @@ export default function PaywallView({ context, onClose, onUnlocked, title, tagli
             </View>
 
             {hasTrial && selected && <TrialTimeline days={trialDays} price={selected.product.priceString} />}
+
+            {/* Risk-Reversal Trust Row */}
+            <View style={styles.guaranteeRow}>
+              <View style={styles.guaranteeItem}>
+                <Ionicons name="notifications-outline" size={14} color={Colors.accent.main} />
+                <Text style={styles.guaranteeText}>{t('diagnostic.guarantee_reminder')}</Text>
+              </View>
+              <View style={styles.guaranteeItem}>
+                <Ionicons name="checkmark-circle-outline" size={14} color={Colors.accent.main} />
+                <Text style={styles.guaranteeText}>{t('diagnostic.guarantee_cancel')}</Text>
+              </View>
+              <View style={styles.guaranteeItem}>
+                <Ionicons name="shield-checkmark-outline" size={14} color={Colors.accent.main} />
+                <Text style={styles.guaranteeText}>{t('diagnostic.guarantee_privacy')}</Text>
+              </View>
+            </View>
 
             <PillButton
               label={hasTrial ? t('premium.trial_cta', { trial: trialLabel }) : t('premium.subscribe_cta')}
@@ -522,5 +549,48 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 18,
     paddingHorizontal: 12,
+  },
+  diagnosticBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: Colors.accent.soft,
+    borderRadius: Radius.card,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(44, 86, 65, 0.12)',
+  },
+  diagnosticBannerText: {
+    flex: 1,
+    gap: 2,
+  },
+  diagnosticBannerTitle: {
+    fontFamily: FontFamily.dmSansSemiBold,
+    fontSize: FontSize.bodySmall,
+    color: Colors.text.primary,
+  },
+  diagnosticBannerDesc: {
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: FontSize.meta,
+    color: Colors.text.secondary,
+    lineHeight: 17,
+  },
+  guaranteeRow: {
+    backgroundColor: Colors.surface.card,
+    borderRadius: Radius.cardSmall,
+    padding: 10,
+    gap: 6,
+    borderWidth: 1,
+    borderColor: Colors.surface.card2,
+  },
+  guaranteeItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  guaranteeText: {
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: FontSize.meta,
+    color: Colors.text.secondary,
   },
 });
