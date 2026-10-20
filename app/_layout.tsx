@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
+import { AppState, type AppStateStatus } from 'react-native';
 import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useStoreHydrated } from '../state/store';
+import { useStoreHydrated, useStore, useShallow } from '../state/store';
 import { Colors } from '../theme/tokens';
 import { initPurchases } from '../lib/purchases';
 import { useReminderSync } from '../lib/reminders';
 import { retryPendingAnswers } from '../lib/answers';
+import BiometricLockOverlay from '../components/BiometricLockOverlay';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -18,6 +20,14 @@ const STARTUP_TIMEOUT_MS = 5000;
 
 export default function RootLayout() {
   const hydrated = useStoreHydrated();
+  const { biometricsEnabled, isAppLocked, setAppLocked } = useStore(
+    useShallow((s) => ({
+      biometricsEnabled: s.biometricsEnabled,
+      isAppLocked: s.isAppLocked,
+      setAppLocked: s.setAppLocked,
+    })),
+  );
+
   const [fontsLoaded, fontError] = useFonts({
     'Fraunces-SemiBold': require('../assets/fonts/Fraunces-SemiBold.ttf'),
     'Fraunces-Bold': require('../assets/fonts/Fraunces-Bold.ttf'),
@@ -52,6 +62,24 @@ export default function RootLayout() {
     initPurchases();
   }, []);
 
+  // Lock the app on cold start when biometrics is enabled
+  useEffect(() => {
+    if (hydrated && biometricsEnabled) {
+      setAppLocked(true);
+    }
+  }, [hydrated, biometricsEnabled, setAppLocked]);
+
+  // Lock the app when resumed from background
+  useEffect(() => {
+    if (!biometricsEnabled) return;
+    const subscription = AppState.addEventListener('change', (nextState: AppStateStatus) => {
+      if (nextState === 'active') {
+        setAppLocked(true);
+      }
+    });
+    return () => subscription.remove();
+  }, [biometricsEnabled, setAppLocked]);
+
   useEffect(() => {
     if (ready) SplashScreen.hide();
   }, [ready]);
@@ -78,6 +106,7 @@ export default function RootLayout() {
         <Stack.Screen name="panic" options={{ presentation: 'modal', animation: 'fade' }} />
         <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
       </Stack>
+      {biometricsEnabled && isAppLocked && <BiometricLockOverlay />}
     </GestureHandlerRootView>
   );
 }

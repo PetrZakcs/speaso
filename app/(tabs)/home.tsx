@@ -13,6 +13,7 @@ import CheckInCard from '../../components/CheckInCard';
 import DailyWisdomCard from '../../components/DailyWisdomCard';
 import MilestoneModal, { MILESTONE_DAYS } from '../../components/MilestoneModal';
 import CommunityPulse from '../../components/CommunityPulse';
+import CompanionAvatar from '../../components/CompanionAvatar';
 import { addressName } from '../../lib/names';
 import { dailyPlan, doneOn, type PlanItem } from '../../lib/plan';
 import { fromDateKey } from '../../lib/dates';
@@ -72,13 +73,20 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        {/* Header */}
-        <View>
-          <Text style={styles.date}>{dateLabel}</Text>
-          <Text style={styles.hello} accessibilityRole="header">
-            {name ? t('home.greeting_comma', { greeting }) : t('home.greeting_noname')}
-          </Text>
-          {!!name && <Text style={styles.helloName}>{name}</Text>}
+        {/* Header with companion avatar */}
+        <View style={styles.header}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.date}>{dateLabel}</Text>
+            <Text style={styles.hello} accessibilityRole="header">
+              {name ? t('home.greeting_comma', { greeting }) : t('home.greeting_noname')}
+            </Text>
+            {!!name && <Text style={styles.helloName}>{name}</Text>}
+          </View>
+          <CompanionAvatar
+            size={62}
+            mood={allDone ? 'celebrate' : 'idle'}
+            onPress={() => router.push('/checkin')}
+          />
         </View>
 
         {/* The brand wave: calmer with every day of practice */}

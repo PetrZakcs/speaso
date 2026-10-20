@@ -667,7 +667,11 @@
   },
 
   "settings": {
-    "section_privacy":   { "cs": "Soukromí", "en": "Privacy" },
+    "section_privacy":   { "cs": "Soukromí & Bezpečnost", "en": "Privacy & Security" },
+    "biometrics_lock":   { "cs": "Zámek Face ID / Otisk", "en": "Face ID / Fingerprint lock" },
+    "biometrics_lock_sub": { "cs": "Chrání záznamy a deník před cizím pohledem", "en": "Protects recordings & journal from prying eyes" },
+    "biometrics_unavailable_title": { "cs": "Biometrie není k dispozici", "en": "Biometrics unavailable" },
+    "biometrics_unavailable_body": { "cs": "V nastavení telefonu aktivuj Face ID, Touch ID nebo kód zařízení.", "en": "Enable Face ID, Touch ID or a device passcode in your phone settings." },
     "share_answers":     { "cs": "Sdílet odpovědi z úvodu", "en": "Share intro answers" },
     "share_answers_hint":{ "cs": "Anonymně, bez jména — pomáhá nám to zlepšovat Speaso. Pro smazání už odeslaných odpovědí nám napiš.", "en": "Anonymous, no name — it helps us improve Speaso. To delete answers already sent, contact us." },
     "title":             { "cs": "Profil", "en": "Profile" },
@@ -779,6 +783,51 @@
     "day_14_desc":       { "cs": "Dva týdny tréninku. Bránicový dech se stává přirozenou reakcí na stres.", "en": "Two weeks of training. Diaphragmatic breath becomes natural." },
     "day_30_title":      { "cs": "30 dní: Neuroplastický mistr", "en": "30 days: Neuroplastic master" },
     "day_30_desc":       { "cs": "Měsíc soustavného tréninku. V mozku vznikají trvalé spoje pro plynulejší projev.", "en": "A month of consistent training. Lasting neural pathways are formed." }
+  },
+
+  "privacy": {
+    "zero_cloud_badge":  { "cs": "100% On-Device · Bez cloudu", "en": "100% On-Device · Zero Cloud" },
+    "zero_cloud_title":  { "cs": "100% lokální úložiště hlasu", "en": "100% Local Voice Storage" },
+    "zero_cloud_desc":   { "cs": "Tvé hlasové nahrávky jsou uloženy výhradně v zabezpečené paměti tohoto telefonu. Nikdy neopouštějí zařízení ani se neposílají na servery.", "en": "Your voice recordings are encrypted and stored exclusively in the secure storage of this phone. They never leave the device or touch any server." }
+  },
+
+  "biometrics": {
+    "prompt":            { "cs": "Odemknout Speaso", "en": "Unlock Speaso" },
+    "enroll_prompt":     { "cs": "Ověř se pro aktivaci biometrického zámku", "en": "Verify to enable biometric lock" },
+    "disable_prompt":    { "cs": "Ověř se pro vypnutí biometrického zámku", "en": "Verify to disable biometric lock" },
+    "locked_title":      { "cs": "Speaso je uzamčeno", "en": "Speaso is locked" },
+    "locked_sub":        { "cs": "Pro ochranu tvých dechových záznamů a deníku ověř svou identitu.", "en": "Verify your identity to protect your speech recordings and journal." },
+    "unlock_face_id":    { "cs": "Odemknout Face ID", "en": "Unlock with Face ID" },
+    "unlock_fingerprint":{ "cs": "Odemknout otiskem prstu", "en": "Unlock with Fingerprint" },
+    "unlock_pin":        { "cs": "Odemknout kódem zařízení", "en": "Unlock with passcode" }
+  },
+
+  "diagnostic": {
+    "companion_greeting":{ "cs": "Tvůj profil je připraven. Společně to zvládneme.", "en": "Your profile is ready. We've got this together." },
+    "screen_kicker":     { "cs": "Osobní profil řeči", "en": "Personal Speech Profile" },
+    "screen_title":      { "cs": "Analýza tvé řeči & somatického napětí", "en": "Speech & Somatic Tension Analysis" },
+    "screen_sub":        { "cs": "Na základě tvých odpovědí jsme identifikovali klíčová místa napětí v hrtanu a sestavili tvou 30denní trajektorii.", "en": "Based on your answers, we identified key laryngeal tension points and tailored your 30-day trajectory." },
+    "score_label":       { "cs": "Index somatického napětí", "en": "Somatic tension index" },
+    "score_level_elevated": { "cs": "Zvýšené napětí hlasivek", "en": "Elevated vocal cord tension" },
+    "score_hint":        { "cs": "Vysoké napětí v hrtanu vede k náhlým svalovým zásekům při stresu.", "en": "High laryngeal tension leads to sudden speech blocks under stress." },
+    "friction_areas_title": { "cs": "Identifikovaná ohniska napětí", "en": "Identified tension friction points" },
+    "area_larynx_title": { "cs": "Hrtanové sevření při stresu", "en": "Laryngeal throat constriction" },
+    "area_larynx_desc":  { "cs": "Hlasivky se reflexivně sevřou před začátkem slova. Pomáhá měkký začátek řeči.", "en": "Vocal folds reflexively clamp before words start. Gentle onset helps." },
+    "area_diaphragm_title": { "cs": "Mělký hrudní dech", "en": "Shallow thoracic breathing" },
+    "area_diaphragm_desc": { "cs": "Nedostatek dechové opory nutí krční svaly kompenzovat chybějící vzduch.", "en": "Lack of breath support forces neck muscles to overcompensate." },
+    "area_pace_title":   { "cs": "Zrychlené tempo v sociálních situacích", "en": "Accelerated social speech pace" },
+    "area_pace_desc":    { "cs": "Snaha vyslovit myšlenku co nejrychleji spouští repetice a prolongace.", "en": "Rushing to speak triggers repetitions and sound prolongations." },
+    "projection_title":  { "cs": "30denní vědecká prognóza", "en": "30-day clinical projection" },
+    "timeline_day1_label": { "cs": "Den 1: Východzí stav", "en": "Day 1: Baseline" },
+    "timeline_day1_desc": { "cs": "Časté bloky v 70%+ náročných situací (telefon, cizí lidé).", "en": "Frequent blocks in 70%+ of tough situations (phone, strangers)." },
+    "timeline_day14_label": { "cs": "Den 14: Dechová jistota", "en": "Day 14: Breath certainty" },
+    "timeline_day14_desc": { "cs": "Uvolněný hrtan a automatický fyziologický vzdech před promluvou.", "en": "Relaxed larynx and automatic physiological sigh before speaking." },
+    "timeline_day30_label": { "cs": "Den 30: Neuroplastická adaptace", "en": "Day 30: Neuroplastic adaptation" },
+    "timeline_day30_desc": { "cs": "Až o {pct}% méně bloků díky novým nervovým spojením pro klidné tempo.", "en": "Up to {pct}% fewer speech blocks through new neural pathways for calm pacing." },
+    "guarantee_reminder":{ "cs": "Upozorníme tě 2 dny před koncem zkoušky", "en": "We'll notify you 2 days before trial ends" },
+    "guarantee_cancel":  { "cs": "Zrušení kdykoliv 1 kliknutím", "en": "Cancel anytime in 1 tap" },
+    "guarantee_privacy": { "cs": "100% soukromé offline úložiště", "en": "100% private offline storage" },
+    "cta_start_trial":   { "cs": "Aktivovat můj 7denní plán zdarma", "en": "Activate my 7-day free plan" }
   },
 
   "tabbar": {

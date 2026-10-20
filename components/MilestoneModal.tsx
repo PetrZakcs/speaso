@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Modal, Share } from 'react-na
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from '../i18n/useTranslation';
 import { hapticPress, hapticSuccess } from '../lib/haptics';
+import CompanionAvatar from './CompanionAvatar';
 import { Colors, FontFamily, FontSize, Radius, Shadow } from '../theme/tokens';
 
 export const MILESTONE_DAYS = [3, 7, 14, 30] as const;
@@ -41,9 +42,7 @@ export default function MilestoneModal({ visible, days, onDismiss }: MilestoneMo
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.backdrop}>
         <View style={[styles.card, Shadow.card]}>
-          <View style={styles.iconRing}>
-            <Ionicons name="trophy" size={36} color={Colors.accent.main} />
-          </View>
+          <CompanionAvatar size={96} mood="celebrate" style={{ marginBottom: 4 }} />
 
           <Text style={styles.kicker}>{t('milestone.title')}</Text>
           <Text style={styles.title}>{t(titleKey)}</Text>

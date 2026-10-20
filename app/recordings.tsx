@@ -9,6 +9,7 @@ import { FREE_RECORDINGS_LIMIT, useStore, useShallow, type Recording } from '../
 import { recordingUri } from '../lib/recordings';
 import { activityTitle, formatDate } from '../lib/activities';
 import IconButton from '../components/IconButton';
+import ZeroCloudBadge from '../components/ZeroCloudBadge';
 import { formatTime } from '../components/session/SessionParts';
 import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow, Tints } from '../theme/tokens';
 
@@ -68,6 +69,8 @@ export default function RecordingsScreen() {
         <Text style={styles.title} accessibilityRole="header">{t('recordings.title')}</Text>
         <View style={{ width: 36 }} />
       </View>
+
+      <ZeroCloudBadge style={{ marginHorizontal: Spacing.screenH, marginBottom: 12 }} />
 
       {!isPremium && (
         <TouchableOpacity

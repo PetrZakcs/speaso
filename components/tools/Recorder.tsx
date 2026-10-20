@@ -8,6 +8,7 @@ import {
 import { useTranslation } from '../../i18n/useTranslation';
 import { useStore } from '../../state/store';
 import { persistRecording, recordingUri } from '../../lib/recordings';
+import ZeroCloudBadge from '../ZeroCloudBadge';
 import { Colors, FontFamily, FontSize, Radius, Shadow } from '../../theme/tokens';
 import { hapticPress, hapticSelect } from '../../lib/haptics';
 
@@ -270,6 +271,8 @@ const WAVE_PATTERN = [
           <Text style={styles.again}>{t('recorder.again_hint')}</Text>
         </View>
       )}
+
+      <ZeroCloudBadge compact style={{ alignSelf: 'center', marginTop: 4 }} />
     </View>
   );
 }

@@ -155,4 +155,18 @@ describe('store', () => {
     markMilestoneCelebrated(3); // duplicate
     expect(useStore.getState().celebratedMilestones).toEqual([3, 7]);
   });
+
+  it('manages biometric lock and app lock status', () => {
+    const { setBiometricsEnabled, setAppLocked } = useStore.getState();
+    expect(useStore.getState().biometricsEnabled).toBe(false);
+    expect(useStore.getState().isAppLocked).toBe(false);
+
+    setBiometricsEnabled(true);
+    setAppLocked(true);
+    expect(useStore.getState().biometricsEnabled).toBe(true);
+    expect(useStore.getState().isAppLocked).toBe(true);
+
+    setAppLocked(false);
+    expect(useStore.getState().isAppLocked).toBe(false);
+  });
 });

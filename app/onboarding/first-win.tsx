@@ -6,6 +6,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from '../../i18n/useTranslation';
 import BreathingBall from '../../components/BreathingBall';
 import PillButton from '../../components/PillButton';
+import CompanionAvatar from '../../components/CompanionAvatar';
 import { Colors, FontFamily, FontSize, Spacing } from '../../theme/tokens';
 import { hapticSuccess } from '../../lib/haptics';
 
@@ -18,7 +19,7 @@ const ROUNDS = 3;
 export default function FirstWin() {
   const { t } = useTranslation();
   const [done, setDone] = useState(false);
-  const next = () => router.push('/onboarding/offer');
+  const next = () => router.push('/onboarding/diagnostic');
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -44,9 +45,7 @@ export default function FirstWin() {
       ) : (
         <>
           <View style={styles.main}>
-            <View style={styles.badge}>
-              <Ionicons name="checkmark" size={44} color={Colors.accent.main} />
-            </View>
+            <CompanionAvatar size={96} mood="celebrate" />
             <Text style={[styles.title, styles.center]} accessibilityRole="header">{t('onboarding.win_done_title')}</Text>
             <Text style={[styles.sub, styles.center]}>{t('onboarding.win_done_sub')}</Text>
 

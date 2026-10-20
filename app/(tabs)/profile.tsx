@@ -24,6 +24,8 @@ import PromoCodeModal from '../../components/paywall/PromoCodeModal';
 import TherapistConnectModal from '../../components/TherapistConnectModal';
 import ReminderTimeModal from '../../components/ReminderTimeModal';
 import ReferralShareModal from '../../components/ReferralShareModal';
+import ZeroCloudBadge from '../../components/ZeroCloudBadge';
+import { authenticateWithBiometrics, checkBiometricsAvailability } from '../../lib/biometrics';
 import { exportReport } from '../../lib/report';
 import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow } from '../../theme/tokens';
 
@@ -62,6 +64,7 @@ export default function ProfileScreen() {
   const [editingSlot, setEditingSlot] = useState<'practice' | 'morning' | 'streak' | null>(null);
   const {
     name, subscription, language, setLanguage, reminder, setReminder, shareAnswers, setUser, therapistName,
+    biometricsEnabled, setBiometricsEnabled,
   } = useStore(useShallow((s) => ({
     name: s.user.name,
     subscription: s.subscription,
@@ -72,7 +75,28 @@ export default function ProfileScreen() {
     shareAnswers: s.user.shareAnswers,
     setUser: s.setUser,
     therapistName: s.user.therapistName,
+    biometricsEnabled: s.biometricsEnabled,
+    setBiometricsEnabled: s.setBiometricsEnabled,
   })));
+
+  const toggleBiometrics = async (on: boolean) => {
+    if (on) {
+      const avail = await checkBiometricsAvailability();
+      if (!avail.hasHardware || !avail.isEnrolled) {
+        Alert.alert(t('settings.biometrics_unavailable_title'), t('settings.biometrics_unavailable_body'));
+        return;
+      }
+      const ok = await authenticateWithBiometrics(t('biometrics.enroll_prompt'));
+      if (ok) {
+        setBiometricsEnabled(true);
+      }
+    } else {
+      const ok = await authenticateWithBiometrics(t('biometrics.disable_prompt'));
+      if (ok) {
+        setBiometricsEnabled(false);
+      }
+    }
+  };
 
   const showPermissionAlert = () => {
     Alert.alert(t('reminders.denied_title'), t('reminders.denied_body'), [
@@ -333,10 +357,27 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* Privacy: opt-in sharing of onboarding answers */}
+        {/* Privacy & Security */}
         <View style={styles.section}>
           <Text style={styles.sectionLabel}>{t('settings.section_privacy')}</Text>
           <View style={styles.sectionCard}>
+            <View style={styles.row}>
+              <Ionicons name="scan-outline" size={18} color={Colors.text.secondary} style={styles.rowIcon} />
+              <View style={{ flex: 1, gap: 2 }}>
+                <Text style={styles.rowLabel}>{t('settings.biometrics_lock')}</Text>
+                <Text style={styles.rowSubLabel}>{t('settings.biometrics_lock_sub')}</Text>
+              </View>
+              <Switch
+                value={biometricsEnabled}
+                onValueChange={toggleBiometrics}
+                trackColor={{ false: Colors.text.tertiary, true: Colors.accent.main }}
+                thumbColor="#FFFFFF"
+                accessibilityLabel={t('settings.biometrics_lock')}
+              />
+            </View>
+
+            <View style={styles.divider} />
+
             <View style={styles.row}>
               <Ionicons name="paper-plane-outline" size={18} color={Colors.text.secondary} style={styles.rowIcon} />
               <Text style={styles.rowLabel}>{t('settings.share_answers')}</Text>
@@ -354,6 +395,8 @@ export default function ProfileScreen() {
             </View>
           </View>
           <Text style={styles.sectionHint}>{t('settings.share_answers_hint')}</Text>
+
+          <ZeroCloudBadge style={{ marginTop: 12 }} />
         </View>
 
         {/* Subscription */}

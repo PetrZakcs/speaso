@@ -5,6 +5,7 @@ import { useTranslation } from '../i18n/useTranslation';
 import { getDailyWisdom } from '../content/dailyWisdom';
 import type { DateKey } from '../lib/dates';
 import { hapticPress, hapticSuccess } from '../lib/haptics';
+import CompanionAvatar from './CompanionAvatar';
 import { Colors, FontFamily, FontSize, Radius, Shadow } from '../theme/tokens';
 
 export default function DailyWisdomCard({ today }: { today: DateKey }) {
@@ -42,7 +43,10 @@ export default function DailyWisdomCard({ today }: { today: DateKey }) {
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.quote}>„{wisdom.quote}“</Text>
+      <View style={styles.quoteRow}>
+        <CompanionAvatar size={48} mood="wisdom" />
+        <Text style={styles.quote}>„{wisdom.quote}“</Text>
+      </View>
 
       <View style={styles.challengeBox}>
         <View style={styles.challengeHead}>
@@ -94,7 +98,13 @@ const styles = StyleSheet.create({
     fontSize: FontSize.meta,
     color: Colors.accent.main,
   },
+  quoteRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
   quote: {
+    flex: 1,
     fontFamily: FontFamily.headingItalic,
     fontSize: 17,
     lineHeight: 24,

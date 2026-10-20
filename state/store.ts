@@ -19,7 +19,7 @@ const MAX_CHECKINS = 730;
 /** Free users keep their most recent recordings only. */
 export const FREE_RECORDINGS_LIMIT = 3;
 
-interface UserState {
+export interface UserState {
   name: string;
   ageGroup: AgeGroup | null;
   situations: string[];
@@ -129,11 +129,17 @@ interface AppState {
   answersPending: boolean;
   /** Track which streak milestone days have already been celebrated. */
   celebratedMilestones: number[];
+  /** Biometric Face ID / Touch ID privacy lock. */
+  biometricsEnabled: boolean;
+  /** Current app lock state when biometrics is active. */
+  isAppLocked: boolean;
 
   setOnboardingDone: (v: boolean) => void;
   setLanguage: (lang: SupportedLang) => void;
   setUser: (partial: Partial<UserState>) => void;
   setSubscription: (s: SubscriptionState) => void;
+  setBiometricsEnabled: (enabled: boolean) => void;
+  setAppLocked: (locked: boolean) => void;
   /** Saves a finished session and returns its id (for rating it afterwards). */
   recordSession: (exerciseId: string, durationSec: number) => string;
   rateSession: (id: string, rating: Rating, note?: string) => void;
@@ -246,11 +252,15 @@ export const useStore = create<AppState>()(
       installId: newId(new Date()),
       answersPending: false,
       celebratedMilestones: [],
+      biometricsEnabled: false,
+      isAppLocked: false,
 
       setOnboardingDone: (v) => set({ onboardingDone: v }),
       setLanguage: (language) => set({ language }),
       setUser: (partial) => set((s) => ({ user: { ...s.user, ...partial } })),
       setSubscription: (subscription) => set({ subscription }),
+      setBiometricsEnabled: (biometricsEnabled) => set({ biometricsEnabled }),
+      setAppLocked: (isAppLocked) => set({ isAppLocked }),
 
       recordSession: (exerciseId, durationSec) => {
         const now = new Date();
@@ -364,7 +374,7 @@ export const useStore = create<AppState>()(
     }),
     {
       name: 'speaso-storage',
-      version: 5,
+      version: 6,
       storage: createJSONStorage(() => storageAdapter),
       onRehydrateStorage: () => (_state, error) => {
         if (error) console.warn('[store] rehydration failed, starting with defaults:', error);
@@ -422,6 +432,13 @@ export const useStore = create<AppState>()(
               ...DEFAULT_REMINDER,
               ...(old.reminder ?? {}),
             },
+          };
+        }
+        if (version <= 5) {
+          // v6: biometric privacy lock.
+          old = {
+            ...old,
+            biometricsEnabled: old.biometricsEnabled ?? false,
           };
         }
         return old;
