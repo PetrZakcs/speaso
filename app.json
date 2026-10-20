@@ -15,6 +15,7 @@
       },
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true,
+        "NSFaceIDUsageDescription": "Povolte Face ID pro zabezpečení vašich dechových nahrávek a deníku řeči.",
         "UIApplicationShortcutItems": [
           {
             "UIApplicationShortcutItemType": "panic",
@@ -39,7 +40,9 @@
       "package": "com.speaso.app",
       "permissions": [
         "android.permission.RECORD_AUDIO",
-        "android.permission.MODIFY_AUDIO_SETTINGS"
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT"
       ]
     },
     "web": {
@@ -86,6 +89,12 @@
           "enableBackgroundPlayback": false,
           "enableBackgroundRecording": false,
           "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Povolte Face ID pro zabezpečení vašich dechových nahrávek a deníku řeči."
         }
       ],
       "expo-sharing",

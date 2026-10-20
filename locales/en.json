@@ -1,7 +1,8 @@
 {
   "ios": {
     "CFBundleDisplayName": "Speaso",
-    "NSMicrophoneUsageDescription": "Speaso uses the microphone so you can record your practice and listen back. Recordings stay on your phone."
+    "NSMicrophoneUsageDescription": "Speaso uses the microphone so you can record your practice and listen back. Recordings stay on your phone.",
+    "NSFaceIDUsageDescription": "Enable Face ID to secure your speech recordings and journal."
   },
   "android": {
     "app_name": "Speaso"

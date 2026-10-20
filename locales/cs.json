@@ -1,7 +1,8 @@
 {
   "ios": {
-    "CFBundleDisplayName": "Speasy",
-    "NSMicrophoneUsageDescription": "Speasy používá mikrofon, abys si mohl/a nahrát své cvičení a poslechnout si ho. Nahrávky zůstávají jen v telefonu."
+    "CFBundleDisplayName": "Speaso",
+    "NSMicrophoneUsageDescription": "Speaso používá mikrofon, abys si mohl/a nahrát své cvičení a poslechnout si ho. Nahrávky zůstávají jen v telefonu.",
+    "NSFaceIDUsageDescription": "Povolte Face ID pro zabezpečení vašich dechových nahrávek a deníku řeči."
   },
   "android": {
     "app_name": "Speasy"
