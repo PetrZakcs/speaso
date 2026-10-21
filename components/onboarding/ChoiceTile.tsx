@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import ActivityIcon from '../ActivityIcon';
-import { Colors, FontFamily, FontSize, Radius, Shadow, type TintName } from '../../theme/tokens';
+import { Colors, Depth, FontFamily, FontSize, Radius, Shadow, type TintName } from '../../theme/tokens';
+import { PressableRaised } from '../depth/Raised';
 import { hapticSelect } from '../../lib/haptics';
 
-/** A half-width selectable tile for 2-column onboarding grids. */
+/** A half-width selectable 3D tile for 2-column onboarding grids; sinks in on press. */
 export default function ChoiceTile({
   title, detail, icon, tint, selected, onPress, multi = false,
 }: {
@@ -18,13 +19,16 @@ export default function ChoiceTile({
   multi?: boolean;
 }) {
   return (
-    <TouchableOpacity
+    <PressableRaised
       onPress={() => {
         hapticSelect();
         onPress();
       }}
-      activeOpacity={0.8}
-      style={[styles.tile, selected && styles.tileSelected]}
+      depth={Depth.card}
+      ledgeColor={selected ? Colors.accent.ledge : Colors.surface.ledge}
+      radius={Radius.card}
+      style={styles.tile}
+      faceStyle={[styles.face, selected && styles.faceSelected]}
       accessibilityLabel={detail ? `${title}, ${detail}` : title}
       accessibilityRole={multi ? 'checkbox' : 'radio'}
       accessibilityState={multi ? { checked: selected } : { selected }}
@@ -37,7 +41,7 @@ export default function ChoiceTile({
       </View>
       <Text style={styles.title}>{title}</Text>
       {!!detail && <Text style={styles.detail} numberOfLines={3}>{detail}</Text>}
-    </TouchableOpacity>
+    </PressableRaised>
   );
 }
 
@@ -48,18 +52,17 @@ export function TileGrid({ children }: { children: React.ReactNode }) {
 
 const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  tile: {
-    width: '48.4%',
+  tile: { width: '48.4%' },
+  face: {
     minHeight: 136,
     padding: 14,
     gap: 6,
-    borderRadius: Radius.card,
     backgroundColor: Colors.surface.card,
-    ...Shadow.card,
+    boxShadow: Shadow.rim,
     borderWidth: 2,
     borderColor: 'transparent',
   },
-  tileSelected: { borderColor: Colors.accent.main, backgroundColor: Colors.surface.mint },
+  faceSelected: { borderColor: Colors.accent.main, backgroundColor: Colors.accent.soft },
   top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 },
   title: { fontFamily: FontFamily.heading, fontSize: FontSize.body, lineHeight: 20, color: Colors.text.primary },
   detail: {
@@ -69,14 +72,17 @@ const styles = StyleSheet.create({
     color: Colors.text.secondary,
   },
   mark: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    borderWidth: 1.5,
-    borderColor: Colors.text.tertiary,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: Colors.surface.card2,
+    boxShadow: Shadow.well,
     alignItems: 'center',
     justifyContent: 'center',
   },
   markSquare: { borderRadius: 6 },
-  markOn: { backgroundColor: Colors.accent.main, borderColor: Colors.accent.main },
+  markOn: {
+    backgroundColor: Colors.accent.main,
+    boxShadow: `0px ${Depth.fill}px 0px ${Colors.accent.ledge}`,
+  },
 });

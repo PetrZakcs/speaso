@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useStore, useShallow } from '../../state/store';
-import Card from '../../components/Card';
+import Card, { PressableCard } from '../../components/Card';
 import MoodChart from '../../components/MoodChart';
 import SpeechFactorsCard from '../../components/SpeechFactorsCard';
 import SmartInsightsCard from '../../components/SmartInsightsCard';
@@ -19,7 +19,7 @@ import PremiumTag from '../../components/PremiumTag';
 import ResearchContributionCard from '../../components/ResearchContributionCard';
 import ShareProgressModal from '../../components/ShareProgressModal';
 import { useToday } from '../../lib/useToday';
-import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow, Tints } from '../../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius, Spacing, Tints } from '../../theme/tokens';
 
 const CHART_HEIGHT = 80;
 
@@ -112,7 +112,7 @@ export default function ProgressScreen() {
         <Text style={styles.screenTitle} accessibilityRole="header">{t('progress.title')}</Text>
 
         {/* Streak hero */}
-        <View style={styles.streakHero}>
+        <Card style={styles.streakHero}>
           <View style={{ flex: 1, gap: 4 }}>
             <Text style={styles.streakLabel}>{t('progress.current_streak')}</Text>
             <Text style={styles.streakVal}>{tn('progress.streak_value', streakDays)}</Text>
@@ -127,7 +127,7 @@ export default function ProgressScreen() {
           >
             <Ionicons name="flame" size={26} color={streakDays ? Tints.peach.fg : Colors.text.tertiary} />
           </ProgressRing>
-        </View>
+        </Card>
 
         <MoodChart checkIns={checkIns} today={today} />
         <SpeechFactorsCard checkIns={checkIns} />
@@ -214,16 +214,16 @@ export default function ProgressScreen() {
           )}
         </Card>
 
-        <TouchableOpacity style={styles.linkCard} onPress={() => router.push('/recordings')} accessibilityRole="button">
+        <PressableCard style={styles.linkCard} onPress={() => router.push('/recordings')} accessibilityRole="button">
           <Ionicons name="mic-outline" size={22} color={Colors.accent.main} />
           <View style={{ flex: 1 }}>
             <Text style={styles.linkTitle}>{t('recordings.title')}</Text>
             <Text style={styles.linkSub}>{tn('recordings.count', recordingsCount)}</Text>
           </View>
           <Ionicons name="chevron-forward" size={18} color={Colors.text.tertiary} />
-        </TouchableOpacity>
+        </PressableCard>
 
-        <TouchableOpacity
+        <PressableCard
           style={styles.linkCard}
           onPress={handleExport}
           disabled={exporting}
@@ -239,9 +239,9 @@ export default function ProgressScreen() {
           ) : (
             <PremiumTag />
           )}
-        </TouchableOpacity>
+        </PressableCard>
 
-        <TouchableOpacity
+        <PressableCard
           style={styles.linkCard}
           onPress={() => setShareModalVisible(true)}
           accessibilityRole="button"
@@ -254,7 +254,7 @@ export default function ProgressScreen() {
             </Text>
           </View>
           <Ionicons name="share-social-outline" size={18} color={Colors.text.tertiary} />
-        </TouchableOpacity>
+        </PressableCard>
 
         {/* Clinical Balbuties Research Contribution */}
         <ResearchContributionCard />
@@ -278,9 +278,6 @@ const styles = StyleSheet.create({
     letterSpacing: -0.4,
   },
   streakHero: {
-    backgroundColor: Colors.surface.card,
-    ...Shadow.card,
-    borderRadius: Radius.card,
     padding: 20,
     flexDirection: 'row',
     alignItems: 'center',
@@ -393,9 +390,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
-    backgroundColor: Colors.surface.card,
-    ...Shadow.card,
-    borderRadius: Radius.card,
     padding: 16,
   },
   linkTitle: { fontFamily: FontFamily.heading, fontSize: FontSize.cardTitleSmall, color: Colors.text.primary },

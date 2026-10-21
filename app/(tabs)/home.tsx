@@ -9,6 +9,8 @@ import VoiceWave from '../../components/brand/VoiceWave';
 import { waveCalm, waveCaptionKey } from '../../lib/wave';
 import WeekDots from '../../components/WeekDots';
 import ActivityIcon from '../../components/ActivityIcon';
+import Card, { PressableCard } from '../../components/Card';
+import { Raised } from '../../components/depth/Raised';
 import CheckInCard from '../../components/CheckInCard';
 import DailyWisdomCard from '../../components/DailyWisdomCard';
 import MilestoneModal, { MILESTONE_DAYS } from '../../components/MilestoneModal';
@@ -22,7 +24,7 @@ import {
 } from '../../lib/streak';
 import { useToday } from '../../lib/useToday';
 import { useStartExercise, useStartSituation } from '../../lib/useStartExercise';
-import { Colors, FontFamily, FontSize, Radius, Shadow, Spacing } from '../../theme/tokens';
+import { Colors, Depth, FontFamily, FontSize, Radius, Shadow, Spacing } from '../../theme/tokens';
 
 function greetingKey(hour: number) {
   if (hour < 11) return 'home.greeting_morning';
@@ -90,7 +92,7 @@ export default function HomeScreen() {
         </View>
 
         {/* The brand wave: calmer with every day of practice */}
-        <View
+        <Card
           style={styles.waveCard}
           accessible
           accessibilityLabel={`${tn('home.streak_days', streakDays)}. ${t(waveCaptionKey(calm))}`}
@@ -103,7 +105,7 @@ export default function HomeScreen() {
           </View>
           <VoiceWave calm={calm} height={72} style={{ marginVertical: 6 }} />
           <Text style={styles.waveCaption}>{t(waveCaptionKey(calm))}</Text>
-        </View>
+        </Card>
 
         {/* Motivational Streak Safeguard (VOS style recovery) */}
         {streakDays === 0 && streak.record > 0 && (
@@ -149,9 +151,8 @@ export default function HomeScreen() {
                   </View>
                   {!isLast && <View style={[styles.line, isDone && styles.lineDone]} />}
                 </View>
-                <TouchableOpacity
+                <PressableCard
                   onPress={() => start(item)}
-                  activeOpacity={0.8}
                   style={[styles.tlCard, isDone && styles.tlCardDone]}
                   accessibilityRole="button"
                   accessibilityState={{ checked: isDone }}
@@ -166,7 +167,7 @@ export default function HomeScreen() {
                     </View>
                   </View>
                   <ActivityIcon name={icon} tint={tint} size={60} muted={isDone} bg={isDone ? undefined : Colors.surface.card} />
-                </TouchableOpacity>
+                </PressableCard>
               </View>
             );
           })}
@@ -184,7 +185,7 @@ export default function HomeScreen() {
         )}
 
         {/* This week */}
-        <View style={styles.card}>
+        <Card style={styles.card}>
           <View style={styles.rowBetween}>
             <Text style={styles.cardTitle}>{t('home.week_title')}</Text>
             <Text style={styles.cardMeta}>
@@ -193,24 +194,23 @@ export default function HomeScreen() {
           </View>
           <WeekDots activity={activity} today={today} />
           <Text style={styles.grace}>{t('home.streak_grace')}</Text>
-        </View>
+        </Card>
 
         {/* Panic */}
-        <TouchableOpacity
+        <PressableCard
           onPress={() => router.push('/panic')}
           style={styles.panicRow}
-          activeOpacity={0.8}
           accessibilityRole="button"
         >
-          <View style={styles.panicIcon}>
+          <Raised depth={Depth.tile} ledgeColor={Colors.danger.ledge} radius={16} ambient={false} faceStyle={styles.panicIcon}>
             <Ionicons name="pulse" size={22} color={Colors.danger.panic} />
-          </View>
+          </Raised>
           <View style={{ flex: 1 }}>
             <Text style={styles.rowTitle}>{t('home.panic_title')}</Text>
             <Text style={styles.rowMeta}>{t('home.panic_caption')}</Text>
           </View>
           <Ionicons name="chevron-forward" size={18} color={Colors.text.tertiary} />
-        </TouchableOpacity>
+        </PressableCard>
 
         <TouchableOpacity
           onPress={() => router.push('/(tabs)/exercises')}
@@ -257,14 +257,7 @@ const styles = StyleSheet.create({
     color: Colors.accent.main,
     letterSpacing: -0.6,
   },
-  waveCard: {
-    backgroundColor: Colors.surface.card,
-    borderRadius: Radius.card,
-    paddingTop: 16,
-    paddingBottom: 16,
-    paddingHorizontal: 18,
-    ...Shadow.card,
-  },
+  waveCard: { paddingTop: 16, paddingBottom: 16, paddingHorizontal: 18 },
   waveHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
   waveTitle: { fontFamily: FontFamily.heading, fontSize: 18, color: Colors.text.primary },
   waveStreak: { fontFamily: FontFamily.headingItalic, fontSize: 15, color: Colors.brand.main },
@@ -297,7 +290,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
     backgroundColor: Colors.surface.mint,
-    borderRadius: Radius.card,
     padding: 16,
     paddingLeft: 18,
     marginBottom: 12,
@@ -328,13 +320,7 @@ const styles = StyleSheet.create({
     color: Colors.text.tertiary,
     textAlign: 'center',
   },
-  card: {
-    backgroundColor: Colors.surface.card,
-    borderRadius: Radius.card,
-    padding: 18,
-    gap: 14,
-    ...Shadow.card,
-  },
+  card: { gap: 14 },
   rowBetween: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
   cardTitle: { fontFamily: FontFamily.heading, fontSize: 17, color: Colors.text.primary },
   cardMeta: { fontFamily: FontFamily.dmSansMedium, fontSize: FontSize.bodySmall, color: Colors.text.secondary },
@@ -344,15 +330,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 14,
     padding: 14,
-    borderRadius: Radius.card,
-    backgroundColor: Colors.surface.card,
-    ...Shadow.card,
   },
   panicIcon: {
     width: 46,
     height: 46,
-    borderRadius: 16,
+    flexGrow: 0,
     backgroundColor: Colors.danger.soft,
+    boxShadow: Shadow.rim,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -2,6 +2,9 @@
  * VOS-inspired: one brand green, airy mint backgrounds, white cards; colour
  * comes mostly from activity tiles/illustrations. Immersive moments
  * (check-in, breathing, panic) use the dark "calm" palette.
+ *
+ * v2 "Depth": everything tappable stands on a solid ledge (a darker step of
+ * its own colour) and sinks into it when pressed. See `Depth` and Raised.
  */
 export const Colors = {
   bg: {
@@ -13,6 +16,8 @@ export const Colors = {
     card2: '#E8F1EC',
     /** Pale mint for plan cards and highlighted blocks. */
     mint: '#E4F2EA',
+    /** Solid 3D edge under raised white surfaces (cards, tiles, secondary buttons). */
+    ledge: '#D5E5DB',
   },
   text: {
     primary: '#14241C',
@@ -24,21 +29,30 @@ export const Colors = {
     soft: '#DCEFE4',
     /** Text and icons placed on top of the accent color. */
     on: '#FFFFFF',
+    /** 3D edge under green buttons and selected tiles. */
+    ledge: '#1F5C3E',
   },
   /** The second brand colour: warm apricot, used sparingly (streak, wave echo, highlights). */
   brand: {
     main: '#E07A4F',
     soft: '#FBE7DC',
+    ledge: '#B85B33',
+    /** Text on apricot — white fails contrast (3.0:1). */
+    on: '#3A1A0A',
   },
   danger: {
     panic: '#E0604F',
     soft: '#FBE4DF',
+    /** 3D edge under panic-tinted tiles. */
+    ledge: '#F2C9C1',
   },
   premium: {
     main: '#A8771F',
     soft: '#F7ECD6',
   },
   hairline: 'rgba(20,36,28,0.08)',
+  /** Top rim light on raised faces and the stripe on progress fills. */
+  highlight: 'rgba(255,255,255,0.75)',
 } as const;
 
 /** Dark green palette for immersive, calming screens. */
@@ -50,15 +64,17 @@ export const Calm = {
   muted: 'rgba(238,246,241,0.62)',
   accent: '#74C69A',
   track: 'rgba(255,255,255,0.12)',
+  /** Ledge under the calm orb. */
+  ledge: '#0E1A14',
 } as const;
 
 /** Pastel tile background + matching ink, one per activity family. */
 export const Tints = {
-  sage: { bg: '#E2EFE9', fg: '#3F7F6C' },
-  lavender: { bg: '#ECE7F8', fg: '#6E59B5' },
-  peach: { bg: '#FCE8DC', fg: '#B9643B' },
-  sky: { bg: '#E1EDF9', fg: '#3F72AA' },
-  butter: { bg: '#FAF0D2', fg: '#9A7623' },
+  sage: { bg: '#E2EFE9', fg: '#3F7F6C', ledge: '#C6DDD2' },
+  lavender: { bg: '#ECE7F8', fg: '#6E59B5', ledge: '#D5CCEE' },
+  peach: { bg: '#FCE8DC', fg: '#B9643B', ledge: '#F2CDB6' },
+  sky: { bg: '#E1EDF9', fg: '#3F72AA', ledge: '#C3D7EE' },
+  butter: { bg: '#FAF0D2', fg: '#9A7623', ledge: '#EEDDA6' },
 } as const;
 export type TintName = keyof typeof Tints;
 
@@ -71,12 +87,33 @@ export const Shadow = {
     shadowOffset: { width: 0, height: 4 },
     elevation: 2,
   },
+  /** Soft green ambient under a ledge; the ledge itself is a solid View (see Raised). */
+  ambient: '0px 10px 24px rgba(31,77,54,0.10)',
+  /** Rim light along the top inside edge of a raised face. */
+  rim: 'inset 0px 2px 0px rgba(255,255,255,0.75)',
+  rimOnColor: 'inset 0px 2px 0px rgba(255,255,255,0.22)',
+  /** Sunken tracks: progress bar, unselected marks. */
+  well: 'inset 0px 2px 3px rgba(20,36,28,0.10)',
+} as const;
+
+/**
+ * Depth v2: height of the solid ledge under a raised element. Pressing moves
+ * the face down by the same amount so it sinks into its ledge.
+ */
+export const Depth = {
+  fill: 2,
+  tile: 3,
+  card: 4,
+  button: 5,
+  hero: 8,
 } as const;
 
 export const Radius = {
   card: 22,
   cardSmall: 16,
   chip: 12,
+  /** 3D buttons: a rounded rect so the ledge reads as a solid block. */
+  button: 18,
   pill: 999,
   sheet: 30,
 } as const;
@@ -91,6 +128,7 @@ export const Spacing = {
 
 export const FontSize = {
   hero: 32,
+  button: 16,
   screenTitle: 24,
   cardTitle: 16,
   cardTitleSmall: 14,
