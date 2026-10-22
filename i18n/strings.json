@@ -40,7 +40,7 @@
     "welcome_title_a":   { "cs": "Mluv svým", "en": "Speak at your" },
     "welcome_title_b":   { "cs": "tempem.", "en": "own pace." },
     "welcome_sub":       { "cs": "Speaso ti pomáhá s koktáním v běžném dni — doma, v práci i na telefonu.", "en": "Speaso helps you with stuttering in everyday life — at home, at work and on the phone." },
-    "welcome_social_proof": { "cs": "⭐ 4.9/5 · Vyvinuto s klinickými logopedy", "en": "⭐ 4.9/5 · Developed with clinical speech therapists" },
+    "welcome_social_proof": { "cs": "Pro lidi, kteří koktají · Denní plán zdarma", "en": "For people who stutter · Free daily plan" },
     "welcome_pillar_breath": { "cs": "Dechová opora bránice a měkký začátek hlásek", "en": "Diaphragmatic breath support & soft onsets" },
     "welcome_pillar_safety": { "cs": "Bezpečný nácvik situací bez stresu", "en": "Safe rehearsals without pressure" },
     "welcome_pillar_research": { "cs": "Anonymní podpora výzkumu balbuties", "en": "Anonymous support for balbuties research" },
@@ -504,7 +504,7 @@
   "reminders": {
     "section":           { "cs": "Připomínky a notifikace", "en": "Reminders & Notifications" },
     "daily":             { "cs": "Denní trénink", "en": "Daily practice" },
-    "daily_sub":         { "cs": "Pravidelné cvičení plynulosti", "en": "Regular fluency practice" },
+    "daily_sub":         { "cs": "Pravidelné cvičení klidné řeči", "en": "Regular calm speech practice" },
     "morning":           { "cs": "Ranní naladění", "en": "Morning check-in" },
     "morning_sub":       { "cs": "Zápis spánku, faktorů mluvy a deníku", "en": "Log sleep, speech factors, and journal" },
     "streak":            { "cs": "Záchrana série", "en": "Streak saver" },
@@ -584,7 +584,7 @@
     "journal_empty":     { "cs": "Po každém cvičení můžeš ohodnotit, jak se ti mluvilo. Záznamy uvidíš tady.", "en": "After each session you can rate how speaking felt. Your entries will show up here." },
     "unlock":            { "cs": "Odemknout", "en": "Unlock" },
     "factors_title":     { "cs": "Co ovlivňuje tvoji řeč", "en": "What affects your speech" },
-    "factors_sub":       { "cs": "Souvislost mezi spánkem, hydratací a tvou plynulostí", "en": "Connection between sleep, hydration and your fluency" },
+    "factors_sub":       { "cs": "Souvislost mezi spánkem, hydratací a tím, jak se ti mluví", "en": "Connection between sleep, hydration and how speaking feels" },
     "factor_sleep_good": { "cs": "Při 7+ hodinách spánku", "en": "With 7+ hours of sleep" },
     "factor_sleep_poor": { "cs": "Při méně než 6h spánku", "en": "With under 6 hours of sleep" },
     "factor_water_good": { "cs": "Při 6+ sklenicích vody", "en": "With 6+ glasses of water" },
@@ -667,7 +667,7 @@
     "share_cta":         { "cs": "Odeslat dárkový kód příteli", "en": "Send gift code to a friend" },
     "copy_cta":          { "cs": "Zkopírovat kód", "en": "Copy code" },
     "copied":            { "cs": "Kód zkopírován do schránky!", "en": "Code copied to clipboard!" },
-    "share_message":     { "cs": "Ahoj, posílám ti dárkový kód na 1 měsíc plné verze Speaso zdarma pro trénink plynulosti mluvy a dechu: {code}. Stáhni si aplikaci na https://speaso.app a zadej kód v Profilu.", "en": "Hi, I'm sending you a gift code for 1 free month of Speaso Premium for speech fluency and breath training: {code}. Download the app at https://speaso.app and enter the code in Profile." }
+    "share_message":     { "cs": "Ahoj, posílám ti dárkový kód na 1 měsíc plné verze Speaso zdarma pro trénink klidné řeči a dechu: {code}. Stáhni si aplikaci na https://speaso.app a zadej kód v Profilu.", "en": "Hi, I'm sending you a gift code for 1 free month of Speaso Premium for calm speech and breath practice: {code}. Download the app at https://speaso.app and enter the code in Profile." }
   },
 
   "settings": {
@@ -762,11 +762,11 @@
 
   "insights": {
     "title":             { "cs": "Chytré vhledy", "en": "Smart insights" },
-    "sub":               { "cs": "Korelace mezi tvým tělem a plynulostí řeči", "en": "Correlations between your body & speech fluency" },
+    "sub":               { "cs": "Souvislost mezi tvým tělem a tím, jak se ti mluví", "en": "How your body relates to how speaking feels" },
     "empty_title":       { "cs": "Sbíráme tvá data", "en": "Gathering your data" },
     "empty_sub":         { "cs": "Zaznamenej ještě {n} dny check-inu a odhalíme tvé řečové vzorce.", "en": "Log {n} more check-ins to uncover your speech patterns." },
-    "sleep_title":       { "cs": "Spánek a plynulost", "en": "Sleep & fluency" },
-    "sleep_desc":        { "cs": "Při 7+ hodinách spánku hodnotíš plynulost řeči o {pct}% lépe.", "en": "With 7+ hours of sleep, your speech rating is {pct}% better." },
+    "sleep_title":       { "cs": "Spánek a mluvení", "en": "Sleep & speaking" },
+    "sleep_desc":        { "cs": "Při 7+ hodinách spánku hodnotíš mluvení o {pct}% lépe.", "en": "With 7+ hours of sleep, your speech rating is {pct}% better." },
     "water_title":       { "cs": "Hydratace a hlasivky", "en": "Hydration & vocal cords" },
     "water_desc":        { "cs": "Dostatečná hydratace u tebe souvisí s o {pct}% klidnější řečí.", "en": "Good hydration is linked to {pct}% calmer speech." },
     "practice_title":    { "cs": "Vliv pravidelného tréninku", "en": "Impact of practice" },

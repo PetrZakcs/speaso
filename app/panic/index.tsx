@@ -21,7 +21,7 @@ function computeElapsedSec(startedAt: number): number {
 }
 
 export default function PanicScreen() {
-  const { t, tList } = useTranslation();
+  const { t, tList, q } = useTranslation();
   const incrementPanicUses = useStore((s) => s.incrementPanicUses);
   const affirmations = tList('panic.affirmations');
   const [mode, setMode] = useState<PanicMode>('ball');
@@ -175,7 +175,7 @@ export default function PanicScreen() {
             {affirmations.length > 0 && (
               <View style={styles.affirmCard}>
                 <Text style={styles.affirmText}>
-                  „{affirmations[affirmIdx % affirmations.length]}“
+                  {q(affirmations[affirmIdx % affirmations.length])}
                 </Text>
                 <TouchableOpacity
                   onPress={() => setAffirmIdx((a) => a + 1)}

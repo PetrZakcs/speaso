@@ -22,7 +22,7 @@ interface Props {
 }
 
 export default function ShareProgressModal({ visible, onClose }: Props) {
-  const { t, tn } = useTranslation();
+  const { t, tn, q } = useTranslation();
   const today = useToday();
   const { streak, sessions } = useStore(
     useShallow((s) => ({
@@ -91,7 +91,7 @@ export default function ShareProgressModal({ visible, onClose }: Props) {
             <VoiceWave calm={0.85} height={50} style={styles.previewWave} />
 
             <View style={styles.previewFooter}>
-              <Text style={styles.previewQuote}>„{t('share.quote')}“</Text>
+              <Text style={styles.previewQuote}>{q(t('share.quote'))}</Text>
               <Text style={styles.previewSub}>{t('share.download_cta')}</Text>
             </View>
           </View>

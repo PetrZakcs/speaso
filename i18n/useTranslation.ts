@@ -12,6 +12,8 @@ export function useTranslation() {
       t: (key: string, vars?: Vars) => translate(lang, key, vars),
       tList: (key: string) => translateList(lang, key),
       tn: (key: string, n: number, vars?: Vars) => translatePlural(lang, key, n, vars),
+      /** Wraps text in the quotation marks of the current language. */
+      q: (text: string) => (lang === 'cs' ? `„${text}“` : `“${text}”`),
     }),
     [lang],
   );

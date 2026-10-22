@@ -16,7 +16,7 @@ describe('Smart Insights Engine (VOS style)', () => {
     const insights = generateSmartInsights([], checkIns, emptyStreak, 'cs');
     const sleepInsight = insights.find((i) => i.id === 'sleep_correlation');
     expect(sleepInsight).toBeDefined();
-    expect(sleepInsight?.title).toBe('Spánek a plynulost');
+    expect(sleepInsight?.title).toBe('Spánek a mluvení');
     expect(sleepInsight?.type).toBe('positive');
   });
 

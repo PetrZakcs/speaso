@@ -9,14 +9,14 @@ import CompanionAvatar from './CompanionAvatar';
 import { Colors, FontFamily, FontSize, Radius, Shadow } from '../theme/tokens';
 
 export default function DailyWisdomCard({ today }: { today: DateKey }) {
-  const { t, lang } = useTranslation();
+  const { t, lang, q } = useTranslation();
   const wisdom = getDailyWisdom(today, lang);
 
   const handleShare = async () => {
     hapticPress();
     try {
       await Share.share({
-        message: `„${wisdom.quote}“\n\n🎯 ${t('wisdom.challenge')}: ${wisdom.challenge}\n\n${t('wisdom.share_footer')} (https://speaso.app)`,
+        message: `${q(wisdom.quote)}\n\n🎯 ${t('wisdom.challenge')}: ${wisdom.challenge}\n\n${t('wisdom.share_footer')} (https://speaso.app)`,
       });
       hapticSuccess();
     } catch {
@@ -45,7 +45,7 @@ export default function DailyWisdomCard({ today }: { today: DateKey }) {
 
       <View style={styles.quoteRow}>
         <CompanionAvatar size={48} mood="wisdom" />
-        <Text style={styles.quote}>„{wisdom.quote}“</Text>
+        <Text style={styles.quote}>{q(wisdom.quote)}</Text>
       </View>
 
       <View style={styles.challengeBox}>

@@ -11,7 +11,7 @@ import { Calm, Colors, FontFamily, FontSize, Radius, Shadow } from '../theme/tok
 
 /** "How is speaking today?" — opens the full-screen check-in; collapses once answered. */
 export default function CheckInCard({ today }: { today: DateKey }) {
-  const { t } = useTranslation();
+  const { t, q } = useTranslation();
   const checkIn = useStore((s) => s.checkIns.find((c) => c.date === today));
   const open = () => router.push('/checkin');
 
@@ -48,7 +48,7 @@ export default function CheckInCard({ today }: { today: DateKey }) {
             {checkIn.waterGlasses !== undefined && (
               <View style={styles.factorChip}>
                 <Ionicons name="water-outline" size={13} color={Colors.accent.main} />
-                <Text style={styles.factorText}>{checkIn.waterGlasses} skl.</Text>
+                <Text style={styles.factorText}>{t('checkin.badge_water', { n: checkIn.waterGlasses })}</Text>
               </View>
             )}
             {checkIn.weather && (
@@ -76,7 +76,7 @@ export default function CheckInCard({ today }: { today: DateKey }) {
 
         {!!checkIn.note && (
           <Text style={styles.noteSnippet} numberOfLines={2}>
-            „{checkIn.note}“
+            {q(checkIn.note)}
           </Text>
         )}
       </View>
