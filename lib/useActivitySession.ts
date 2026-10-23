@@ -13,7 +13,7 @@ export type Stage = 'intro' | 'steps' | 'practice' | 'rate' | 'done';
  * Shared lifecycle of a practice session (exercise or situation):
  * start → complete (saved, counts towards streak and weekly limit) → rate.
  */
-export function useActivitySession(activityId: string, requiresPremium = false) {
+export function useActivitySession(activityId: string, requiresPremium = false, initialStage: Stage = 'intro') {
   const recordSession = useStore((s) => s.recordSession);
   const rateSession = useStore((s) => s.rateSession);
 
@@ -23,8 +23,8 @@ export function useActivitySession(activityId: string, requiresPremium = false) 
     if (requiresPremium && !useStore.getState().subscription.isPremium) return 'premium';
     return canStartActivity(activityId) ? 'ok' : 'limit';
   });
-  const [stage, setStage] = useState<Stage>('intro');
-  const [startedAt, setStartedAt] = useState<number | null>(null);
+  const [stage, setStage] = useState<Stage>(initialStage);
+  const [startedAt, setStartedAt] = useState<number | null>(initialStage !== 'intro' ? Date.now() : null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [result, setResult] = useState<{ minutes: number; streak: number } | null>(null);
 

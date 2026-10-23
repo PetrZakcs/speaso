@@ -15,10 +15,10 @@ import ReadingPanel from '../../components/tools/ReadingPanel';
 import { Colors } from '../../theme/tokens';
 
 export default function ExercisePlayer() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, stage: stageParam } = useLocalSearchParams<{ id: string; stage?: 'intro' | 'steps' | 'practice' | 'rate' | 'done' }>();
   const { t, tn, tList } = useTranslation();
   const exercise = getExercise(id);
-  const session = useActivitySession(exercise?.id ?? 'unknown');
+  const session = useActivitySession(exercise?.id ?? 'unknown', false, stageParam ?? 'intro');
   const { stage, startedAt } = session;
   const now = useTicker(startedAt !== null && (stage === 'steps' || stage === 'practice'));
 

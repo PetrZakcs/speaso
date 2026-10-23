@@ -406,7 +406,16 @@
   },
 
   "reading": {
-    "another":           { "cs": "Jiný text", "en": "Another text" }
+    "another":           { "cs": "Jiný text", "en": "Another text" },
+    "pacer_toggle":      { "cs": "Vodič tempa", "en": "Pacing guide" },
+    "pacer_sub":         { "cs": "Klidný rytmus čtení", "en": "Calm reading cadence" },
+    "pacer_calm":        { "cs": "Klidné", "en": "Calm" },
+    "pacer_steady":      { "cs": "Plynulé", "en": "Steady" },
+    "pacer_flow":        { "cs": "Běžné", "en": "Flow" },
+    "pacer_start":       { "cs": "Spustit", "en": "Start" },
+    "pacer_pause":       { "cs": "Pauza", "en": "Pause" },
+    "pacer_reset":       { "cs": "Znovu", "en": "Reset" },
+    "pacer_done":        { "cs": "Skvěle přečteno! Udržel jsi klidný rytmus.", "en": "Great reading! You kept a calm, steady cadence." }
   },
 
   "rating": {
@@ -520,11 +529,11 @@
     "streak":            { "cs": "Záchrana série", "en": "Streak saver" },
     "streak_sub":        { "cs": "Večerní upozornění před půlnocí", "en": "Evening alert before midnight" },
     "channel":           { "cs": "Denní připomínky", "en": "Daily reminders" },
-    "title":             { "cs": "Čas na chvilku cvičení", "en": "Time for a little practice" },
-    "body":              { "cs": "Pár minut denně dělá rozdíl. Jdeme na to?", "en": "A few minutes a day makes a difference. Shall we?" },
-    "morning_title":     { "cs": "Speaso · Ranní naladění", "en": "Speaso · Morning check-in" },
-    "morning_body":      { "cs": "Jak se ti dnes mluví? Zaznamenej si spánek a hydrataci.", "en": "How is your speech today? Log your sleep and hydration." },
-    "streak_title":      { "cs": "Speaso · Zachraň svou sérii! 🔥", "en": "Speaso · Save your streak! 🔥" },
+    "title":             { "cs": "Kapybara ti drží místo 🌿", "en": "Capybara is saving your spot 🌿" },
+    "body":              { "cs": "Pár minut klidného dechu a čtení. Jdeme na to společně?", "en": "A few minutes of calm breath and reading. Let's do it together." },
+    "morning_title":     { "cs": "Speaso · Ranní naladění ☀️", "en": "Speaso · Morning check-in ☀️" },
+    "morning_body":      { "cs": "Jak se ti dnes mluví? Zaznamenej si spánek a uvolnění hlasivek.", "en": "How is your speech today? Log your sleep and vocal ease." },
+    "streak_title":      { "cs": "Speaso · Kapybara hlídá sérii! 🔥", "en": "Speaso · Capybara is watching your streak! 🔥" },
     "streak_body":       { "cs": "Zbývá už jen pár hodin. Zacvič si pár minut a udrž si sérii.", "en": "Only a few hours left. Practice a few minutes to keep your streak." },
     "denied_title":      { "cs": "Oznámení jsou vypnutá", "en": "Notifications are off" },
     "trial_title":       { "cs": "Zkušební doba brzy končí", "en": "Your trial ends soon" },

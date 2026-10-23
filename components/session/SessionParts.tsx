@@ -4,7 +4,6 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSequence } 
 import { useTranslation } from '../../i18n/useTranslation';
 import IconButton from '../IconButton';
 import PillButton from '../PillButton';
-import ActivityIcon from '../ActivityIcon';
 import CompanionAvatar from '../CompanionAvatar';
 import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow, type TintName } from '../../theme/tokens';
 import { hapticSuccess } from '../../lib/haptics';
@@ -59,9 +58,9 @@ export function SessionHeader({
 }
 
 export function IntroView({
-  icon, tint, title, sub, chips, onStart,
+  title, sub, chips, onStart,
 }: {
-  icon: string;
+  icon?: string;
   tint?: TintName;
   title: string;
   sub: string;
@@ -71,7 +70,7 @@ export function IntroView({
   const { t } = useTranslation();
   return (
     <View style={styles.startCenter}>
-      <ActivityIcon name={icon} tint={tint} size={88} />
+      <CompanionAvatar size={104} variant="duo" mood="idle" />
       <Text style={styles.startTitle} accessibilityRole="header">{title}</Text>
       <Text style={styles.startSub}>{sub}</Text>
       <View style={styles.metaRow}>

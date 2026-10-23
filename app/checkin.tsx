@@ -16,6 +16,7 @@ import { trackEvent } from '../lib/analytics';
 import type { Rating } from '../lib/streak';
 import CalmBackground from '../components/calm/CalmBackground';
 import MoodSlider, { MOOD_GRADIENT } from '../components/calm/MoodSlider';
+import CompanionAvatar from '../components/CompanionAvatar';
 import { Calm, FontFamily, FontSize, Radius, Spacing } from '../theme/tokens';
 
 const SLEEP_OPTIONS = [4, 5, 6, 7, 8, 9];
@@ -115,10 +116,17 @@ export default function CheckInScreen() {
               <Text style={styles.sub}>{t('checkin.screen_sub')}</Text>
 
               <View style={styles.valueWrap}>
-                <View style={[styles.valueDot, { backgroundColor: MOOD_GRADIENT[mood - 1] }]}>
-                  <Text style={styles.valueNum}>{mood}</Text>
+                <CompanionAvatar
+                  size={64}
+                  variant="capybara"
+                  mood={mood <= 2 ? 'breathing' : mood === 3 ? 'idle' : mood === 4 ? 'wisdom' : 'celebrate'}
+                />
+                <View style={styles.valueTextRow}>
+                  <View style={[styles.valueDotSmall, { backgroundColor: MOOD_GRADIENT[mood - 1] }]}>
+                    <Text style={styles.valueNumSmall}>{mood}</Text>
+                  </View>
+                  <Text style={styles.valueLabel}>{label}</Text>
                 </View>
-                <Text style={styles.valueLabel}>{label}</Text>
               </View>
 
               <MoodSlider
@@ -351,9 +359,10 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     color: Calm.muted,
   },
-  valueWrap: { alignItems: 'center', gap: 10, marginTop: 8, marginBottom: 8 },
-  valueDot: { width: 72, height: 72, borderRadius: 36, alignItems: 'center', justifyContent: 'center' },
-  valueNum: { fontFamily: FontFamily.headingBold, fontSize: 32, color: '#14241C' },
+  valueWrap: { alignItems: 'center', gap: 12, marginTop: 12, marginBottom: 12 },
+  valueTextRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  valueDotSmall: { width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
+  valueNumSmall: { fontFamily: FontFamily.headingBold, fontSize: 16, color: '#14241C' },
   valueLabel: { fontFamily: FontFamily.heading, fontSize: 20, color: Calm.text },
   ends: { flexDirection: 'row', justifyContent: 'space-between' },
   endText: { fontFamily: FontFamily.dmSansMedium, fontSize: FontSize.meta, color: Calm.muted },
