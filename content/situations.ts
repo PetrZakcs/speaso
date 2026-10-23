@@ -6,7 +6,7 @@ import type { TintName } from '../theme/tokens';
  * (optionally recorded) → a small real-world challenge → reflection.
  * Self-guided — there is no AI conversation partner.
  */
-export type SituationId = 'phone' | 'shop' | 'presentation' | 'meeting' | 'interview';
+export type SituationId = 'introduction' | 'phone' | 'shop' | 'presentation' | 'meeting' | 'interview';
 
 interface SituationContent {
   title: string;
@@ -28,6 +28,52 @@ export interface Situation {
 }
 
 export const SITUATIONS: Situation[] = [
+  {
+    id: 'introduction',
+    icon: 'person-outline',
+    tint: 'lavender',
+    difficulty: 'easy',
+    premium: false,
+    minutes: 5,
+    content: {
+      cs: {
+        title: 'Představení se jménem',
+        sub: 'Říct své jméno v klidu',
+        prep: [
+          'Jméno nemá žádná synonyma — proto na něm cítíme největší tlak. Je to úplně normální.',
+          'Před vyslovením jména jemně vydechni trochu vzduchu (měkké hlasové nasazení).',
+          'První hlásku nesaď silou. Představ si, že po ní sklouzneš jako po másle.',
+          'Můžeš jméno uvést klidným spojením: „Ahoj, já jsem...“ nebo „Těší mě, ...“',
+        ],
+        phrases: [
+          'Dobrý den, těší mě, já jsem {name}.',
+          'Ahoj, jmenuji se {name}.',
+          'Dobrý den, tady {name}.',
+          'Rád vás poznávám, já jsem {name}.',
+          'Ahoj všem, já jsem {name} a těším se na spolupráci.',
+        ],
+        challenge: 'Při příštím setkání řekni své jméno vědomě s lehkým výdechem na začátku bez spěchu.',
+      },
+      en: {
+        title: 'Saying your name',
+        sub: 'Introducing yourself calmly',
+        prep: [
+          'Your name has no synonyms — that is why it carries the most pressure. That is completely normal.',
+          'Before saying your name, let out a tiny breath of air first (soft vocal onset).',
+          'Do not push into the first sound. Glide into it gently.',
+          'You can anchor it with a relaxed opener: "Hi, I am..." or "Nice to meet you, ..."',
+        ],
+        phrases: [
+          'Hello, nice to meet you, I am {name}.',
+          'Hi there, my name is {name}.',
+          'Good morning, this is {name} speaking.',
+          'Pleased to meet you, I am {name}.',
+          'Hi everyone, I am {name} and I look forward to working together.',
+        ],
+        challenge: 'Next time you introduce yourself, take an easy outbreath first and glide into your name with zero rush.',
+      },
+    },
+  },
   {
     id: 'shop',
     icon: 'bag-handle-outline',

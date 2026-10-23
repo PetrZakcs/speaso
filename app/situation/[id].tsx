@@ -10,10 +10,17 @@ export default function SituationPlayer() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t, lang } = useTranslation();
   const situation = getSituation(id);
+  const user = useStore((s) => s.user);
   const [locked] = React.useState(
     () => !!situation?.premium && !useStore.getState().subscription.isPremium,
   );
   const c = situation?.content[lang];
+
+  const rawPhrases = c?.phrases ?? [];
+  const userName = user.name?.trim();
+  const defaultName = lang === 'cs' ? 'Petr' : 'Alex';
+  const nameToUse = userName || defaultName;
+  const phrases = rawPhrases.map((phrase) => phrase.replace(/\{name\}/g, nameToUse));
 
   return (
     <GuidedPlayer
@@ -31,7 +38,7 @@ export default function SituationPlayer() {
           t(`situations.level_${situation.difficulty}`),
         ],
         prep: c.prep,
-        phrases: c.phrases,
+        phrases,
         challenge: c.challenge,
       } : null}
     />

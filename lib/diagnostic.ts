@@ -50,7 +50,7 @@ export function calculateDiagnosticProfile(user: UserState, lang: SupportedLang 
   const frictionAreas: VocalFrictionArea[] = [];
 
   const hasPhone = situationIds.includes('phone') || situationIds.includes('phone_order');
-  const hasSocial = situationIds.includes('strangers') || situationIds.includes('meeting') || situationIds.includes('presentation');
+  const hasSocial = situationIds.includes('strangers') || situationIds.includes('meeting') || situationIds.includes('presentation') || situationIds.includes('introduction');
 
   if (hasPhone || situationIds.length > 0) {
     frictionAreas.push({

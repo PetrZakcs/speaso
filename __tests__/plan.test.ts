@@ -26,7 +26,7 @@ describe('dailyPlan', () => {
     expect(ids('2026-10-08', 15, ['phone'])[1]).toBe('situation:phone');
     // meeting is Premium → falls back to a free situation for free users
     const free = ids('2026-10-08', 15, ['meeting'])[1];
-    expect(['situation:phone', 'situation:shop']).toContain(free);
+    expect(['situation:introduction', 'situation:phone', 'situation:shop']).toContain(free);
     expect(ids('2026-10-08', 15, ['meeting'], true)[1]).toBe('situation:meeting');
   });
 });
