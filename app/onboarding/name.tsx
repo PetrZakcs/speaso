@@ -6,6 +6,7 @@ import { useStore } from '../../state/store';
 import { addressName } from '../../lib/names';
 import OnboardingShell from '../../components/OnboardingShell';
 import PillButton from '../../components/PillButton';
+import CompanionAvatar from '../../components/CompanionAvatar';
 import { Colors, FontFamily, FontSize, Radius, Shadow } from '../../theme/tokens';
 
 export default function NameStep() {
@@ -30,6 +31,12 @@ export default function NameStep() {
         <PillButton label={trimmed ? t('common.continue') : t('common.skip')} onPress={next} />
       }
     >
+      <CompanionAvatar
+        size={72}
+        mood={trimmed ? 'celebrate' : 'idle'}
+        variant="duo"
+        style={{ alignSelf: 'center', marginBottom: 16 }}
+      />
       <TextInput
         style={styles.input}
         value={name}

@@ -1,8 +1,7 @@
 import { CUSTOM_MASCOT_SOURCE } from '../components/companion/companionAsset';
 
 describe('companionAsset', () => {
-  it('exports CUSTOM_MASCOT_SOURCE default slot as null until user supplies asset', () => {
-    // Verified slot ready for user's character asset (e.g. require('../../assets/mascot.png'))
-    expect(CUSTOM_MASCOT_SOURCE).toBeNull();
+  it('exports CUSTOM_MASCOT_SOURCE with the active companion character asset', () => {
+    expect(CUSTOM_MASCOT_SOURCE).not.toBeNull();
   });
 });

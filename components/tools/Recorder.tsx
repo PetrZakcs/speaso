@@ -9,6 +9,7 @@ import { useTranslation } from '../../i18n/useTranslation';
 import { useStore } from '../../state/store';
 import { persistRecording, recordingUri } from '../../lib/recordings';
 import ZeroCloudBadge from '../ZeroCloudBadge';
+import CompanionAvatar from '../CompanionAvatar';
 import { Colors, FontFamily, FontSize, Radius, Shadow } from '../../theme/tokens';
 import { hapticPress, hapticSelect } from '../../lib/haptics';
 
@@ -164,6 +165,11 @@ const WAVE_PATTERN = [
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
           <View style={styles.titleRow}>
+            <CompanionAvatar
+              size={26}
+              mood={isRecording ? 'listening' : 'idle'}
+              variant="capybara"
+            />
             <Text style={styles.title}>
               {isRecording ? t('recorder.recording') : hasTake ? t('recorder.listen_back') : t('recorder.title')}
             </Text>

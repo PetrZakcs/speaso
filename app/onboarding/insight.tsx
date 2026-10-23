@@ -8,6 +8,7 @@ import { useStore } from '../../state/store';
 import { SITUATIONS } from '../../content/situations';
 import PillButton from '../../components/PillButton';
 import IconButton from '../../components/IconButton';
+import CompanionAvatar from '../../components/CompanionAvatar';
 import { Colors, FontFamily, FontSize, Radius, Shadow, Spacing, Tints } from '../../theme/tokens';
 
 /**
@@ -27,9 +28,7 @@ export default function Insight() {
       </View>
 
       <View style={styles.main}>
-        <View style={styles.badge}>
-          <Ionicons name="people-outline" size={34} color={Tints.lavender.fg} />
-        </View>
+        <CompanionAvatar size={92} mood="idle" variant="duo" style={{ marginBottom: 4 }} />
         <Text style={styles.title} accessibilityRole="header">{t('onboarding.insight_title')}</Text>
         <Text style={styles.body}>{t('onboarding.insight_body')}</Text>
 

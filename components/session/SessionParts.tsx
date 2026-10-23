@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSequence } from 'react-native-reanimated';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from '../../i18n/useTranslation';
 import IconButton from '../IconButton';
 import PillButton from '../PillButton';
 import ActivityIcon from '../ActivityIcon';
+import CompanionAvatar from '../CompanionAvatar';
 import { Colors, FontFamily, FontSize, Radius, Spacing, Shadow, type TintName } from '../../theme/tokens';
 import { hapticSuccess } from '../../lib/haptics';
 
@@ -198,9 +198,7 @@ export function DoneView({
   }, []);
   return (
     <View style={styles.doneCenter}>
-      <View style={styles.doneMark}>
-        <Ionicons name="checkmark" size={40} color={Colors.accent.main} />
-      </View>
+      <CompanionAvatar size={96} mood="celebrate" variant="duo" style={{ marginBottom: 10 }} />
       <Text style={styles.doneTitle} accessibilityRole="header">{t('exercises.done_title')}</Text>
       <Text style={styles.doneSub}>{subtitle}</Text>
       <View style={styles.doneStats}>

@@ -31,6 +31,7 @@ export default function FirstWin() {
             </TouchableOpacity>
           </View>
           <View style={styles.main}>
+            <CompanionAvatar size={76} mood="breathing" variant="capybara" style={{ marginBottom: 4 }} />
             <Text style={styles.title} accessibilityRole="header">{t('onboarding.win_title')}</Text>
             <Text style={styles.sub}>{t('onboarding.win_sub', { n: ROUNDS })}</Text>
             <BreathingBall
@@ -45,7 +46,7 @@ export default function FirstWin() {
       ) : (
         <>
           <View style={styles.main}>
-            <CompanionAvatar size={96} mood="celebrate" />
+            <CompanionAvatar size={96} mood="celebrate" variant="duo" />
             <Text style={[styles.title, styles.center]} accessibilityRole="header">{t('onboarding.win_done_title')}</Text>
             <Text style={[styles.sub, styles.center]}>{t('onboarding.win_done_sub')}</Text>
 

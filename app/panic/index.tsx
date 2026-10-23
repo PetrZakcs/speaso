@@ -262,8 +262,9 @@ export default function PanicScreen() {
 
             <View style={styles.sighCenter}>
               <CompanionAvatar
-                size={92}
+                size={96}
                 mood="breathing"
+                variant="capybara"
                 style={{ marginBottom: 12 }}
               />
               <View style={[styles.sighOrb, sighPhase === 3 ? styles.sighOrbExhale : styles.sighOrbInhale]}>

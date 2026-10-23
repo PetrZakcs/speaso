@@ -45,7 +45,7 @@ export default function DailyWisdomCard({ today }: { today: DateKey }) {
       </View>
 
       <View style={styles.quoteRow}>
-        <CompanionAvatar size={48} mood="wisdom" />
+        <CompanionAvatar size={52} mood="wisdom" variant="capybara" />
         <Text style={styles.quote}>{q(wisdom.quote)}</Text>
       </View>
 

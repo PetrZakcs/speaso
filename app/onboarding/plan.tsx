@@ -12,6 +12,7 @@ import { formatTime } from '../../lib/reminders';
 import { useToday } from '../../lib/useToday';
 import ActivityIcon from '../../components/ActivityIcon';
 import PillButton from '../../components/PillButton';
+import CompanionAvatar from '../../components/CompanionAvatar';
 import { Colors, FontFamily, FontSize, Radius, Shadow, Spacing } from '../../theme/tokens';
 
 const ROLE_KEYS = ['home.role_warmup', 'home.role_situation', 'home.role_practice'];
@@ -44,6 +45,7 @@ export default function PlanReveal() {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+        <CompanionAvatar size={82} mood="celebrate" variant="duo" style={{ alignSelf: 'center', marginBottom: 6 }} />
         <Text style={styles.kicker}>{t('onboarding.plan_kicker')}</Text>
         <Text style={styles.title} accessibilityRole="header">
           {name ? t('onboarding.plan_title_name', { name }) : t('onboarding.plan_title')}

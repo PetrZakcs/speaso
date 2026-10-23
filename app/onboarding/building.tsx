@@ -8,6 +8,7 @@ import { useStore, useShallow } from '../../state/store';
 import { SITUATIONS } from '../../content/situations';
 import { formatTime } from '../../lib/reminders';
 import { submitAnswers } from '../../lib/answers';
+import CompanionAvatar from '../../components/CompanionAvatar';
 import { Colors, FontFamily, FontSize, Spacing } from '../../theme/tokens';
 
 const STEP_MS = 650;
@@ -59,6 +60,7 @@ export default function Building() {
     <SafeAreaView style={styles.safe}>
       <View style={styles.main}>
         <View style={styles.headerBlock}>
+          <CompanionAvatar size={74} mood="wisdom" variant="duo" style={{ marginBottom: 10 }} />
           <Text style={styles.title} accessibilityRole="header" accessibilityLiveRegion="polite">
             {t('onboarding.building_title')}
           </Text>

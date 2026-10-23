@@ -40,13 +40,14 @@ export default function HomeScreen() {
   const today = useToday();
   const startExercise = useStartExercise();
   const startSituation = useStartSituation();
-  const { user, isPremium, sessions, streak, celebratedMilestones, markMilestoneCelebrated } = useStore(useShallow((s) => ({
+  const { user, isPremium, sessions, streak, celebratedMilestones, markMilestoneCelebrated, checkIn } = useStore(useShallow((s) => ({
     user: s.user,
     isPremium: s.subscription.isPremium,
     sessions: s.sessions,
     streak: s.streak,
     celebratedMilestones: s.celebratedMilestones ?? [],
     markMilestoneCelebrated: s.markMilestoneCelebrated,
+    checkIn: s.checkIns.find((c) => c.date === today),
   })));
 
   const name = addressName(user.name, lang);
@@ -92,7 +93,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        {/* Header with Greeting & Synchronized Breathing Companion */}
+        {/* Header with Greeting, Streak & Synchronized Companion */}
         <View style={styles.header}>
           <View style={{ flex: 1, gap: 2 }}>
             <View style={styles.metaBadgeRow}>
@@ -104,6 +105,11 @@ export default function HomeScreen() {
               ) : (
                 <View style={styles.calmPill}>
                   <Text style={styles.calmPillText}>{t('home.calm_today_badge')}</Text>
+                </View>
+              )}
+              {!!checkIn && (
+                <View style={styles.moodPill}>
+                  <Text style={styles.moodPillText}>🌿 {t(`rating.level_${checkIn.mood}`).toLowerCase()}</Text>
                 </View>
               )}
             </View>
@@ -119,46 +125,6 @@ export default function HomeScreen() {
           />
         </View>
 
-        {/* STĚŽEJNÍ BOD 1: Okamžitá první pomoc při záseku & před hovorem (Pre-Call SOS / 60s Grounding) */}
-        <PressableRaised
-          onPress={handlePanic}
-          depth={Depth.card}
-          ledgeColor={Colors.brand.soft}
-          radius={Radius.card}
-          faceStyle={styles.sosFace}
-          accessibilityRole="button"
-          accessibilityLabel={`${t('home.sos_quick')}. ${t('home.sos_quick_sub')}`}
-        >
-          <View style={styles.sosCardInner}>
-            <View style={styles.sosTopRow}>
-              <View style={styles.sosTagRow}>
-                <View style={styles.sosPulseDot} />
-                <Text style={styles.sosKicker}>{t('home.panic_title')}</Text>
-              </View>
-              <View style={styles.freeChip}>
-                <Text style={styles.freeChipText}>{t('common.free_badge')}</Text>
-              </View>
-            </View>
-
-            <View style={styles.sosMainRow}>
-              <View style={styles.sosIconWrap}>
-                <Ionicons name="pulse" size={24} color={Colors.brand.main} />
-              </View>
-              <View style={{ flex: 1, gap: 2 }}>
-                <Text style={styles.sosTitle}>{t('home.sos_quick')}</Text>
-                <Text style={styles.sosSub}>{t('home.sos_quick_sub')}</Text>
-              </View>
-            </View>
-
-            <View style={styles.sosBottomRow}>
-              <View style={styles.sosActionPill}>
-                <Ionicons name="play" size={12} color="#FFFFFF" />
-                <Text style={styles.sosActionText}>{t('home.sos_action')}</Text>
-              </View>
-            </View>
-          </View>
-        </PressableRaised>
-
         {/* Motivational Streak Safeguard (VOS style recovery if streak lapsed) */}
         {streakDays === 0 && streak.record > 0 && (
           <View style={styles.streakBrokenCard}>
@@ -170,7 +136,7 @@ export default function HomeScreen() {
           </View>
         )}
 
-        {/* STĚŽEJNÍ BOD 2: Dnešní 3-krokový plán plynulosti (Today's Fluency Micro-Plan) */}
+        {/* 1. HERO: Dnešní 3-krokový plán plynulosti (Today's Fluency Micro-Plan) */}
         <View style={styles.planSection}>
           <View style={styles.planHead}>
             <View>
@@ -286,10 +252,53 @@ export default function HomeScreen() {
           )}
         </View>
 
-        {/* STĚŽEJNÍ BOD 3: Denní check-in napětí & hlasové pohody (Vocal & Body Awareness) */}
+        {/* 2. REWARD & EMPATHY: Denní moudro & Somatická výzva (Capybara Mascot) */}
+        <DailyWisdomCard today={today} />
+
+        {/* 3. AWARENESS: Denní check-in napětí & hlasové pohody */}
         <CheckInCard today={today} />
 
-        {/* STĚŽEJNÍ BOD 4: Hlasová stabilita & Týdenní pokrok (Voice Wave + Consistency) */}
+        {/* 4. PRE-CALL BOOSTER: Rychlé zklidnění hlasivek & dechu */}
+        <PressableRaised
+          onPress={handlePanic}
+          depth={Depth.card}
+          ledgeColor={Colors.brand.soft}
+          radius={Radius.card}
+          faceStyle={styles.sosFace}
+          accessibilityRole="button"
+          accessibilityLabel={`${t('home.sos_quick')}. ${t('home.sos_quick_sub')}`}
+        >
+          <View style={styles.sosCardInner}>
+            <View style={styles.sosTopRow}>
+              <View style={styles.sosTagRow}>
+                <Ionicons name="sparkles" size={13} color={Colors.brand.main} />
+                <Text style={styles.sosKicker}>{t('home.sos_kicker')}</Text>
+              </View>
+              <View style={styles.freeChip}>
+                <Text style={styles.freeChipText}>{t('common.free_badge')}</Text>
+              </View>
+            </View>
+
+            <View style={styles.sosMainRow}>
+              <View style={styles.sosIconWrap}>
+                <Ionicons name="pulse" size={22} color={Colors.brand.main} />
+              </View>
+              <View style={{ flex: 1, gap: 2 }}>
+                <Text style={styles.sosTitle}>{t('home.sos_quick')}</Text>
+                <Text style={styles.sosSub}>{t('home.sos_quick_sub')}</Text>
+              </View>
+            </View>
+
+            <View style={styles.sosBottomRow}>
+              <View style={styles.sosActionPill}>
+                <Ionicons name="play" size={12} color="#FFFFFF" />
+                <Text style={styles.sosActionText}>{t('home.sos_action')}</Text>
+              </View>
+            </View>
+          </View>
+        </PressableRaised>
+
+        {/* 5. CONTINUITY: Hlasová stabilita & Týdenní pokrok (Voice Wave + Consistency) */}
         <Card
           style={styles.stabilityCard}
           accessible
@@ -321,8 +330,7 @@ export default function HomeScreen() {
           </View>
         </Card>
 
-        {/* Secondary supportive content: Daily Wisdom & Community */}
-        <DailyWisdomCard today={today} />
+        {/* 6. COMMUNITY & EXPLORE: Sounáležitost a knihovna */}
         <CommunityPulse />
 
         {/* Explore all exercises link */}
@@ -381,6 +389,17 @@ const styles = StyleSheet.create({
     fontSize: FontSize.micro,
     color: Colors.accent.main,
   },
+  moodPill: {
+    backgroundColor: 'rgba(44, 86, 65, 0.08)',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: Radius.pill,
+  },
+  moodPillText: {
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: FontSize.micro,
+    color: Colors.accent.main,
+  },
   hello: {
     fontFamily: FontFamily.heading,
     fontSize: 30,
@@ -396,11 +415,11 @@ const styles = StyleSheet.create({
     letterSpacing: -0.5,
   },
 
-  // STĚŽEJNÍ BOD 1: SOS Quick Relief Card
+  // STĚŽEJNÍ BOD 4: Pre-Call Booster / Quick Vocal Relief Card
   sosFace: {
-    backgroundColor: '#FFF8F4',
+    backgroundColor: '#FFFBF7',
     borderWidth: 1,
-    borderColor: 'rgba(224, 122, 79, 0.22)',
+    borderColor: 'rgba(224, 122, 79, 0.18)',
     boxShadow: Shadow.rim,
     padding: 16,
   },

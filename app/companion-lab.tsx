@@ -41,6 +41,7 @@ const SIZES = [
 export default function CompanionLabScreen() {
   const { t } = useTranslation();
   const [mood, setMood] = useState<CompanionMood>('idle');
+  const [variant, setVariant] = useState<'duo' | 'capybara'>('duo');
   const [sizePx, setSizePx] = useState<number>(130);
   const [showBubble, setShowBubble] = useState<boolean>(true);
   const [sampleIdx, setSampleIdx] = useState<number>(0);
@@ -100,6 +101,7 @@ export default function CompanionLabScreen() {
             <CompanionAvatar
               size={sizePx}
               mood={mood}
+              variant={variant}
               message={showBubble ? bubbleSamples[sampleIdx % bubbleSamples.length] : undefined}
               onPress={handleMascotTap}
             />
@@ -127,6 +129,48 @@ export default function CompanionLabScreen() {
               ? t('companion_lab.status_custom_desc')
               : t('companion_lab.status_procedural_desc')}
           </Text>
+        </View>
+
+        {/* Mascot Variant Selector */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>POSTAVIČKA / MASCOT</Text>
+          <View style={styles.chipsWrap}>
+            <TouchableOpacity
+              style={[styles.moodChip, variant === 'duo' && styles.moodChipActive]}
+              onPress={() => {
+                hapticSelect();
+                setVariant('duo');
+              }}
+              activeOpacity={0.75}
+            >
+              <Ionicons
+                name="person-outline"
+                size={16}
+                color={variant === 'duo' ? Colors.surface.card : Colors.text.primary}
+              />
+              <Text style={[styles.moodChipText, variant === 'duo' && styles.moodChipTextActive]}>
+                Duo (Postava + Kapybara)
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.moodChip, variant === 'capybara' && styles.moodChipActive]}
+              onPress={() => {
+                hapticSelect();
+                setVariant('capybara');
+              }}
+              activeOpacity={0.75}
+            >
+              <Ionicons
+                name="paw-outline"
+                size={16}
+                color={variant === 'capybara' ? Colors.surface.card : Colors.text.primary}
+              />
+              <Text style={[styles.moodChipText, variant === 'capybara' && styles.moodChipTextActive]}>
+                Kapybara (Samotná)
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Mood Selector Section */}

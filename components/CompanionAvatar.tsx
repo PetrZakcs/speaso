@@ -27,7 +27,7 @@ import Svg, {
   Stop,
   G,
 } from 'react-native-svg';
-import { CUSTOM_MASCOT_SOURCE } from './companion/companionAsset';
+import { CUSTOM_MASCOT_SOURCE, CAPYBARA_SOURCE } from './companion/companionAsset';
 import { useBreath } from '../lib/breath';
 import { hapticPress } from '../lib/haptics';
 import { Colors, FontFamily, FontSize, Radius, Shadow } from '../theme/tokens';
@@ -38,6 +38,7 @@ export interface CompanionAvatarProps {
   size?: number;
   mood?: CompanionMood;
   message?: string;
+  variant?: 'duo' | 'capybara';
   customSource?: ImageSourcePropType | null;
   onPress?: () => void;
   style?: ViewStyle;
@@ -55,13 +56,16 @@ export default function CompanionAvatar({
   size = 80,
   mood = 'idle',
   message,
+  variant = 'duo',
   customSource,
   onPress,
   style,
 }: CompanionAvatarProps) {
-  const breath = useBreath(mood === 'breathing' || mood === 'idle');
-  const wobble = useSharedValue(0);
+  const breath = useBreath(mood === 'breathing' || mood === 'idle' || mood === 'wisdom');
+  const tapWobble = useSharedValue(0);
+  const tapSquash = useSharedValue(1);
   const celebrateJump = useSharedValue(0);
+  const celebrateSway = useSharedValue(0);
   const [blinking, setBlinking] = useState(false);
 
   // Periodic eye blink effect for realistic living feel
@@ -75,29 +79,56 @@ export default function CompanionAvatar({
     return () => clearInterval(interval);
   }, [mood]);
 
-  // Celebrate bounce animation
+  // Duolingo-inspired celebrate animation: jump up, land & sway
   useEffect(() => {
     if (mood === 'celebrate') {
       celebrateJump.value = withRepeat(
         withSequence(
-          withTiming(-12, { duration: 320, easing: Easing.out(Easing.quad) }),
-          withTiming(0, { duration: 280, easing: Easing.in(Easing.quad) }),
+          withTiming(-16, { duration: 320, easing: Easing.out(Easing.quad) }),
+          withTiming(0, { duration: 260, easing: Easing.in(Easing.quad) }),
         ),
         -1,
         true,
       );
+      celebrateSway.value = withRepeat(
+        withSequence(
+          withTiming(-6, { duration: 290, easing: Easing.inOut(Easing.sin) }),
+          withTiming(6, { duration: 290, easing: Easing.inOut(Easing.sin) }),
+        ),
+        -1,
+        true,
+      );
+    } else if (mood === 'listening') {
+      celebrateJump.value = withRepeat(
+        withSequence(
+          withTiming(-3, { duration: 400, easing: Easing.inOut(Easing.sin) }),
+          withTiming(0, { duration: 400, easing: Easing.inOut(Easing.sin) }),
+        ),
+        -1,
+        true,
+      );
+      celebrateSway.value = withTiming(-4, { duration: 250 });
     } else {
       celebrateJump.value = withTiming(0, { duration: 200 });
+      celebrateSway.value = withTiming(0, { duration: 200 });
     }
-    return () => cancelAnimation(celebrateJump);
-  }, [mood, celebrateJump]);
+    return () => {
+      cancelAnimation(celebrateJump);
+      cancelAnimation(celebrateSway);
+    };
+  }, [mood, celebrateJump, celebrateSway]);
 
+  // Interactive tap: Duolingo squish & bounce with haptics
   const handlePress = () => {
     hapticPress();
-    wobble.value = withSequence(
-      withSpring(-8, { damping: 4, stiffness: 200 }),
-      withSpring(8, { damping: 4, stiffness: 200 }),
-      withSpring(0, { damping: 6, stiffness: 150 }),
+    tapSquash.value = withSequence(
+      withTiming(0.85, { duration: 70 }),
+      withSpring(1.0, { damping: 5, stiffness: 220 }),
+    );
+    tapWobble.value = withSequence(
+      withSpring(-9, { damping: 4, stiffness: 220 }),
+      withSpring(9, { damping: 4, stiffness: 220 }),
+      withSpring(0, { damping: 6, stiffness: 180 }),
     );
     onPress?.();
   };
@@ -105,28 +136,35 @@ export default function CompanionAvatar({
   const animatedStyle = useAnimatedStyle(() => {
     const scale =
       mood === 'breathing'
-        ? 0.94 + breath.value * 0.16
+        ? 0.93 + breath.value * 0.16
         : mood === 'idle'
-          ? 0.98 + breath.value * 0.05
-          : 1;
+          ? 0.98 + breath.value * 0.04
+          : mood === 'wisdom'
+            ? 0.97 + breath.value * 0.05
+            : mood === 'listening'
+              ? 1.04
+              : 1;
 
     const translateY =
-      mood === 'celebrate'
+      mood === 'celebrate' || mood === 'listening'
         ? celebrateJump.value
-        : mood === 'idle'
-          ? -breath.value * 4
+        : mood === 'idle' || mood === 'wisdom'
+          ? -breath.value * 3.5
           : 0;
 
     return {
       transform: [
         { translateY },
         { scale },
-        { rotate: `${wobble.value}deg` },
+        { scaleX: tapSquash.value },
+        { scaleY: 2 - tapSquash.value },
+        { rotate: `${celebrateSway.value + tapWobble.value}deg` },
       ],
     };
   });
 
-  const source = customSource ?? CUSTOM_MASCOT_SOURCE;
+  const defaultSource = variant === 'capybara' ? CAPYBARA_SOURCE : CUSTOM_MASCOT_SOURCE;
+  const source = customSource ?? defaultSource;
 
   return (
     <View style={[styles.wrapper, style]}>
