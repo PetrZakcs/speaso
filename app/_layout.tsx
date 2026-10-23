@@ -105,6 +105,7 @@ export default function RootLayout() {
         <Stack.Screen name="checkin" options={{ presentation: 'modal', animation: 'fade' }} />
         <Stack.Screen name="panic" options={{ presentation: 'modal', animation: 'fade' }} />
         <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="admin/index" options={{ presentation: 'modal' }} />
       </Stack>
       {biometricsEnabled && isAppLocked && <BiometricLockOverlay />}
     </GestureHandlerRootView>

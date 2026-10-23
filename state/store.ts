@@ -184,7 +184,7 @@ const initialUser: UserState = {
   note: '',
   situationsOther: '',
   goalOther: '',
-  shareAnswers: false,
+  shareAnswers: true,
   hasRedeemedReferral: false,
 };
 

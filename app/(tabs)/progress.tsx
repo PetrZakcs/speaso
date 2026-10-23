@@ -4,7 +4,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useTranslation } from '../../i18n/useTranslation';
-import { useStore, useShallow } from '../../state/store';
+import { useStore, useShallow, patientPairingCode } from '../../state/store';
 import Card, { PressableCard } from '../../components/Card';
 import MoodChart from '../../components/MoodChart';
 import SpeechFactorsCard from '../../components/SpeechFactorsCard';
@@ -18,6 +18,7 @@ import { exportReport } from '../../lib/report';
 import PremiumTag from '../../components/PremiumTag';
 import ResearchContributionCard from '../../components/ResearchContributionCard';
 import ShareProgressModal from '../../components/ShareProgressModal';
+import TherapistConnectModal from '../../components/TherapistConnectModal';
 import { useToday } from '../../lib/useToday';
 import { Colors, FontFamily, FontSize, Radius, Spacing, Tints } from '../../theme/tokens';
 
@@ -69,14 +70,20 @@ export default function ProgressScreen() {
   const today = useToday();
   const [exporting, setExporting] = useState(false);
   const [shareModalVisible, setShareModalVisible] = useState(false);
-  const { isPremium, streak, sessions, panicUses, recordingsCount, checkIns } = useStore(useShallow((s) => ({
+  const [therapistModalVisible, setTherapistModalVisible] = useState(false);
+  const { isPremium, streak, sessions, panicUses, recordingsCount, checkIns, user, installId } = useStore(useShallow((s) => ({
     checkIns: s.checkIns,
     isPremium: s.subscription.isPremium,
     streak: s.streak,
     sessions: s.sessions,
     panicUses: s.panicUses,
     recordingsCount: s.recordings.length,
+    user: s.user,
+    installId: s.installId,
   })));
+
+  const pairingCode = patientPairingCode(installId);
+  const therapistName = user.therapistName;
 
   const streakDays = currentStreak(streak, today);
   const activity = useMemo(() => weekActivity(sessions, today), [sessions, today]);
@@ -223,23 +230,56 @@ export default function ProgressScreen() {
           <Ionicons name="chevron-forward" size={18} color={Colors.text.tertiary} />
         </PressableCard>
 
-        <PressableCard
-          style={styles.linkCard}
-          onPress={handleExport}
-          disabled={exporting}
-          accessibilityRole="button"
-        >
-          <Ionicons name="document-text-outline" size={22} color={Colors.accent.main} />
-          <View style={{ flex: 1 }}>
-            <Text style={styles.linkTitle}>{t('report.cta')}</Text>
-            <Text style={styles.linkSub}>{exporting ? t('report.generating') : t('report.cta_sub')}</Text>
+        {/* Clinical Progress & Therapist Collaboration Card */}
+        <Card style={styles.clinicalCard}>
+          <View style={styles.clinicalHeader}>
+            <View style={styles.clinicalIconBox}>
+              <Ionicons name="medkit" size={22} color={Colors.accent.main} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <View style={styles.clinicalTitleRow}>
+                <Text style={styles.clinicalTitle}>{t('report.cta')}</Text>
+                {!isPremium && <PremiumTag />}
+              </View>
+              <Text style={styles.clinicalSub}>{t('report.cta_sub')}</Text>
+            </View>
           </View>
-          {isPremium ? (
-            <Ionicons name="share-outline" size={18} color={Colors.text.tertiary} />
-          ) : (
-            <PremiumTag />
-          )}
-        </PressableCard>
+
+          {/* Pairing status badge / trigger */}
+          <TouchableOpacity
+            style={styles.therapistBadgeRow}
+            onPress={() => setTherapistModalVisible(true)}
+            accessibilityRole="button"
+          >
+            <Ionicons
+              name={therapistName ? 'checkmark-circle' : 'link-outline'}
+              size={16}
+              color={therapistName ? Colors.accent.main : Colors.text.tertiary}
+            />
+            <Text style={styles.therapistBadgeText} numberOfLines={1}>
+              {therapistName
+                ? t('report.therapist_badge_linked', { name: therapistName, code: pairingCode })
+                : t('report.therapist_badge_unlinked', { code: pairingCode })}
+            </Text>
+            <Ionicons name="chevron-forward" size={14} color={Colors.text.tertiary} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.exportPdfBtn, exporting && styles.exportPdfBtnDisabled]}
+            onPress={handleExport}
+            disabled={exporting}
+            accessibilityRole="button"
+          >
+            <Ionicons
+              name={exporting ? 'hourglass-outline' : 'document-text'}
+              size={18}
+              color="#FFFFFF"
+            />
+            <Text style={styles.exportPdfBtnText}>
+              {exporting ? t('report.generating') : t('settings.therapist_export')}
+            </Text>
+          </TouchableOpacity>
+        </Card>
 
         <PressableCard
           style={styles.linkCard}
@@ -262,6 +302,11 @@ export default function ProgressScreen() {
         <ShareProgressModal
           visible={shareModalVisible}
           onClose={() => setShareModalVisible(false)}
+        />
+
+        <TherapistConnectModal
+          visible={therapistModalVisible}
+          onClose={() => setTherapistModalVisible(false)}
         />
       </ScrollView>
     </SafeAreaView>
@@ -398,5 +443,76 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.dmSansBold,
     fontSize: FontSize.bodySmall,
     color: Colors.accent.on,
+  },
+  clinicalCard: {
+    backgroundColor: Colors.surface.card,
+    borderRadius: Radius.card,
+    padding: 18,
+    gap: 14,
+    borderWidth: 1,
+    borderColor: '#E2ECE6',
+  },
+  clinicalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  clinicalIconBox: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#DCFCE7',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  clinicalTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  clinicalTitle: {
+    fontFamily: FontFamily.headingBold,
+    fontSize: FontSize.cardTitle,
+    color: Colors.text.primary,
+  },
+  clinicalSub: {
+    fontFamily: FontFamily.dmSansRegular,
+    fontSize: FontSize.meta,
+    color: Colors.text.secondary,
+    marginTop: 2,
+    lineHeight: 18,
+  },
+  therapistBadgeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: Colors.surface.card2,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: Radius.chip,
+  },
+  therapistBadgeText: {
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: FontSize.meta,
+    color: Colors.text.primary,
+    flex: 1,
+  },
+  exportPdfBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: Colors.accent.main,
+    paddingVertical: 12,
+    borderRadius: Radius.chip,
+  },
+  exportPdfBtnDisabled: {
+    opacity: 0.65,
+  },
+  exportPdfBtnText: {
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: FontSize.bodySmall,
+    color: '#FFFFFF',
   },
 });

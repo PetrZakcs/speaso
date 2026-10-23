@@ -8,6 +8,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTranslation } from '../i18n/useTranslation';
 import { useStore, patientPairingCode } from '../state/store';
 import { trackEvent } from '../lib/analytics';
+import { syncTherapistPairing } from '../lib/therapist';
 import PillButton from './PillButton';
 import IconButton from './IconButton';
 import { Colors, FontFamily, FontSize, Radius, Shadow } from '../theme/tokens';
@@ -46,15 +47,24 @@ export default function TherapistConnectModal({ visible, onClose }: Props) {
   };
 
   const handleSave = () => {
-    setTherapist({ code: pairingCode, name: name.trim() });
+    const cleanName = name.trim();
+    setTherapist({ code: pairingCode, name: cleanName });
+    syncTherapistPairing({
+      patientCode: pairingCode,
+      therapistName: cleanName,
+    }).catch((e) => console.warn('[therapist] sync error:', e));
     hapticSuccess();
-    trackEvent('therapist_paired', { has_name: !!name.trim() });
+    trackEvent('therapist_paired', { has_name: !!cleanName });
     onClose();
   };
 
   const handleUnlink = () => {
     setTherapist({ code: undefined, name: undefined });
     setName('');
+    syncTherapistPairing({
+      patientCode: pairingCode,
+      unlinked: true,
+    }).catch((e) => console.warn('[therapist] unlink error:', e));
     hapticSelect();
     onClose();
   };

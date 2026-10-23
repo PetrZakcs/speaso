@@ -5,8 +5,9 @@ import { useTranslation } from '../i18n/useTranslation';
 import { getDailyWisdom } from '../content/dailyWisdom';
 import type { DateKey } from '../lib/dates';
 import { hapticPress, hapticSuccess } from '../lib/haptics';
+import Card from './Card';
 import CompanionAvatar from './CompanionAvatar';
-import { Colors, FontFamily, FontSize, Radius, Shadow } from '../theme/tokens';
+import { Colors, FontFamily, FontSize, Radius } from '../theme/tokens';
 
 export default function DailyWisdomCard({ today }: { today: DateKey }) {
   const { t, lang, q } = useTranslation();
@@ -25,7 +26,7 @@ export default function DailyWisdomCard({ today }: { today: DateKey }) {
   };
 
   return (
-    <View style={[styles.card, Shadow.card]}>
+    <Card style={styles.card}>
       <View style={styles.header}>
         <View style={styles.badge}>
           <Ionicons name="sparkles" size={14} color={Colors.accent.main} />
@@ -55,7 +56,7 @@ export default function DailyWisdomCard({ today }: { today: DateKey }) {
         </View>
         <Text style={styles.challengeText}>{wisdom.challenge}</Text>
       </View>
-    </View>
+    </Card>
   );
 }
 

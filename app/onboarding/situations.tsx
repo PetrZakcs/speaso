@@ -30,7 +30,8 @@ export default function SituationsStep() {
       subtitle={t('onboarding.situations_sub')}
       footer={
         <PillButton
-          label={answered ? t('common.continue') : t('common.skip')}
+          label={t('common.continue')}
+          disabled={!answered}
           onPress={() => {
             setUser({ situations: selected, situationsOther: otherOn ? other.trim() : '' });
             router.push('/onboarding/insight');

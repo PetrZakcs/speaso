@@ -34,7 +34,7 @@ export default function WhoStep() {
       footer={
         <PillButton
           label={t('common.continue')}
-          disabled={!selected}
+          disabled={!selected || !therapy}
           onPress={() => {
             setUser({ ageGroup: selected, therapyStatus: therapy });
             router.push('/onboarding/routine');

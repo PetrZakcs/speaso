@@ -163,4 +163,25 @@ JOIN public.vip_promo_codes c ON c.code = r.code
 ORDER BY r.redeemed_at DESC;
 ```
 
+---
+
+## 8. Administrátorský Panel přímo v mobilní aplikaci
+
+Aplikace Speaso obsahuje plnohodnotný vestavěný admin panel s živým napojením na Supabase, telemetrií a exportem dat.
+
+### Jak se do administrace dostaneš:
+1. **Skrytý přístup v Profilu:** V záložce **Profil** klepni **7× rychle za sebou na řádek „Verze 1.0.0“**.
+2. **Přes Deep Link:** V mobilním Safari nebo terminálu otevři odkaz `speaso://admin`.
+
+### Zabezpečení (Gatekeeper):
+* Běžní uživatelé v aplikaci nevidí žádné tlačítko ani odkaz na administraci.
+* Pro vstup je vyžadován e-mail a heslo správce (ověřováno přes Supabase Auth).
+* Nového administrátora můžeš kdykoli přidat v Supabase v záložce **Authentication → Users**.
+
+### Co v administraci najdeš:
+* **Živý přehled (KPI):** Počet vyplněných dotazníků, výzkumných záznamů, analytických eventů, notifikačních rozvrhů, VIP kódů a propojených logopedů.
+* **Filtrování a detail záznamu:** Okamžité vyhledávání a zobrazení celého JSON záznamu.
+* **1-klikový CSV export pro Excel:** Každá tabulka má tlačítko `[ 📥 Exportovat CSV ]` s podporou českého kódování UTF-8 BOM a středníkových oddělovačů.
+
+
 

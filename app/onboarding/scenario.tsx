@@ -42,7 +42,7 @@ export default function ScenarioStep() {
   const setUser = useStore((s) => s.setUser);
   const [title, setTitle] = useState(first?.title ?? user.situationsOther.split(/[,\n]/)[0]?.trim() ?? '');
   const [phrase, setPhrase] = useState(first?.phrases[0] ?? '');
-  const [share, setShare] = useState(user.shareAnswers);
+  const [share, setShare] = useState(user.shareAnswers ?? true);
   const filled = !!title.trim();
 
   const applyPreset = (p: typeof PRESETS[number]) => {
@@ -68,7 +68,7 @@ export default function ScenarioStep() {
       step={4}
       title={t('onboarding.scenario_title')}
       subtitle={t('onboarding.scenario_sub')}
-      footer={<PillButton label={filled ? t('common.continue') : t('common.skip')} onPress={next} />}
+      footer={<PillButton label={t('common.continue')} disabled={!filled} onPress={next} />}
     >
       <View style={styles.presetsBlock}>
         <Text style={styles.presetsHint}>{t('onboarding.scenario_presets_hint')}</Text>

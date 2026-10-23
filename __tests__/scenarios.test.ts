@@ -44,7 +44,7 @@ describe('scenario store', () => {
     const migrate = useStore.persist.getOptions().migrate!;
     const v3 = { onboardingDone: true, user: { name: 'Eva', situations: ['phone'], dailyMinutes: 5 }, checkIns: [] };
     const out = migrate(v3, 3) as any;
-    expect(out.user).toMatchObject({ name: 'Eva', situations: ['phone'], situationsOther: '', shareAnswers: false });
+    expect(out.user).toMatchObject({ name: 'Eva', situations: ['phone'], situationsOther: '', shareAnswers: true });
     expect(out.scenarios).toEqual([]);
     expect(typeof out.installId).toBe('string');
     expect(out.answersPending).toBe(false);

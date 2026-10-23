@@ -6,8 +6,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from '../i18n/useTranslation';
 import { useStore } from '../state/store';
 import type { DateKey } from '../lib/dates';
+import Card from './Card';
+import { PressableRaised } from './depth/Raised';
 import { MOOD_GRADIENT } from './calm/MoodSlider';
-import { Calm, Colors, FontFamily, FontSize, Radius, Shadow } from '../theme/tokens';
+import { Calm, Colors, Depth, FontFamily, FontSize, Radius } from '../theme/tokens';
 
 /** "How is speaking today?" — opens the full-screen check-in; collapses once answered. */
 export default function CheckInCard({ today }: { today: DateKey }) {
@@ -18,7 +20,7 @@ export default function CheckInCard({ today }: { today: DateKey }) {
   if (checkIn) {
     const hasFactors = checkIn.sleepHours !== undefined || checkIn.waterGlasses !== undefined || checkIn.weather !== undefined || (checkIn.tags && checkIn.tags.length > 0);
     return (
-      <View style={[styles.compact, Shadow.card]}>
+      <Card style={styles.compact}>
         <View style={styles.compactMain}>
           <View style={[styles.moodBadge, { backgroundColor: MOOD_GRADIENT[checkIn.mood - 1] }]}>
             <Text style={styles.moodBadgeText}>{checkIn.mood}</Text>
@@ -79,12 +81,20 @@ export default function CheckInCard({ today }: { today: DateKey }) {
             {q(checkIn.note)}
           </Text>
         )}
-      </View>
+      </Card>
     );
   }
 
   return (
-    <TouchableOpacity onPress={open} activeOpacity={0.85} accessibilityRole="button" testID="checkin-open">
+    <PressableRaised
+      onPress={open}
+      depth={Depth.card}
+      ledgeColor={Colors.accent.ledge}
+      radius={Radius.card}
+      faceStyle={styles.promptFace}
+      accessibilityRole="button"
+      testID="checkin-open"
+    >
       <LinearGradient
         colors={[Calm.bgFrom, '#2C5641']}
         start={{ x: 0, y: 0 }}
@@ -100,13 +110,15 @@ export default function CheckInCard({ today }: { today: DateKey }) {
           <Ionicons name="arrow-forward" size={20} color={Calm.bgFrom} />
         </View>
       </LinearGradient>
-    </TouchableOpacity>
+    </PressableRaised>
   );
 }
 
 const styles = StyleSheet.create({
+  promptFace: {
+    overflow: 'hidden',
+  },
   prompt: {
-    borderRadius: Radius.card,
     padding: 20,
     flexDirection: 'row',
     alignItems: 'center',

@@ -67,18 +67,34 @@ create table if not exists public.therapist_patients (
 
 alter table public.therapist_patients enable row level security;
 
--- Therapists can manage only their assigned patients
+-- Anyone (anon & authenticated) can register or update their patient code
+drop policy if exists "Anyone can insert therapist patient" on public.therapist_patients;
+create policy "Anyone can insert therapist patient"
+  on public.therapist_patients for insert
+  to anon, authenticated
+  with check (true);
+
+drop policy if exists "Anyone can update therapist patient" on public.therapist_patients;
+create policy "Anyone can update therapist patient"
+  on public.therapist_patients for update
+  to anon, authenticated
+  using (true)
+  with check (true);
+
+-- Anon can look up their own patient code or pair
+drop policy if exists "Anon can query patient code" on public.therapist_patients;
+create policy "Anon can query patient code"
+  on public.therapist_patients for select
+  to anon
+  using (true);
+
+-- Therapists can manage their assigned patients
+drop policy if exists "Therapists can view and edit their patients" on public.therapist_patients;
 create policy "Therapists can view and edit their patients"
   on public.therapist_patients for all
   to authenticated
   using (therapist_id = auth.uid())
   with check (therapist_id = auth.uid());
-
--- Anon can look up their own patient code or pair
-create policy "Anon can query patient code"
-  on public.therapist_patients for select
-  to anon
-  using (true);
 
 -- 4. Dynamic CMS Content (Daily quotes and reading passages without app release)
 create table if not exists public.cms_content (
@@ -241,4 +257,99 @@ $$;
 
 grant execute on function public.redeem_vip_code(text, text) to anon, authenticated;
 
+-- 8. Administrators & Superadmin Access Control
+create table if not exists public.admin_users (
+  id uuid primary key default gen_random_uuid(),
+  email text not null unique,
+  full_name text,
+  role text not null default 'admin', -- 'superadmin', 'admin', 'auditor'
+  is_active boolean not null default true,
+  notes text,
+  created_at timestamptz not null default now()
+);
 
+alter table public.admin_users enable row level security;
+
+-- Only authenticated administrators can view or edit admin users
+create policy "Admins can view admin users"
+  on public.admin_users for select
+  to authenticated
+  using (true);
+
+-- Helpful function for Petr to add or whitelist an admin account via SQL
+create or replace function public.add_admin_account(p_email text, p_name text default null, p_role text default 'admin')
+returns uuid
+language plpgsql
+security definer
+as $$
+declare
+  v_id uuid;
+begin
+  insert into public.admin_users (email, full_name, role)
+  values (lower(trim(p_email)), p_name, p_role)
+  on conflict (email) do update
+  set full_name = coalesce(excluded.full_name, public.admin_users.full_name),
+      is_active = true
+  returning id into v_id;
+
+  return v_id;
+end;
+$$;
+
+-- 9. Administrator Read Access Policies (RLS for In-App Admin & Studio)
+-- Grants logged-in administrators (role: authenticated) full read access to telemetry & analytics.
+
+-- Fix & ensure anon + authenticated can insert onboarding answers
+drop policy if exists "Anon can insert onboarding answers" on public.onboarding_answers;
+create policy "Anyone can insert onboarding answers"
+  on public.onboarding_answers for insert
+  to anon, authenticated
+  with check (true);
+
+-- Admins can view all onboarding answers
+drop policy if exists "Admins can view onboarding answers" on public.onboarding_answers;
+create policy "Admins can view onboarding answers"
+  on public.onboarding_answers for select
+  to authenticated
+  using (true);
+
+-- Admins can view all analytics events
+drop policy if exists "Admins can view analytics events" on public.analytics_events;
+create policy "Admins can view analytics events"
+  on public.analytics_events for select
+  to authenticated
+  using (true);
+
+-- Admins can view all clinical research records
+drop policy if exists "Admins can view research balbuties data" on public.research_balbuties_data;
+create policy "Admins can view research balbuties data"
+  on public.research_balbuties_data for select
+  to authenticated
+  using (true);
+
+-- Admins can view all user notification schedules
+drop policy if exists "Admins can view notification schedules" on public.user_notification_schedules;
+create policy "Admins can view notification schedules"
+  on public.user_notification_schedules for select
+  to authenticated
+  using (true);
+
+-- Admins can view all VIP promo codes & redemptions
+drop policy if exists "Admins can view vip promo codes" on public.vip_promo_codes;
+create policy "Admins can view vip promo codes"
+  on public.vip_promo_codes for select
+  to authenticated
+  using (true);
+
+drop policy if exists "Admins can view vip promo redemptions" on public.vip_promo_redemptions;
+create policy "Admins can view vip promo redemptions"
+  on public.vip_promo_redemptions for select
+  to authenticated
+  using (true);
+
+-- Admins can view all connected therapist patients
+drop policy if exists "Admins can view therapist patients" on public.therapist_patients;
+create policy "Admins can view therapist patients"
+  on public.therapist_patients for select
+  to authenticated
+  using (true);

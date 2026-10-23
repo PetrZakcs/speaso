@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, Linking, Switch } from 'react-native';
+import { hapticSuccess } from '../../lib/haptics';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import Constants from 'expo-constants';
@@ -61,6 +62,21 @@ export default function ProfileScreen() {
   const [referralModalVisible, setReferralModalVisible] = useState(false);
   const [therapistModalVisible, setTherapistModalVisible] = useState(false);
   const [editingSlot, setEditingSlot] = useState<'practice' | 'morning' | 'streak' | null>(null);
+  const [versionTaps, setVersionTaps] = useState(0);
+  const versionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleVersionPress = () => {
+    if (versionTimerRef.current) clearTimeout(versionTimerRef.current);
+    const next = versionTaps + 1;
+    if (next >= 7) {
+      setVersionTaps(0);
+      hapticSuccess();
+      router.push('/admin' as any);
+    } else {
+      setVersionTaps(next);
+      versionTimerRef.current = setTimeout(() => setVersionTaps(0), 3000);
+    }
+  };
   const {
     name, subscription, language, setLanguage, reminder, shareAnswers, setUser, therapistName,
     biometricsEnabled, setBiometricsEnabled,
@@ -473,30 +489,18 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionLabel}>{t('settings.section_about')}</Text>
           <View style={styles.sectionCard}>
-            <SettingRow icon="information-circle-outline" label={t('settings.version')} value={version} />
+            <SettingRow
+              icon="information-circle-outline"
+              label={t('settings.version')}
+              value={version}
+              onPress={handleVersionPress}
+            />
             <View style={styles.divider} />
             <SettingRow icon="lock-closed-outline" label={t('settings.privacy')} onPress={() => Linking.openURL(PRIVACY_URL)} />
             <View style={styles.divider} />
             <SettingRow icon="document-text-outline" label={t('settings.terms')} onPress={() => Linking.openURL(TERMS_URL)} />
           </View>
         </View>
-
-        {/* Development builds only — lets testers walk through onboarding again. */}
-        {__DEV__ && (
-          <View style={styles.section}>
-            <Text style={styles.sectionLabel}>Dev</Text>
-            <View style={styles.sectionCard}>
-              <SettingRow
-                icon="refresh-circle-outline"
-                label={t('settings.dev_onboarding')}
-                onPress={() => {
-                  useStore.getState().setOnboardingDone(false);
-                  router.replace('/onboarding/welcome');
-                }}
-              />
-            </View>
-          </View>
-        )}
 
         <Text style={styles.disclaimer}>{t('settings.disclaimer')}</Text>
         <Text style={styles.footer}>{t('settings.footer_tagline')}</Text>
