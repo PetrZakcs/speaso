@@ -12,6 +12,9 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Calm, FontFamily, FontSize, Radius, Spacing } from '../../theme/tokens';
 import { trackEvent } from '../../lib/analytics';
 import { hapticSelect, hapticSuccess, hapticSighPhase } from '../../lib/haptics';
+import { createAudioPlayer, type AudioPlayer } from 'expo-audio';
+
+const BROWN_NOISE = require('../../assets/sounds/brown_noise.wav');
 
 type PanicMode = 'ball' | 'sigh' | 'body';
 
@@ -27,8 +30,46 @@ export default function PanicScreen() {
   const [mode, setMode] = useState<PanicMode>('ball');
   const [affirmIdx, setAffirmIdx] = useState(0);
   const [showTriggerSurvey, setShowTriggerSurvey] = useState(false);
+  const [ambientSound, setAmbientSound] = useState(false);
+  const ambientPlayer = useRef<AudioPlayer | null>(null);
   const startTime = useRef(0);
   const counted = useRef(false);
+
+  // Initialize soothing ambient audio (Brownian noise)
+  useEffect(() => {
+    try {
+      const p = createAudioPlayer(BROWN_NOISE);
+      p.loop = true;
+      p.volume = 0.35;
+      ambientPlayer.current = p;
+    } catch {
+      // Audio not supported in test or restricted environment
+    }
+    return () => {
+      try {
+        ambientPlayer.current?.pause();
+        ambientPlayer.current?.remove();
+        ambientPlayer.current = null;
+      } catch {}
+    };
+  }, []);
+
+  const toggleAmbientSound = () => {
+    hapticSelect();
+    setAmbientSound((prev) => {
+      const next = !prev;
+      try {
+        if (ambientPlayer.current) {
+          if (next) {
+            ambientPlayer.current.play();
+          } else {
+            ambientPlayer.current.pause();
+          }
+        }
+      } catch {}
+      return next;
+    });
+  };
 
   // Physiological Sigh timer state
   const [sighPhase, setSighPhase] = useState<1 | 2 | 3>(1);
@@ -65,6 +106,9 @@ export default function PanicScreen() {
   }, [mode, sighPhase]);
 
   const handleClose = () => {
+    try {
+      ambientPlayer.current?.pause();
+    } catch {}
     const elapsedSec = computeElapsedSec(startTime.current);
     if (elapsedSec >= 4 && !showTriggerSurvey) {
       hapticSelect();
@@ -75,6 +119,9 @@ export default function PanicScreen() {
   };
 
   const handleSelectTrigger = (triggerKey: string) => {
+    try {
+      ambientPlayer.current?.pause();
+    } catch {}
     hapticSuccess();
     const elapsedSec = computeElapsedSec(startTime.current);
     trackEvent('panic_sos', { trigger: triggerKey, mode, durationSec: elapsedSec });
@@ -104,6 +151,23 @@ export default function PanicScreen() {
             accessibilityLabel={t('panic.close_a11y')}
           >
             <Ionicons name="close" size={22} color={Calm.text} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={toggleAmbientSound}
+            style={[styles.ambientBtn, ambientSound && styles.ambientBtnActive]}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel={ambientSound ? t('panic.ambient_off') : t('panic.ambient_on')}
+          >
+            <Ionicons
+              name={ambientSound ? 'volume-high' : 'volume-mute-outline'}
+              size={18}
+              color={ambientSound ? Calm.bgFrom : Calm.text}
+            />
+            <Text style={[styles.ambientBtnText, ambientSound && styles.ambientBtnTextActive]}>
+              {ambientSound ? t('panic.ambient_active') : t('panic.ambient_btn')}
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -311,6 +375,8 @@ const styles = StyleSheet.create({
   center: { flex: 1, justifyContent: 'center' },
   header: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: Spacing.screenH,
     paddingTop: 8,
     zIndex: 1,
@@ -322,6 +388,30 @@ const styles = StyleSheet.create({
     backgroundColor: Calm.card,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  ambientBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    height: 38,
+    borderRadius: Radius.pill,
+    backgroundColor: Calm.card,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  ambientBtnActive: {
+    backgroundColor: Calm.accent,
+    borderColor: Calm.accent,
+  },
+  ambientBtnText: {
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: FontSize.bodySmall,
+    color: Calm.text,
+  },
+  ambientBtnTextActive: {
+    color: Calm.bgFrom,
+    fontFamily: FontFamily.dmSansSemiBold,
   },
   titleWrap: {
     alignItems: 'center',

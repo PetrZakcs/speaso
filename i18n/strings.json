@@ -250,7 +250,11 @@
     "body_step3_title":  { "cs": "3. Měkký výdech se zvukem", "en": "3. Soft sigh exhale" },
     "body_step3_desc":   { "cs": "Vydechni se zvukem „húúúú“. Hlasivky se uvolní ze sevření.", "en": "Exhale with a gentle 'whoosh'. Vocal cords release from tension." },
     "body_step4_title":  { "cs": "4. Mluv svým tempem", "en": "4. Speak at your pace" },
-    "body_step4_desc":   { "cs": "Nemusíš začít hned. Pauza před první větou je přirozená.", "en": "No rush to start. A pause before the first sentence is natural." }
+    "body_step4_desc":   { "cs": "Nemusíš začít hned. Pauza před první větou je přirozená.", "en": "No rush to start. A pause before the first sentence is natural." },
+    "ambient_btn":       { "cs": "Uklidňující zvuk", "en": "Calm sound" },
+    "ambient_active":    { "cs": "Brown noise", "en": "Brown noise" },
+    "ambient_on":        { "cs": "Zapnout uklidňující zvuk", "en": "Turn on calming sound" },
+    "ambient_off":       { "cs": "Vypnout uklidňující zvuk", "en": "Turn off calming sound" }
   },
 
   "exercises": {
