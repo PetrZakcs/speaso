@@ -169,4 +169,44 @@ describe('store', () => {
     setAppLocked(false);
     expect(useStore.getState().isAppLocked).toBe(false);
   });
+
+  it('clearPracticeData resets sessions, checkIns, streak and panicUses', () => {
+    useStore.setState({
+      sessions: [{ id: '1', exerciseId: 'reading', date: toDateKey(), durationSec: 60, completedAt: new Date().toISOString() }],
+      checkIns: [{ date: toDateKey(), mood: 5 }],
+      recordings: [{ id: 'r1', fileName: 'test.m4a', exerciseId: 'reading', createdAt: new Date().toISOString(), durationSec: 10 }],
+      streak: { current: 5, record: 10, lastActiveDate: toDateKey() },
+      panicUses: 4,
+      scenarios: [{ id: 's1', title: 'Test', phrases: ['Hi'], challenge: 'None', createdAt: new Date().toISOString() }],
+      celebratedMilestones: [3],
+    });
+
+    useStore.getState().clearPracticeData();
+
+    const state = useStore.getState();
+    expect(state.sessions).toEqual([]);
+    expect(state.checkIns).toEqual([]);
+    expect(state.recordings).toEqual([]);
+    expect(state.streak).toEqual({ current: 0, record: 0, lastActiveDate: null });
+    expect(state.panicUses).toBe(0);
+    expect(state.scenarios).toEqual([]);
+    expect(state.celebratedMilestones).toEqual([]);
+  });
+
+  it('resetAllData resets onboardingDone and user to clean state', () => {
+    useStore.setState({
+      onboardingDone: true,
+      user: { name: 'Test User', ageGroup: 'adult', situations: ['phone'], goal: 'calm', therapyStatus: 'self', dailyMinutes: 30, note: '', situationsOther: '', goalOther: '', shareAnswers: true, hasRedeemedReferral: false },
+      biometricsEnabled: true,
+    });
+
+    useStore.getState().resetAllData();
+
+    const state = useStore.getState();
+    expect(state.onboardingDone).toBe(false);
+    expect(state.user.name).toBe('');
+    expect(state.biometricsEnabled).toBe(false);
+    expect(state.sessions).toEqual([]);
+  });
 });
+

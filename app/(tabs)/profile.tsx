@@ -79,7 +79,7 @@ export default function ProfileScreen() {
   };
   const {
     name, subscription, language, setLanguage, reminder, shareAnswers, setUser, therapistName,
-    biometricsEnabled, setBiometricsEnabled,
+    biometricsEnabled, setBiometricsEnabled, clearPracticeData, resetAllData,
   } = useStore(useShallow((s) => ({
     name: s.user.name,
     subscription: s.subscription,
@@ -91,6 +91,8 @@ export default function ProfileScreen() {
     therapistName: s.user.therapistName,
     biometricsEnabled: s.biometricsEnabled,
     setBiometricsEnabled: s.setBiometricsEnabled,
+    clearPracticeData: s.clearPracticeData,
+    resetAllData: s.resetAllData,
   })));
 
   const toggleBiometrics = async (on: boolean) => {
@@ -165,6 +167,44 @@ export default function ProfileScreen() {
     } finally {
       setRestoring(false);
     }
+  };
+
+  const handleClearPracticeData = () => {
+    Alert.alert(
+      t('settings.clear_data_confirm_title'),
+      t('settings.clear_data_confirm_msg'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('settings.clear_data_action'),
+          style: 'destructive',
+          onPress: () => {
+            clearPracticeData();
+            hapticSuccess();
+            Alert.alert(t('settings.title'), t('settings.clear_data_success'));
+          },
+        },
+      ],
+    );
+  };
+
+  const handleResetOnboarding = () => {
+    Alert.alert(
+      t('settings.reset_onboarding_confirm_title'),
+      t('settings.reset_onboarding_confirm_msg'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('settings.reset_onboarding_action'),
+          style: 'destructive',
+          onPress: () => {
+            resetAllData();
+            hapticSuccess();
+            router.replace('/onboarding');
+          },
+        },
+      ],
+    );
   };
 
   return (
@@ -483,6 +523,25 @@ export default function ProfileScreen() {
             />
           </View>
           <Text style={styles.sectionHint}>{t('settings.companion_lab_sub')}</Text>
+        </View>
+
+        {/* Data Management & Clean Slate */}
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>{t('settings.section_data')}</Text>
+          <View style={styles.sectionCard}>
+            <SettingRow
+              icon="trash-outline"
+              label={t('settings.clear_practice_data')}
+              onPress={handleClearPracticeData}
+            />
+            <View style={styles.divider} />
+            <SettingRow
+              icon="refresh-circle-outline"
+              label={t('settings.reset_onboarding')}
+              onPress={handleResetOnboarding}
+            />
+          </View>
+          <Text style={styles.sectionHint}>{t('settings.clear_practice_data_sub')}</Text>
         </View>
 
         {/* About */}

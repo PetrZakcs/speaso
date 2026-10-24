@@ -156,6 +156,10 @@ interface AppState {
   unlockPromo: (code: string, expiresAt: string | null) => void;
   setTherapist: (therapist: { code?: string; name?: string }) => void;
   markMilestoneCelebrated: (days: number) => void;
+  /** Clears all practice sessions, check-ins, recordings, streaks and panic count so user starts with 100% real data. */
+  clearPracticeData: () => void;
+  /** Complete reset back to clean onboarding state. */
+  resetAllData: () => void;
 }
 
 export const DEFAULT_REMINDER: ReminderSettings = {
@@ -371,6 +375,38 @@ export const useStore = create<AppState>()(
             therapistName: therapist.name?.trim(),
           },
         })),
+
+      clearPracticeData: () => {
+        const { recordings } = get();
+        recordings.forEach((r) => deleteRecordingFile(r.fileName));
+        set({
+          sessions: [],
+          checkIns: [],
+          recordings: [],
+          streak: EMPTY_STREAK,
+          panicUses: 0,
+          scenarios: [],
+          celebratedMilestones: [],
+        });
+      },
+
+      resetAllData: () => {
+        const { recordings } = get();
+        recordings.forEach((r) => deleteRecordingFile(r.fileName));
+        set({
+          onboardingDone: false,
+          user: initialUser,
+          streak: EMPTY_STREAK,
+          sessions: [],
+          panicUses: 0,
+          recordings: [],
+          checkIns: [],
+          scenarios: [],
+          celebratedMilestones: [],
+          biometricsEnabled: false,
+          isAppLocked: false,
+        });
+      },
     }),
     {
       name: 'speaso-storage',
