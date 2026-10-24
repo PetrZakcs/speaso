@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
+import * as Sharing from 'expo-sharing';
 import { useTranslation } from '../i18n/useTranslation';
 import { FREE_RECORDINGS_LIMIT, useStore, useShallow, type Recording } from '../state/store';
 import { recordingUri } from '../lib/recordings';
@@ -78,6 +79,23 @@ export default function RecordingsScreen() {
         },
       },
     ]);
+  };
+
+  const shareRecording = async (rec: Recording) => {
+    try {
+      const isAvailable = await Sharing.isAvailableAsync();
+      if (!isAvailable) {
+        Alert.alert(t('common.error'), t('recordings.share_unavailable'));
+        return;
+      }
+      await Sharing.shareAsync(recordingUri(rec.fileName), {
+        dialogTitle: t('recordings.share_title'),
+        mimeType: 'audio/m4a',
+        UTI: 'public.audio',
+      });
+    } catch (e) {
+      console.warn('[recordings] share failed:', e);
+    }
   };
 
   return (
@@ -159,10 +177,20 @@ export default function RecordingsScreen() {
                   </Text>
                 </View>
                 <TouchableOpacity
+                  onPress={() => shareRecording(item)}
+                  style={styles.actionBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('recordings.share')}
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                >
+                  <Ionicons name="share-outline" size={18} color={Colors.text.secondary} />
+                </TouchableOpacity>
+                <TouchableOpacity
                   onPress={() => confirmDelete(item)}
-                  style={styles.deleteBtn}
+                  style={styles.actionBtn}
                   accessibilityRole="button"
                   accessibilityLabel={t('recordings.delete')}
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 >
                   <Ionicons name="trash-outline" size={18} color={Colors.text.tertiary} />
                 </TouchableOpacity>
@@ -249,6 +277,7 @@ const styles = StyleSheet.create({
   playBtnActive: { backgroundColor: Colors.accent.main },
   rowTitle: { fontFamily: FontFamily.dmSansSemiBold, fontSize: FontSize.bodySmall, color: Colors.text.primary },
   rowSub: { fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.meta, color: Colors.text.tertiary, marginTop: 2 },
+  actionBtn: { padding: 6 },
   deleteBtn: { padding: 8 },
   compare: {
     backgroundColor: Tints.lavender.bg,

@@ -108,5 +108,51 @@ describe('ratings and report', () => {
     expect(html).toContain('Telefonování, Cizí lidé');
     expect(html).toContain('Křeč hrtanu a hlasivek, Mělký hrudní dech');
   });
+
+  it('renders clinical therapist worksheet, patient code, therapist name, and recordings', () => {
+    const html = buildReportHtml(
+      {
+        name: 'Petr Žák',
+        patientCode: 'SPE-9944',
+        therapistName: 'Mgr. Jana Nováková',
+        from: '1. 9. 2026',
+        to: '30. 9. 2026',
+        sessions: [session('2026-09-29', 4)],
+        streak: 5,
+        panicUses: 0,
+        recordings: [
+          {
+            id: 'rec-1',
+            exerciseId: 'reading',
+            fileName: 'reading_1.m4a',
+            createdAt: '2026-09-29T14:30:00.000Z',
+            durationSec: 42,
+          },
+        ],
+        checkIns: [
+          {
+            date: '2026-09-29',
+            mood: 4,
+            tags: ['throat_tension', 'fast_pace'],
+            sleepHours: 7.5,
+            waterGlasses: 6,
+            weather: 'cloudy',
+          },
+        ],
+      },
+      'cs',
+    );
+
+    expect(html).toContain('SPE-9944');
+    expect(html).toContain('Jméno pacienta:</span> <b>Petr Žák</b>');
+    expect(html).toContain('Mgr. Jana Nováková');
+    expect(html).toContain('Klinický plán a doporučení');
+    expect(html).toContain('Hlasové nahrávky a nácviky');
+    expect(html).toContain('42 s');
+    expect(html).toContain('Doporučená frekvence domácího nácviku');
+    expect(html).toContain('Cílové tempo čtení / řeči');
+    expect(html).toContain('Razítko a podpis logopeda');
+  });
 });
+
 
