@@ -7,6 +7,7 @@ import { textsFor } from '../../content/texts';
 import { Colors, FontFamily, FontSize, Radius, Shadow } from '../../theme/tokens';
 import { hapticPress, hapticSelect, hapticSuccess, hapticTick } from '../../lib/haptics';
 import CompanionAvatar from '../CompanionAvatar';
+import MirrorView from './MirrorView';
 
 const SPEEDS = [
   { wpm: 65, key: 'reading.pacer_calm' },
@@ -27,6 +28,7 @@ export default function ReadingPanel({ initialLevel = 1 }: { initialLevel?: 1 | 
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeWordIndex, setActiveWordIndex] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [mirrorActive, setMirrorActive] = useState(false);
 
   const texts = textsFor(ageGroup, level);
   const text = texts[index % texts.length];
@@ -136,6 +138,25 @@ export default function ReadingPanel({ initialLevel = 1 }: { initialLevel?: 1 | 
 
         <View style={styles.headerActions}>
           <TouchableOpacity
+            onPress={() => {
+              hapticPress();
+              setMirrorActive((m) => !m);
+            }}
+            style={[styles.pacerToggle, mirrorActive && styles.pacerToggleActive]}
+            accessibilityRole="button"
+            accessibilityLabel={t('mirror.toggle')}
+          >
+            <Ionicons
+              name={mirrorActive ? 'videocam' : 'videocam-outline'}
+              size={14}
+              color={mirrorActive ? Colors.accent.on : Colors.accent.main}
+            />
+            <Text style={[styles.pacerToggleText, mirrorActive && styles.pacerToggleTextActive]}>
+              {t('mirror.toggle')}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
             onPress={togglePacing}
             style={[styles.pacerToggle, pacingActive && styles.pacerToggleActive]}
             accessibilityRole="button"
@@ -240,6 +261,14 @@ export default function ReadingPanel({ initialLevel = 1 }: { initialLevel?: 1 | 
             </View>
           )}
         </View>
+      )}
+
+      {/* Mirror Biofeedback Preview */}
+      {mirrorActive && (
+        <MirrorView
+          compact
+          onClose={() => setMirrorActive(false)}
+        />
       )}
 
       {text && (

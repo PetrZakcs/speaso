@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { router } from 'expo-router';
 import { useTranslation } from '../../i18n/useTranslation';
 import { EXERCISES } from '../../content/exercises';
 import { SITUATIONS } from '../../content/situations';
@@ -124,6 +125,16 @@ export default function ExercisesScreen() {
               />
             );
           })}
+          <Row
+            first={false}
+            icon="videocam-outline"
+            tint="sage"
+            title={t('mirror.title')}
+            sub={t('mirror.sub')}
+            meta={`Biofeedback · ${t('common.today')}`}
+            onPress={() => router.push('/mirror')}
+            a11y={`${t('mirror.title')}, ${t('mirror.sub')}`}
+          />
         </View>
 
         <View style={styles.sectionHead}>

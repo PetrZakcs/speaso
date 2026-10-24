@@ -419,6 +419,25 @@
     "pacer_done":        { "cs": "Skvěle přečteno! Udržel jsi klidný rytmus.", "en": "Great reading! You kept a calm, steady cadence." }
   },
 
+  "mirror": {
+    "title":             { "cs": "Zrcadlový nácvik", "en": "Mirror Rehearsal" },
+    "kicker":            { "cs": "Biofeedback tenze", "en": "Tension biofeedback" },
+    "sub":               { "cs": "Sleduj uvolnění čelisti, krku a ramen při mluvení.", "en": "Observe jaw, neck, and shoulder ease while speaking." },
+    "toggle":            { "cs": "Zrcadlo", "en": "Mirror" },
+    "cue_jaw":           { "cs": "Volná čelist", "en": "Soft jaw" },
+    "cue_shoulders":     { "cs": "Uvolněná ramena", "en": "Relaxed shoulders" },
+    "cue_breath":        { "cs": "Brániční dech", "en": "Diaphragm breath" },
+    "cue_eyes":          { "cs": "Klidný pohled", "en": "Calm eye gaze" },
+    "permission_title":  { "cs": "Zrcadlo potřebuje kameru", "en": "Mirror needs camera access" },
+    "permission_sub":    { "cs": "Přední kamera slouží pro zrcadlovou vizuální kontrolu svalového napětí. Záznam zůstává pouze v tvém telefonu.", "en": "Front camera provides visual biofeedback of facial tension. Video stays only on your phone." },
+    "permission_btn":    { "cs": "Povolit kameru", "en": "Allow camera" },
+    "dock_compact":      { "cs": "Kompaktní náhled", "en": "Compact view" },
+    "dock_full":         { "cs": "Rozšířené zrcadlo", "en": "Expanded mirror" },
+    "zero_cloud":        { "cs": "100% On-Device zrcadlo", "en": "100% On-Device Mirror" },
+    "section_title":     { "cs": "Zrcadlová biofeedback terapie", "en": "Mirror biofeedback therapy" },
+    "section_sub":       { "cs": "Vizuální sebekontrola mimických záškubů, napětí rtů a ramen před začátkem slov.", "en": "Visual awareness of facial twitches, lip pressing, and shoulder tension before speech blocks." }
+  },
+
   "rating": {
     "title":             { "cs": "Jak se ti mluvilo?", "en": "How did speaking feel?" },
     "sub":               { "cs": "Upřímně, jen pro tebe. Uvidíš, jak se to v čase mění.", "en": "Honestly, just for you. You'll see how it changes over time." },

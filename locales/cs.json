@@ -2,6 +2,7 @@
   "ios": {
     "CFBundleDisplayName": "Speaso",
     "NSMicrophoneUsageDescription": "Speaso používá mikrofon, abys si mohl/a nahrát své cvičení a poslechnout si ho. Nahrávky zůstávají jen v telefonu.",
+    "NSCameraUsageDescription": "Speaso využívá přední kameru pro zrcadlový nácvik uvolnění čelisti a ramen. Záznam zůstává pouze v telefonu.",
     "NSFaceIDUsageDescription": "Povolte Face ID pro zabezpečení vašich dechových nahrávek a deníku řeči."
   },
   "android": {

@@ -16,6 +16,7 @@
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true,
         "NSFaceIDUsageDescription": "Povolte Face ID pro zabezpečení vašich dechových nahrávek a deníku řeči.",
+        "NSCameraUsageDescription": "Speaso využívá přední kameru pro zrcadlový nácvik uvolnění čelisti a ramen. Záznam zůstává pouze v telefonu.",
         "UIApplicationShortcutItems": [
           {
             "UIApplicationShortcutItemType": "panic",
@@ -42,7 +43,8 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS",
         "android.permission.USE_BIOMETRIC",
-        "android.permission.USE_FINGERPRINT"
+        "android.permission.USE_FINGERPRINT",
+        "android.permission.CAMERA"
       ]
     },
     "web": {
@@ -98,7 +100,15 @@
         }
       ],
       "expo-sharing",
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Speaso využívá přední kameru pro zrcadlový nácvik uvolnění čelisti a ramen. Záznam zůstává pouze v telefonu.",
+          "microphonePermission": "Speaso využívá mikrofon pro nácvik klidné mluvy.",
+          "recordAudioAndroid": true
+        }
+      ]
     ],
     "locales": {
       "cs": "./locales/cs.json",

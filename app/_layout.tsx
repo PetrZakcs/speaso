@@ -102,6 +102,7 @@ export default function RootLayout() {
         <Stack.Screen name="scenario/[id]" options={{ animation: 'slide_from_bottom' }} />
         <Stack.Screen name="scenario/edit" options={{ presentation: 'modal' }} />
         <Stack.Screen name="recordings" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="mirror" options={{ presentation: 'modal' }} />
         <Stack.Screen name="checkin" options={{ presentation: 'modal', animation: 'fade' }} />
         <Stack.Screen name="panic" options={{ presentation: 'modal', animation: 'fade' }} />
         <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />

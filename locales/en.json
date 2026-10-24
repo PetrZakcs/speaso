@@ -2,6 +2,7 @@
   "ios": {
     "CFBundleDisplayName": "Speaso",
     "NSMicrophoneUsageDescription": "Speaso uses the microphone so you can record your practice and listen back. Recordings stay on your phone.",
+    "NSCameraUsageDescription": "Speaso uses the front camera for mirror therapy and observing jaw/shoulder tension. Video stays on your phone.",
     "NSFaceIDUsageDescription": "Enable Face ID to secure your speech recordings and journal."
   },
   "android": {
