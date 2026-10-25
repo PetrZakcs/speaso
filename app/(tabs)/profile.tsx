@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, Linking, Switch } from 'react-native';
-import { hapticSuccess } from '../../lib/haptics';
+import { hapticPress, hapticSuccess } from '../../lib/haptics';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import Constants from 'expo-constants';
@@ -244,6 +244,29 @@ export default function ProfileScreen() {
               onPress={() => setLanguage(language === 'cs' ? 'en' : 'cs')}
             />
           </View>
+        </View>
+
+        {/* Diagnostic Profile */}
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>{t('diagnostic.screen_kicker')}</Text>
+          <TouchableOpacity
+            style={styles.sectionCard}
+            onPress={() => {
+              hapticPress();
+              router.push('/diagnostic');
+            }}
+            accessibilityRole="button"
+            accessibilityLabel={t('diagnostic.entry_card_title')}
+          >
+            <View style={styles.row}>
+              <Ionicons name="pulse-outline" size={18} color={Colors.accent.main} style={styles.rowIcon} />
+              <View style={{ flex: 1, gap: 2 }}>
+                <Text style={styles.rowLabel}>{t('diagnostic.entry_card_title')}</Text>
+                <Text style={styles.rowSubLabel}>{t('diagnostic.entry_card_sub')}</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color={Colors.text.tertiary} />
+            </View>
+          </TouchableOpacity>
         </View>
 
         {/* Reminders & Notifications */}

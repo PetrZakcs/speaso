@@ -140,6 +140,36 @@ export default function ProgressScreen() {
         <SpeechFactorsCard checkIns={checkIns} />
         <SmartInsightsCard sessions={sessions} checkIns={checkIns} streak={streak} />
 
+        {/* Diagnostic Tension Profile Quick Access Card */}
+        <PressableCard
+          onPress={() => router.push('/diagnostic')}
+          accessibilityLabel={t('diagnostic.entry_card_title')}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+            <View
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 22,
+                backgroundColor: Colors.accent.soft,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Ionicons name="pulse" size={22} color={Colors.accent.main} />
+            </View>
+            <View style={{ flex: 1, gap: 2 }}>
+              <Text style={{ fontFamily: FontFamily.heading, fontSize: FontSize.cardTitle, color: Colors.text.primary }}>
+                {t('diagnostic.entry_card_title')}
+              </Text>
+              <Text style={{ fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.meta, color: Colors.text.secondary }}>
+                {t('diagnostic.entry_card_sub')}
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={Colors.text.tertiary} />
+          </View>
+        </PressableCard>
+
         {/* Stats */}
         <View style={styles.statsRow}>
           <Card style={styles.statCard}>

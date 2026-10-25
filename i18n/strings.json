@@ -416,7 +416,9 @@
     "pacer_start":       { "cs": "Spustit", "en": "Start" },
     "pacer_pause":       { "cs": "Pauza", "en": "Pause" },
     "pacer_reset":       { "cs": "Znovu", "en": "Reset" },
-    "pacer_done":        { "cs": "Skvěle přečteno! Udržel jsi klidný rytmus.", "en": "Great reading! You kept a calm, steady cadence." }
+    "pacer_done":        { "cs": "Skvěle přečteno! Udržel jsi klidný rytmus.", "en": "Great reading! You kept a calm, steady cadence." },
+    "split_mirror":      { "cs": "Zrcadlový split-screen", "en": "Mirror split-screen" },
+    "split_mirror_hint": { "cs": "Sleduj uvolnění čelisti a ramen přímo při čtení textu.", "en": "Observe jaw and shoulder relaxation while reading the text." }
   },
 
   "mirror": {
@@ -540,7 +542,11 @@
     "delete_body":       { "cs": "Nahrávka se nenávratně smaže z telefonu.", "en": "The recording will be permanently deleted from your phone." },
     "share":             { "cs": "Sdílet nahrávku", "en": "Share recording" },
     "share_title":       { "cs": "Sdílet hlasový nácvik", "en": "Share voice take" },
-    "share_unavailable": { "cs": "Sdílení není na tomto zařízení dostupné.", "en": "Sharing is not available on this device." }
+    "share_unavailable": { "cs": "Sdílení není na tomto zařízení dostupné.", "en": "Sharing is not available on this device." },
+    "replay_5s":         { "cs": "-5 s", "en": "-5s" },
+    "forward_5s":        { "cs": "+5 s", "en": "+5s" },
+    "scrubber":          { "cs": "Osa přehrávání", "en": "Playback track" },
+    "waveform":          { "cs": "Hlasová křivka", "en": "Voice waveform" }
   },
 
   "reminders": {
@@ -908,7 +914,29 @@
     "guarantee_privacy": { "cs": "100% soukromé offline úložiště", "en": "100% private offline storage" },
     "cta_start_trial":   { "cs": "Aktivovat můj 7denní plán zdarma", "en": "Activate my 7-day free plan" },
     "paywall_hook_title":{ "cs": "Tvůj plán pro klidnější řeč je připraven", "en": "Your calm speech plan is ready" },
-    "paywall_hook_desc": { "cs": "Vyzkoušej plný přístup na 7 dní zdarma. Upozorníme tě 2 dny předem.", "en": "Try full access free for 7 days. We'll remind you 2 days before." }
+    "paywall_hook_desc": { "cs": "Vyzkoušej plný přístup na 7 dní zdarma. Upozorníme tě 2 dny předem.", "en": "Try full access free for 7 days. We'll remind you 2 days before." },
+    "export_pdf":        { "cs": "Exportovat zprávu pro lékaře (PDF)", "en": "Export clinical PDF report" },
+    "connect_therapist": { "cs": "Propojit s mým logopedem", "en": "Connect with my therapist" },
+    "practice_recommendation": { "cs": "Doporučený klinický trénink", "en": "Recommended clinical drill" },
+    "start_practice":    { "cs": "Spustit nácvik měkkého začátku", "en": "Start soft-onset drill" },
+    "entry_card_title":  { "cs": "Diagnostický profil řeči", "en": "Speech Diagnostic Profile" },
+    "entry_card_sub":    { "cs": "Somatický index, ohniska v krku a 30denní vědecká prognóza.", "en": "Somatic index, vocal tension points, and 30-day projection." },
+    "entry_card_cta":    { "cs": "Zobrazit profil →", "en": "View profile →" },
+    "triggers_title":    { "cs": "Klíčové spouštěče napětí", "en": "Key tension triggers" },
+    "triggers_empty":    { "cs": "Běžné situace bez specifických spouštěčů", "en": "Everyday situations without specific triggers" }
+  },
+
+  "pacing": {
+    "title":             { "cs": "Měřič tempa řeči", "en": "Speech Pacing Cadence" },
+    "sub":               { "cs": "Klinické tempo řeči pro balbuties. Udržuj tempo v zelené zóně.", "en": "Clinical speech pacing for stuttering. Maintain pace in the green zone." },
+    "tap_instruction":   { "cs": "Klepni na každé slovo nebo slabiku při mluvení", "en": "Tap for each word or syllable as you speak" },
+    "wpm_label":         { "cs": "WPM (slov/min)", "en": "WPM (words/min)" },
+    "zone_slow":         { "cs": "Pomalé tempo (relaxace)", "en": "Slow pace (relaxation)" },
+    "zone_calm":         { "cs": "Optimální plynulé tempo (zelená zóna)", "en": "Optimal calm cadence (green zone)" },
+    "zone_elevated":     { "cs": "Mírně zrychlené (zvýšené riziko spasmu)", "en": "Slightly hurried (spasm risk)" },
+    "zone_fast":         { "cs": "Zrychlené tempo (vysoký artikulační tlak)", "en": "Hurried pace (high articulatory pressure)" },
+    "reset":             { "cs": "Vynulovat", "en": "Reset" },
+    "toggle":            { "cs": "Měřič tempa", "en": "Pacing meter" }
   },
 
   "companion_lab": {

@@ -29,6 +29,7 @@ export default function ReadingPanel({ initialLevel = 1 }: { initialLevel?: 1 | 
   const [activeWordIndex, setActiveWordIndex] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
   const [mirrorActive, setMirrorActive] = useState(false);
+  const [mirrorExpanded, setMirrorExpanded] = useState(false);
 
   const texts = textsFor(ageGroup, level);
   const text = texts[index % texts.length];
@@ -144,7 +145,7 @@ export default function ReadingPanel({ initialLevel = 1 }: { initialLevel?: 1 | 
             }}
             style={[styles.pacerToggle, mirrorActive && styles.pacerToggleActive]}
             accessibilityRole="button"
-            accessibilityLabel={t('mirror.toggle')}
+            accessibilityLabel={t('reading.split_mirror')}
           >
             <Ionicons
               name={mirrorActive ? 'videocam' : 'videocam-outline'}
@@ -152,7 +153,7 @@ export default function ReadingPanel({ initialLevel = 1 }: { initialLevel?: 1 | 
               color={mirrorActive ? Colors.accent.on : Colors.accent.main}
             />
             <Text style={[styles.pacerToggleText, mirrorActive && styles.pacerToggleTextActive]}>
-              {t('mirror.toggle')}
+              {t('reading.split_mirror')}
             </Text>
           </TouchableOpacity>
 
@@ -263,12 +264,26 @@ export default function ReadingPanel({ initialLevel = 1 }: { initialLevel?: 1 | 
         </View>
       )}
 
-      {/* Mirror Biofeedback Preview */}
+      {/* Split-Screen Mirror Biofeedback */}
       {mirrorActive && (
-        <MirrorView
-          compact
-          onClose={() => setMirrorActive(false)}
-        />
+        <View style={styles.splitMirrorSection}>
+          <View style={styles.splitMirrorHeader}>
+            <Ionicons name="videocam" size={14} color={Colors.accent.main} />
+            <Text style={styles.splitMirrorHint}>{t('reading.split_mirror_hint')}</Text>
+          </View>
+          <MirrorView
+            compact={!mirrorExpanded}
+            style={mirrorExpanded ? styles.splitMirrorExpanded : styles.splitMirrorCompact}
+            onToggleExpand={() => {
+              hapticPress();
+              setMirrorExpanded((prev) => !prev);
+            }}
+            onClose={() => {
+              setMirrorActive(false);
+              setMirrorExpanded(false);
+            }}
+          />
+        </View>
       )}
 
       {text && (
@@ -488,6 +503,33 @@ const styles = StyleSheet.create({
   },
   wordTextPast: {
     color: Colors.text.tertiary,
+  },
+  // Split-Screen Mirror Section
+  splitMirrorSection: {
+    gap: 6,
+    marginBottom: 4,
+  },
+  splitMirrorHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: Colors.accent.soft,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: Radius.chip,
+  },
+  splitMirrorHint: {
+    flex: 1,
+    fontFamily: FontFamily.dmSansMedium,
+    fontSize: FontSize.micro,
+    color: Colors.accent.main,
+    lineHeight: 14,
+  },
+  splitMirrorCompact: {
+    height: 165,
+  },
+  splitMirrorExpanded: {
+    height: 250,
   },
 });
 

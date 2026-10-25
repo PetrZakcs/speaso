@@ -36,6 +36,17 @@ describe('calculateDiagnosticProfile', () => {
     expect(profile15.projectedBlockReductionPct).toBeGreaterThan(profile5.projectedBlockReductionPct);
   });
 
+  it('identifies diaphragm and pace friction areas for social situations', () => {
+    const socialUser: UserState = {
+      ...baseUser,
+      situations: ['meeting', 'presentation'],
+      goal: 'confidence',
+    };
+    const profile = calculateDiagnosticProfile(socialUser, 'cs');
+    expect(profile.vocalFrictionAreas.some((a) => a.id === 'diaphragm')).toBe(true);
+    expect(profile.vocalFrictionAreas.some((a) => a.id === 'pace')).toBe(true);
+  });
+
   it('handles empty situations gracefully', () => {
     const emptyUser: UserState = {
       ...baseUser,

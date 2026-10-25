@@ -11,6 +11,7 @@ import {
 import RatingView from '../../components/session/RatingView';
 import Recorder from '../../components/tools/Recorder';
 import Metronome from '../../components/tools/Metronome';
+import PacingMeter from '../../components/tools/PacingMeter';
 import ReadingPanel from '../../components/tools/ReadingPanel';
 import { Colors } from '../../theme/tokens';
 
@@ -71,6 +72,7 @@ export default function ExercisePlayer() {
       {stage === 'practice' && (
         <PracticeView actionLabel={t('exercises.finish')} onAction={session.complete}>
           {exercise.kind === 'metronome' && <Metronome />}
+          {exercise.kind === 'metronome' && <PacingMeter />}
           <ReadingPanel initialLevel={exercise.kind === 'metronome' ? 1 : 2} />
           {exercise.kind === 'reading' && <Recorder exerciseId={exercise.id} />}
         </PracticeView>
