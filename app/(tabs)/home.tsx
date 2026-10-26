@@ -9,7 +9,7 @@ import VoiceWave from '../../components/brand/VoiceWave';
 import { waveCalm, waveCaptionKey } from '../../lib/wave';
 import WeekDots from '../../components/WeekDots';
 import ActivityIcon from '../../components/ActivityIcon';
-import Card from '../../components/Card';
+import Card, { PressableCard } from '../../components/Card';
 import { PressableRaised } from '../../components/depth/Raised';
 import CheckInCard from '../../components/CheckInCard';
 import DailyWisdomCard from '../../components/DailyWisdomCard';
@@ -297,6 +297,36 @@ export default function HomeScreen() {
             </View>
           </View>
         </PressableRaised>
+
+        {/* Call Rehearsal Studio Quick Booster */}
+        <PressableCard
+          onPress={() => router.push('/call')}
+          accessibilityLabel={`${t('call.quick_action')}. ${t('call.quick_action_sub')}`}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+            <View
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 22,
+                backgroundColor: Colors.accent.soft,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Ionicons name="call" size={20} color={Colors.accent.main} />
+            </View>
+            <View style={{ flex: 1, gap: 2 }}>
+              <Text style={{ fontFamily: FontFamily.heading, fontSize: FontSize.cardTitle, color: Colors.text.primary }}>
+                {t('call.quick_action')}
+              </Text>
+              <Text style={{ fontFamily: FontFamily.dmSansRegular, fontSize: FontSize.meta, color: Colors.text.secondary }}>
+                {t('call.quick_action_sub')}
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={Colors.text.tertiary} />
+          </View>
+        </PressableCard>
 
         {/* 5. CONTINUITY: Hlasová stabilita & Týdenní pokrok (Voice Wave + Consistency) */}
         <Card

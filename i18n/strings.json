@@ -939,6 +939,31 @@
     "toggle":            { "cs": "Měřič tempa", "en": "Pacing meter" }
   },
 
+  "call": {
+    "title":             { "cs": "Trenažér telefonních hovorů", "en": "Phone Call Simulator" },
+    "kicker":            { "cs": "Desenzibilizace hovorů", "en": "Call desensitization" },
+    "sub":               { "cs": "Bezpečný nácvik telefonování s hlasovým simulátorem. Trénuj dechové okno před každou odpovědí.", "en": "Safe phone call practice with simulated voice. Train breath pauses before every turn." },
+    "select_scenario":   { "cs": "Vyber si situaci k nácviku", "en": "Choose a call scenario" },
+    "btn_call":          { "cs": "Zavolat", "en": "Call" },
+    "calling":           { "cs": "Vytáčím...", "en": "Calling..." },
+    "connected":         { "cs": "Spojeno", "en": "Connected" },
+    "caller_speaking":   { "cs": "Protistrana mluví...", "en": "Caller is speaking..." },
+    "breath_prep":       { "cs": "Dechové okno: Fyziologický nádech do břicha", "en": "Breath window: Diaphragmatic inhale" },
+    "your_turn":         { "cs": "Tvá odpověď (mluv svým tempem)", "en": "Your response (speak at your pace)" },
+    "next_turn":         { "cs": "Další replika →", "en": "Next turn →" },
+    "end_call":          { "cs": "Ukončit hovor", "en": "End call" },
+    "done_title":        { "cs": "Hovor úspěšně zvládnut!", "en": "Call successfully mastered!" },
+    "done_sub":          { "cs": "Skvělá práce. Dodržel jsi dechové pauzy a nenechal ses vystresovat.", "en": "Great job. You honored your breath windows and kept your calm." },
+    "done_cta":          { "cs": "Dokončit trénink", "en": "Finish practice" },
+    "debrief_turns":     { "cs": "Proběhlo replik", "en": "Completed turns" },
+    "debrief_time":      { "cs": "Délka hovoru", "en": "Call duration" },
+    "quick_action":      { "cs": "Trenažér hovorů", "en": "Call Simulator" },
+    "quick_action_sub":  { "cs": "Nácvik telefonování s hlasem bez stresu", "en": "Stress-free phone call rehearsal" },
+    "level_1":           { "cs": "Mírná zátěž", "en": "Mild challenge" },
+    "level_2":           { "cs": "Střední zátěž", "en": "Medium challenge" },
+    "level_3":           { "cs": "Vysoká zátěž", "en": "High challenge" }
+  },
+
   "companion_lab": {
     "title":             { "cs": "Companion Studio", "en": "Companion Studio" },
     "subtitle":          { "cs": "Interaktivní testovací laboratoř pro maskota Speaso", "en": "Interactive test studio for the Speaso companion" },

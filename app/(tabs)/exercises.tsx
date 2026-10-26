@@ -135,6 +135,16 @@ export default function ExercisesScreen() {
             onPress={() => router.push('/mirror')}
             a11y={`${t('mirror.title')}, ${t('mirror.sub')}`}
           />
+          <Row
+            first={false}
+            icon="call-outline"
+            tint="lavender"
+            title={t('call.title')}
+            sub={t('call.kicker')}
+            meta={`AI Voice Rehearsal · ${t('common.today')}`}
+            onPress={() => router.push('/call')}
+            a11y={`${t('call.title')}, ${t('call.sub')}`}
+          />
         </View>
 
         <View style={styles.sectionHead}>
